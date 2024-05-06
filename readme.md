@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="http://washworld.dk/" target="blank"><img src="./washworld-logo.svg" alt="WashWorld Logo" /></a>
+</p>
+
 # Washworld App - Expo/React-Native
 
 WashWorld is a React Native application designed to simplify the process of booking car wash services. It allows users to schedule car washes in real-time and customize their service options through an intuitive mobile interface.
