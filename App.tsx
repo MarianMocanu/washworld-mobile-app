@@ -1,20 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as fonts from 'expo-font';
+import { useEffect, useState } from 'react';
+import { Main } from 'src/Main';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  const [appReady, setAppReady] = useState(false);
+
+  async function loadFonts() {
+    await fonts
+      .loadAsync({
+        'gilroy-bold': require('./assets/fonts/Gilroy-Bold.otf'),
+        'gilroy-semibold': require('./assets/fonts/Gilroy-SemiBold.otf'),
+        'gilroy-medium': require('./assets/fonts/Gilroy-Medium.otf'),
+        'gilroy-regular': require('./assets/fonts/Gilroy-Regular.otf'),
+      })
+      .finally(() => {
+        setAppReady(true);
+      });
+  }
+
+  useEffect(() => {
+    loadFonts();
+  }, []);
+
+  if (appReady) {
+    return <Main />;
+  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
