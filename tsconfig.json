@@ -1,6 +1,14 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "baseUrl": "./",
+    "paths": {
+      "@shared/*": ["src/features/shared/*"],
+      "@globals/*": ["src/globals/*"],
+      "@queries/*": ["src/queries/*"],
+      "@services/*": ["src/services/*"],
+      "@models": ["src/models/index"]
+    }
   }
 }
