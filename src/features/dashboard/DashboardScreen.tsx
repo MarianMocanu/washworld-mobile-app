@@ -105,6 +105,7 @@ export const DashboardScreen: FC<Props> = () => {
         keyExtractor={(item, index) => `location_${item.id.toString()}_${index.toString()}`}
         renderItem={({ item }) => <CarWashLocation location={item} />}
         horizontal
+        showsHorizontalScrollIndicator={false}
       />
     </ScrollView>
   );
