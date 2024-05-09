@@ -1,3 +1,5 @@
+import { TextStyle } from 'react-native';
+
 export const colors = {
   primary: {
     base: '#34B566', // Green
@@ -31,4 +33,16 @@ export const colors = {
 
 export const fonts = {};
 
-export const styles = {};
+export const globalTextStyles = {
+  heading: {
+    fontFamily: 'gilroy-bold',
+    fontSize: 18,
+    lineHeight: 22,
+  },
+  inactive: {
+    fontFamily: 'gilroy-medium',
+    fontSize: 14,
+    lineHeight: 18,
+    color: colors.grey[60],
+  },
+};
