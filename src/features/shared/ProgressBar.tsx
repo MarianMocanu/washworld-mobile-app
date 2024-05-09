@@ -18,7 +18,7 @@ type Props = {
 
 export const ProgressBar: FC<Props> = ({ progress, color }) => {
   return (
-    <View style={{ paddingTop: 32 }}>
+    <View style={{ paddingTop: 24 }}>
       <View
         style={{
           width: 'auto',
@@ -41,7 +41,7 @@ export const ProgressBar: FC<Props> = ({ progress, color }) => {
         style={{
           position: 'absolute',
           right: `${100 - progress}%`,
-          top: 16,
+          top: 10,
           fontFamily: 'gilroy-semibold',
           fontSize: 12,
           lineHeight: 12,
