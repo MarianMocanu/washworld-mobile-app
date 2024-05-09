@@ -1,4 +1,5 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
+import { ProgressBar } from '@shared/ProgressBar';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -10,11 +11,14 @@ export const DashboardScreen: FC<Props> = () => {
     <View style={viewStyles.container}>
       <Text style={textStyles.heading}>Active subscription</Text>
       <View style={viewStyles.subscription}>
-        <View style={viewStyles.horizontal}>
-          <RewardsIcon color={colors.tertiary.diamond} size={24} />
-          <Text style={textStyles.loyaltyLevel}>Diamond</Text>
+        <View style={[viewStyles.horizontal, viewStyles.justify]}>
+          <View style={viewStyles.horizontal}>
+            <RewardsIcon color={colors.tertiary.diamond} size={24} />
+            <Text style={textStyles.loyaltyLevel}>Diamond</Text>
+          </View>
+          <Text style={textStyles.loyaltyStatus}>72/96 washes</Text>
         </View>
-        <Text style={textStyles.loyaltyStatus}>72/96 washes</Text>
+        <ProgressBar progress={12} />
       </View>
     </View>
   );
@@ -30,11 +34,11 @@ const viewStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  subscription: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
+  justify: {
     justifyContent: 'space-between',
+  },
+  subscription: {
+    padding: 16,
     backgroundColor: colors.white.cream,
   },
 });
@@ -53,9 +57,6 @@ const textStyles = StyleSheet.create({
     paddingLeft: 4,
   },
   loyaltyStatus: {
-    fontFamily: 'gilroy-medium',
-    fontSize: 14,
-    lineHeight: 18,
-    color: colors.grey[60],
+    ...globalTextStyles.inactive,
   },
 });

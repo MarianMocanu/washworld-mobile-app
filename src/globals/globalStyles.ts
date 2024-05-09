@@ -39,4 +39,10 @@ export const globalTextStyles = {
     fontSize: 18,
     lineHeight: 22,
   },
+  inactive: {
+    fontFamily: 'gilroy-medium',
+    fontSize: 14,
+    lineHeight: 18,
+    color: colors.grey[60],
+  },
 };
