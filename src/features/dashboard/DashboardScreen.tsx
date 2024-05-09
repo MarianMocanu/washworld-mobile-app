@@ -85,17 +85,17 @@ export const DashboardScreen: FC<Props> = () => {
       </View>
       <View style={viewStyles.wash}>
         <Text style={textStyles.plateNumber}>DA 21 322</Text>
-        <Button text="Roskildevej 24" style={{ flex: 1, paddingLeft: 24 }} link />
+        <Button text="Roskildevej 24" style={viewStyles.linkButton} link />
         <Text style={textStyles.washDate}>21/04/24</Text>
       </View>
       <View style={viewStyles.wash}>
         <Text style={textStyles.plateNumber}>DA 21 322</Text>
-        <Button text="Roskildevej 24" style={{ flex: 1, paddingLeft: 24 }} link />
+        <Button text="Roskildevej 24" style={viewStyles.linkButton} link />
         <Text style={textStyles.washDate}>21/04/24</Text>
       </View>
       <View style={viewStyles.wash}>
         <Text style={textStyles.plateNumber}>DA 21 322</Text>
-        <Button text="Roskildevej 24" style={{ flex: 1, paddingLeft: 24 }} link />
+        <Button text="Roskildevej 24" style={viewStyles.linkButton} link />
         <Text style={textStyles.washDate}>21/04/24</Text>
       </View>
       {/* Nearby wash locations */}
@@ -117,13 +117,16 @@ const viewStyles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
-
   horizontal: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   justify: {
     justifyContent: 'space-between',
+  },
+  linkButton: {
+    flex: 1,
+    paddingLeft: 24,
   },
   subscription: {
     height: 48,
