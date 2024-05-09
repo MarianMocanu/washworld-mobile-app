@@ -16,12 +16,6 @@ export type TabsParamList = {
 
 const Tab = createBottomTabNavigator<TabsParamList>();
 
-type TabBarIconProps = {
-  focused: boolean;
-  color: string;
-  size: number;
-};
-
 export default function TabNavigator() {
   function getTabBarLabelStyle(focused: boolean, color: string) {
     return {
@@ -63,9 +57,8 @@ export default function TabNavigator() {
               );
           }
         },
-
         header: () => (
-          <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={{ alignItems: 'center', backgroundColor: '#FFF' }}>
             <LogoSVG />
           </View>
         ),
