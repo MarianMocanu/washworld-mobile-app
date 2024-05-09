@@ -2,11 +2,23 @@ import { colors } from '@globals/globalStyles';
 import { FC } from 'react';
 import { Text, View } from 'react-native';
 
-type Props = { progress: number };
+type Props = {
+  /**
+   * The progress prop represents the current progress as a percentage.
+   * It controls the width of the filled portion of the progress bar.
+   * The value should be between 0 and 100.
+   */
+  progress: number;
+  /**
+   * The color prop represents the color of the filled portion of the progress bar.
+   * The default value is the primary color from the global styles.
+   */
+  color?: string;
+};
 
-export const ProgressBar: FC<Props> = ({ progress }) => {
+export const ProgressBar: FC<Props> = ({ progress, color }) => {
   return (
-    <View style={{ paddingTop: 22 }}>
+    <View style={{ paddingTop: 32 }}>
       <View
         style={{
           width: 'auto',
@@ -21,7 +33,7 @@ export const ProgressBar: FC<Props> = ({ progress }) => {
             width: `${progress}%`,
             height: '100%',
             borderRadius: 100,
-            backgroundColor: colors.primary.base,
+            backgroundColor: color ? color : colors.primary.base,
           }}
         />
       </View>
@@ -29,7 +41,7 @@ export const ProgressBar: FC<Props> = ({ progress }) => {
         style={{
           position: 'absolute',
           right: `${100 - progress}%`,
-          top: 6,
+          top: 16,
           fontFamily: 'gilroy-semibold',
           fontSize: 12,
           lineHeight: 12,

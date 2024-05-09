@@ -37,6 +37,7 @@ export default function TabNavigator() {
                   name="dashboard"
                   size={24}
                   color={focused ? colors.primary.base : colors.grey[60]}
+                  style={{ lineHeight: 24 }}
                 />
               );
             case 'start-wash':
@@ -45,6 +46,7 @@ export default function TabNavigator() {
                   name="local-car-wash"
                   size={24}
                   color={focused ? colors.primary.base : colors.grey[60]}
+                  style={{ lineHeight: 24 }}
                 />
               );
             case 'account':
@@ -53,6 +55,7 @@ export default function TabNavigator() {
                   name="person"
                   size={24}
                   color={focused ? colors.primary.base : colors.grey[60]}
+                  style={{ lineHeight: 24 }}
                 />
               );
           }
