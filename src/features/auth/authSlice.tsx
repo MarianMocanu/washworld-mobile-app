@@ -137,6 +137,11 @@ export const signOut = () => async (dispatch: AppDispatch) => {
     await deleteToken();
     setTokenInAxiosHeaders('');
     dispatch(authSlice.actions.signoutSuccess());
+    const token = await getToken();
+    if (token?.length) {
+      console.log('Token not deleted');
+      dispatch(authSlice.actions.failure());
+    }
   } catch (error) {
     console.log(error);
     dispatch(authSlice.actions.failure());
