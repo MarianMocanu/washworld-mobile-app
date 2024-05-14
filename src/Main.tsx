@@ -6,14 +6,12 @@ import TabNavigator from './navigation/TabNavigator';
 import AuthStackNavigator from './navigation/AuthNavigator';
 
 export const Main: FC = () => {
-  const isLoggedIn = true;
+  const isLoggedIn = false;
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <NavigationContainer>
-        {isLoggedIn ? <TabNavigator /> : <AuthStackNavigator />}
-      </NavigationContainer>
+      <NavigationContainer>{isLoggedIn ? <TabNavigator /> : <AuthStackNavigator />}</NavigationContainer>
     </SafeAreaView>
   );
 };
