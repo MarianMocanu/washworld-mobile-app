@@ -9,6 +9,7 @@ import { Location, LocationStatus } from '@models/Location';
 import { WashLocation } from '../components/WashLocation';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { DashboardStackParamList } from '../DashboardNavigator';
+import { ScreenHeader } from '@shared/ScreenHeader';
 
 type Props = {};
 
@@ -46,88 +47,94 @@ export const HomeScreen: FC<Props> = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={viewStyles.container} style={{ backgroundColor: '#FFF' }}>
-      {/* Active subscription  */}
-      <Text style={textStyles.heading}>Active subscription</Text>
-      <View style={viewStyles.subscription}>
-        <Text style={textStyles.subscription}>DA 21 322 - Premium Plus</Text>
-        {user.cars.length > 1 && (
-          <MaterialIcons
-            name="keyboard-arrow-down"
-            style={{ fontSize: 24, lineHeight: 24, color: colors.grey[60] }}
-          />
-        )}
-      </View>
-      {/* Current progress */}
-      <Text style={textStyles.heading}>Current rewards progress</Text>
-      <View style={viewStyles.progress}>
-        <View style={[viewStyles.horizontal, viewStyles.justify]}>
-          <View style={viewStyles.horizontal}>
-            <RewardsIcon color={colors.tertiary.diamond} size={24} />
-            <Text style={textStyles.loyaltyLevel}>Diamond</Text>
-          </View>
-          <Text style={textStyles.loyaltyStatus}>72/96 washes</Text>
-        </View>
-        <ProgressBar progress={80} />
-      </View>
-      {/* Recent washes */}
-      <View style={[viewStyles.horizontal, viewStyles.justify]}>
-        <Text style={textStyles.heading}>Recent washes</Text>
-        <Button
-          text="View all"
-          link
-          textStyle={globalTextStyles.heading}
-          style={{ paddingTop: 24, paddingBottom: 16 }}
-          onPress={navigateToHistory}
-          rightIcon={
+    <View style={viewStyles.mainContainer}>
+      <ScreenHeader />
+      <ScrollView contentContainerStyle={viewStyles.scrollContainer}>
+        {/* Active subscription  */}
+        <Text style={textStyles.heading}>Active subscription</Text>
+        <View style={viewStyles.subscription}>
+          <Text style={textStyles.subscription}>DA 21 322 - Premium Plus</Text>
+          {user.cars.length > 1 && (
             <MaterialIcons
-              name="keyboard-arrow-right"
-              style={{ fontSize: 24, lineHeight: 24, color: colors.primary.base }}
+              name="keyboard-arrow-down"
+              style={{ fontSize: 24, lineHeight: 24, color: colors.grey[60] }}
             />
-          }
+          )}
+        </View>
+        {/* Current progress */}
+        <Text style={textStyles.heading}>Current rewards progress</Text>
+        <View style={viewStyles.progress}>
+          <View style={[viewStyles.horizontal, viewStyles.justify]}>
+            <View style={viewStyles.horizontal}>
+              <RewardsIcon color={colors.tertiary.diamond} size={24} />
+              <Text style={textStyles.loyaltyLevel}>Diamond</Text>
+            </View>
+            <Text style={textStyles.loyaltyStatus}>72/96 washes</Text>
+          </View>
+          <ProgressBar progress={80} />
+        </View>
+        {/* Recent washes */}
+        <View style={[viewStyles.horizontal, viewStyles.justify]}>
+          <Text style={textStyles.heading}>Recent washes</Text>
+          <Button
+            text="View all"
+            link
+            textStyle={globalTextStyles.heading}
+            style={{ paddingTop: 24, paddingBottom: 16 }}
+            onPress={navigateToHistory}
+            rightIcon={
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                style={{ fontSize: 24, lineHeight: 24, color: colors.primary.base }}
+              />
+            }
+          />
+        </View>
+        <View style={viewStyles.wash}>
+          <Text style={textStyles.plateNumber}>DA 21 322</Text>
+          <Button
+            text="Roskildevej 24"
+            style={{ flex: 1, paddingLeft: 24 }}
+            link
+            onPress={() => console.log('TODO: Open modal for specific location')}
+          />
+          <Text style={textStyles.washDate}>21/04/24</Text>
+        </View>
+        <View style={viewStyles.wash}>
+          <Text style={textStyles.plateNumber}>DA 21 322</Text>
+          <Button text="Roskildevej 24" style={viewStyles.linkButton} link />
+          <Text style={textStyles.washDate}>21/04/24</Text>
+        </View>
+        <View style={viewStyles.wash}>
+          <Text style={textStyles.plateNumber}>DA 21 322</Text>
+          <Button text="Roskildevej 24" style={viewStyles.linkButton} link />
+          <Text style={textStyles.washDate}>21/04/24</Text>
+        </View>
+        <View style={viewStyles.wash}>
+          <Text style={textStyles.plateNumber}>DA 21 322</Text>
+          <Button text="Roskildevej 24" style={viewStyles.linkButton} link />
+          <Text style={textStyles.washDate}>21/04/24</Text>
+        </View>
+        {/* Nearby wash locations */}
+        <Text style={textStyles.heading}>Nearby wash locations</Text>
+        <FlatList
+          data={locations}
+          keyExtractor={(item, index) => `location_${item.id.toString()}_${index.toString()}`}
+          renderItem={({ item }) => <WashLocation location={item} />}
+          horizontal
+          showsHorizontalScrollIndicator={false}
         />
-      </View>
-      <View style={viewStyles.wash}>
-        <Text style={textStyles.plateNumber}>DA 21 322</Text>
-        <Button
-          text="Roskildevej 24"
-          style={{ flex: 1, paddingLeft: 24 }}
-          link
-          onPress={() => console.log('TODO: Open modal for specific location')}
-        />
-        <Text style={textStyles.washDate}>21/04/24</Text>
-      </View>
-      <View style={viewStyles.wash}>
-        <Text style={textStyles.plateNumber}>DA 21 322</Text>
-        <Button text="Roskildevej 24" style={viewStyles.linkButton} link />
-        <Text style={textStyles.washDate}>21/04/24</Text>
-      </View>
-      <View style={viewStyles.wash}>
-        <Text style={textStyles.plateNumber}>DA 21 322</Text>
-        <Button text="Roskildevej 24" style={viewStyles.linkButton} link />
-        <Text style={textStyles.washDate}>21/04/24</Text>
-      </View>
-      <View style={viewStyles.wash}>
-        <Text style={textStyles.plateNumber}>DA 21 322</Text>
-        <Button text="Roskildevej 24" style={viewStyles.linkButton} link />
-        <Text style={textStyles.washDate}>21/04/24</Text>
-      </View>
-      {/* Nearby wash locations */}
-      <Text style={textStyles.heading}>Nearby wash locations</Text>
-      <FlatList
-        data={locations}
-        keyExtractor={(item, index) => `location_${item.id.toString()}_${index.toString()}`}
-        renderItem={({ item }) => <WashLocation location={item} />}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const viewStyles = StyleSheet.create({
-  container: {
+  mainContainer: {
     backgroundColor: '#fff',
+    flex: 1,
+  },
+  scrollContainer: {
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
