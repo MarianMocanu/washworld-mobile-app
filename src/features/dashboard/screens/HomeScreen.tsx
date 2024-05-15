@@ -6,11 +6,15 @@ import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Button } from '@shared/Button';
 import { Location, LocationStatus } from '@models/Location';
-import { CarWashLocation } from './components/CarWashLocation';
+import { WashLocation } from '../components/WashLocation';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { DashboardStackParamList } from '../DashboardNavigator';
 
 type Props = {};
 
-export const DashboardScreen: FC<Props> = () => {
+export const HomeScreen: FC<Props> = () => {
+  const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
+
   const user = { cars: [] };
 
   // create a new array of locations as dummy data, with 4 items
@@ -36,6 +40,10 @@ export const DashboardScreen: FC<Props> = () => {
       new Date(),
     );
   });
+
+  function navigateToHistory() {
+    navigation.navigate('history');
+  }
 
   return (
     <ScrollView contentContainerStyle={viewStyles.container} style={{ backgroundColor: '#FFF' }}>
@@ -70,7 +78,13 @@ export const DashboardScreen: FC<Props> = () => {
           link
           textStyle={globalTextStyles.heading}
           style={{ paddingTop: 24, paddingBottom: 16 }}
-          onPress={() => console.log('TODO: Navigate to wash history')}
+          onPress={navigateToHistory}
+          rightIcon={
+            <MaterialIcons
+              name="keyboard-arrow-right"
+              style={{ fontSize: 24, lineHeight: 24, color: colors.primary.base }}
+            />
+          }
         />
       </View>
       <View style={viewStyles.wash}>
@@ -103,7 +117,7 @@ export const DashboardScreen: FC<Props> = () => {
       <FlatList
         data={locations}
         keyExtractor={(item, index) => `location_${item.id.toString()}_${index.toString()}`}
-        renderItem={({ item }) => <CarWashLocation location={item} />}
+        renderItem={({ item }) => <WashLocation location={item} />}
         horizontal
         showsHorizontalScrollIndicator={false}
       />
