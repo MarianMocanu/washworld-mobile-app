@@ -40,12 +40,10 @@ export const HistoryScreen: FC = () => {
       headerLeft: () => (
         <Button
           style={styles.pressableArea}
-          text="Back"
-          textStyle={textStyles.backButton}
           leftIcon={
             <MaterialIcons
               name="keyboard-arrow-left"
-              style={{ fontSize: 24, lineHeight: 24, color: colors.black.base }}
+              style={{ fontSize: 32, lineHeight: 32, color: colors.black.base }}
             />
           }
           onPress={navigation.goBack}
