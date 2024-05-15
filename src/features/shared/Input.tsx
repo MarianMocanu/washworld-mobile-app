@@ -1,6 +1,7 @@
 import { colors } from '@globals/globalStyles';
 import React from 'react';
-import { StyleSheet, TextInput, Text, TextInputProps, View } from 'react-native';
+import { StyleSheet, TextInput, Text, TextInputProps, View, TextStyle, ViewStyle } from 'react-native';
+import { Button } from '@shared/Button';
 
 type Props = React.PropsWithChildren<TextInputProps> & {
   /** Error text to be displayed
@@ -16,19 +17,43 @@ type Props = React.PropsWithChildren<TextInputProps> & {
    */
   isValid?: boolean;
   placeholderTextColor?: string;
+  /**
+   * Icon to display on the right side of the input
+   * @default undefined
+   *
+   * example: <MaterialIcons name="search" size={24} />
+   */
+  rightIcon?: React.ReactNode;
+  /**
+   * Style of the input container, including the right icon
+   * @default undefined
+   */
+  inputContainerStyle?: ViewStyle;
+  /**
+   * Function to call when the right icon is pressed
+   * @default undefined
+   */
+  onRightIconPress?: () => void;
 };
 
 const Input = React.forwardRef<TextInput, Props>(
-  ({ style, placeholderTextColor, errorMessage, isValid, ...props }: Props, ref) => {
+  ({ placeholderTextColor, errorMessage, isValid, onRightIconPress, ...props }: Props, ref) => {
     return (
       <View style={[styles.wrapper]}>
-        <TextInput
-          ref={ref}
-          style={[styles.input, style]}
-          placeholderTextColor={placeholderTextColor ?? colors.grey[30]}
-          {...props}
-        />
-        {<Text style={[styles.error, !isValid && styles.hidden]}>{errorMessage}</Text>}
+        <View style={[styles.horizontal, props.inputContainerStyle]}>
+          <TextInput
+            ref={ref}
+            style={[styles.input, props.style]}
+            placeholderTextColor={placeholderTextColor ?? colors.grey[30]}
+            {...props}
+          />
+          {props.rightIcon && (
+            <Button style={styles.rightButton} onPress={onRightIconPress}>
+              {props.rightIcon}
+            </Button>
+          )}
+        </View>
+        <Text style={[styles.error, !isValid && styles.hidden]}>{errorMessage}</Text>
       </View>
     );
   },
@@ -43,18 +68,21 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 4,
   },
-  input: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: colors.grey[80],
+  horizontal: {
+    flexDirection: 'row',
     backgroundColor: colors.white.cream,
-    borderColor: 'none',
-    borderWidth: 0,
     borderRadius: 4,
     paddingHorizontal: 8,
+    alignItems: 'center',
+  },
+  input: {
+    fontSize: 18,
+    fontFamily: 'gilroy-medium',
+    fontWeight: '500',
+    color: colors.grey[80],
     textAlignVertical: 'center',
     height: 48,
-    width: '100%',
+    flex: 1,
   },
   error: {
     color: colors.tertiary.red,
@@ -65,5 +93,11 @@ const styles = StyleSheet.create({
   hidden: {
     // done like so to avoid input field jumping while error message is shown
     width: 0,
+  },
+  rightButton: {
+    height: 48,
+    width: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

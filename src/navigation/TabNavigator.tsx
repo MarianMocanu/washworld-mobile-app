@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
-import { StartWashScreen } from 'src/features/startwash/StartWashScreen';
 import { AccountScreen } from 'src/features/account/AccountScreen';
-import { LogoSVG } from 'src/assets/SVGIcons';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 import { colors } from '@globals/globalStyles';
 import { DashboardNavigator } from 'src/features/dashboard/DashboardNavigator';
+import { StartWashNavigator } from 'src/features/startwash/StartWashNavigator';
 
 export type TabsParamList = {
   dashboard: undefined;
@@ -72,7 +71,7 @@ export default function TabNavigator() {
       />
       <Tab.Screen
         name="start-wash"
-        component={StartWashScreen}
+        component={StartWashNavigator}
         options={{
           tabBarLabel: ({ focused, color }) => (
             <Text style={getTabBarLabelStyle(focused, color)}>Start Wash</Text>

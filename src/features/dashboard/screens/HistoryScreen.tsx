@@ -1,13 +1,11 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { FC, useLayoutEffect } from 'react';
+import { FC } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { DashboardStackParamList } from '../DashboardNavigator';
-import { Button } from '@shared/Button';
-import { MaterialIcons } from '@expo/vector-icons';
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Location, LocationStatus } from '@models/Location';
 import { WashEvent } from '../components/WashEvent';
+import { ScreenHeader } from '@shared/ScreenHeader';
 
 export const HistoryScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'history'>>();
@@ -35,36 +33,9 @@ export const HistoryScreen: FC = () => {
     );
   });
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Button
-          style={styles.pressableArea}
-          leftIcon={
-            <MaterialIcons
-              name="keyboard-arrow-left"
-              style={{ fontSize: 32, lineHeight: 32, color: colors.black.base }}
-            />
-          }
-          onPress={navigation.goBack}
-        />
-      ),
-      headerRight: () => (
-        <Button
-          style={styles.pressableArea}
-          rightIcon={
-            <MaterialIcons
-              name="filter-list"
-              style={{ fontSize: 28, lineHeight: 28, color: colors.primary.base }}
-            />
-          }
-        />
-      ),
-    } as NativeStackNavigationOptions);
-  }, []);
-
   return (
     <View style={styles.container}>
+      <ScreenHeader backButtonShown onBackPress={navigation.goBack} />
       <FlatList
         ListHeaderComponent={<Text style={textStyles.heading}>Recent washes</Text>}
         data={locations}
