@@ -1,6 +1,8 @@
 import * as fonts from 'expo-font';
 import { useEffect, useState } from 'react';
 import { Main } from 'src/Main';
+import { Provider as ReduxProvider } from 'react-redux';
+import { store } from 'src/app/store';
 
 export default function App() {
   const [appReady, setAppReady] = useState(false);
@@ -23,7 +25,10 @@ export default function App() {
   }, []);
 
   if (appReady) {
-    return <Main />;
+    return (
+      <ReduxProvider store={store}>
+        <Main />
+      </ReduxProvider>
+    );
   }
 }
-

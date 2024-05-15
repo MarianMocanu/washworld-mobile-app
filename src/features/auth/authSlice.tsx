@@ -34,7 +34,7 @@ export interface AuthState {
 // PAYLOAD TYPES
 type SignInPayloadType = {
   email: string;
-  passord: string;
+  password: string;
 };
 
 type SignUpPayloadType = {
@@ -93,6 +93,7 @@ export const signIn = (payload: SignInPayloadType) => async (dispatch: AppDispat
     const response = await axios.post<AuthResponse>('/auth/login', payload);
     const user = response.data.user;
     const token = response.data.token;
+    console.log('login response for testing:', response.data);
     if (user && token) {
       // save the token to secure store
       await saveToken(token);
