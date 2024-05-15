@@ -4,123 +4,114 @@ import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AccStackParamList } from '../AccountScreen';
 import { RewardsIcon } from '@shared/RewardsIcon';
+import { Button } from '@shared/Button';
 
 type Props = NativeStackScreenProps<AccStackParamList, 'AccountSettings'>;
 
-interface ButtonProps {
-  text: string;
-  onPress: () => void;
-}
-
-const SettingsButton: React.FC<ButtonProps> = ({ text, onPress }) => {
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [{ backgroundColor: pressed ? '#FDFDFD' : 'transparent' }, styles.button]}
-    >
-      {({ pressed }) => <Text style={{ opacity: pressed ? 0.2 : 1 }}>{text}</Text>}
-    </Pressable>
-  );
-};
-
 const AccountSettingsScreen = (props: Props) => {
   return (
-    <ScrollView style={{ backgroundColor: '#FFF' }}>
-      <View style={styles.container}>
-        {/* Populate userInfo with user data */}
-        <View style={styles.userInfo}>
-          <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-            <View style={styles.userIcon}>
-              <Text style={styles.iconText}>JP</Text>
-            </View>
-
-            <View style={{ flexDirection: 'column', gap: 4 }}>
-              <Text style={styles.fullName}>Jesper Poulsen</Text>
-              <Text>Premium Plus</Text>
-            </View>
+    <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
+      {/* Populate userInfo with user data */}
+      <View style={styles.userInfo}>
+        <View style={styles.iconNamePlan}>
+          <View style={styles.userIcon}>
+            <Text style={styles.iconText}>JP</Text>
           </View>
 
-          <View style={styles.carInfo}>
-            <MaterialIcons
-              name="directions-car"
-              size={24}
-              color={colors.grey[60]}
-              style={{ lineHeight: 24 }}
+          <View style={styles.namePlan}>
+            <Text style={styles.fullName}>Jesper Poulsen</Text>
+            <Text>Premium Plus</Text>
+          </View>
+        </View>
+
+        <View style={styles.carInfo}>
+          <MaterialIcons name="directions-car" size={24} color={colors.grey[60]} style={{ lineHeight: 24 }} />
+          <Text>DB 12 345</Text>
+          <Text>Polestar 1</Text>
+          <RewardsIcon color={colors.tertiary.diamond} size={24} />
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionHeading}>Subscription</Text>
+        <View style={styles.buttonContainer}>
+          <Button
+            text="Change subscription"
+            onPress={() => props.navigation.navigate('ChangeSubscription')}
+            style={styles.button}
+          />
+          <Button
+            text="Loyalty rewards"
+            onPress={() => props.navigation.navigate('LoyaltyRewards')}
+            style={styles.button}
+          />
+          <Button
+            text="Add another car"
+            onPress={() => props.navigation.navigate('AddAnotherCar')}
+            style={styles.button}
+          />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionHeading}>Preferences</Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              text="Preferred location"
+              onPress={() => props.navigation.navigate('PreferredLocation')}
+              style={styles.button}
             />
-            <Text>DB 12 345</Text>
-            <Text>Polestar 1</Text>
-            <RewardsIcon color={colors.tertiary.diamond} size={24} />
+            <Button
+              text="Preferred services"
+              onPress={() => props.navigation.navigate('PreferredServices')}
+              style={styles.button}
+            />
+            <View style={styles.button}>
+              <Text>Notifications</Text>
+              <Switch value={true} onValueChange={value => console.log('Notifications', value)} />
+            </View>
+            <View style={styles.button}>
+              <Text>Language</Text>
+              <Text>CustomDropdownComponent?</Text>
+              {/* <CustomLanguageDropdownComponent/> */}
+            </View>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionHeading}>Subscription</Text>
+          <Text style={styles.sectionHeading}>Help & Support</Text>
           <View style={styles.buttonContainer}>
-            <SettingsButton
-              text="Change subscription"
-              onPress={() => props.navigation.navigate('ChangeSubscription')}
+            <Button text="FAQs" onPress={() => props.navigation.navigate('FAQ')} style={styles.button} />
+            <Button
+              text="Customer support"
+              onPress={() => props.navigation.navigate('CustomerSupport')}
+              style={styles.button}
             />
-            <SettingsButton
-              text="Loyalty rewards"
-              onPress={() => props.navigation.navigate('LoyaltyRewards')}
-            />
-            <SettingsButton
-              text="Add another car"
-              onPress={() => props.navigation.navigate('AddAnotherCar')}
+            <Button
+              text="Submit feedback"
+              onPress={() => props.navigation.navigate('SubmitFeedback')}
+              style={styles.button}
             />
           </View>
+        </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionHeading}>Preferences</Text>
-            <View style={styles.buttonContainer}>
-              <SettingsButton
-                text="Preferred location"
-                onPress={() => props.navigation.navigate('PreferredLocation')}
-              />
-              <SettingsButton
-                text="Preferred services"
-                onPress={() => props.navigation.navigate('PreferredServices')}
-              />
-              <View style={styles.button}>
-                <Text>Notifications</Text>
-                <Switch value={true} onValueChange={value => console.log('Notifications', value)} />
-              </View>
-              <View style={styles.button}>
-                <Text>Language</Text>
-                <Text>CustomDropdownComponent?</Text>
-                {/* <CustomLanguageDropdownComponent/> */}
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionHeading}>Help & Support</Text>
-            <View style={styles.buttonContainer}>
-              <SettingsButton text="FAQs" onPress={() => props.navigation.navigate('FAQ')} />
-              <SettingsButton
-                text="Customer support"
-                onPress={() => props.navigation.navigate('CustomerSupport')}
-              />
-              <SettingsButton
-                text="Submit feedback"
-                onPress={() => props.navigation.navigate('SubmitFeedback')}
-              />
-            </View>
-          </View>
-
-          <View style={[styles.section, styles.lastSection]}>
-            <Text style={styles.sectionHeading}>Account</Text>
-            <View style={styles.buttonContainer}>
-              <SettingsButton
-                text="Edit account details"
-                onPress={() => props.navigation.navigate('EditAccountDetails')}
-              />
-              <SettingsButton
-                text="Change password"
-                onPress={() => props.navigation.navigate('ChangePassword')}
-              />
-              <SettingsButton text="Log out" onPress={() => props.navigation.navigate('LogOut')} />
-            </View>
+        <View style={[styles.section, styles.lastSection]}>
+          <Text style={styles.sectionHeading}>Account</Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              text="Edit account details"
+              onPress={() => props.navigation.navigate('EditAccountDetails')}
+              style={styles.button}
+            />
+            <Button
+              text="Change password"
+              onPress={() => props.navigation.navigate('ChangePassword')}
+              style={styles.button}
+            />
+            <Button
+              text="Log out"
+              onPress={() => props.navigation.navigate('LogOut')}
+              style={styles.button}
+            />
           </View>
         </View>
       </View>
@@ -132,7 +123,6 @@ export default AccountSettingsScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.white.base,
     alignItems: 'center',
     justifyContent: 'center',
@@ -150,6 +140,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginTop: 12,
     borderRadius: 8,
+  },
+  iconNamePlan: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'center',
+  },
+  namePlan: {
+    flexDirection: 'column',
+    gap: 4,
   },
   userIcon: {
     backgroundColor: '#34B566',
