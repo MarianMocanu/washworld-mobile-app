@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
-import { DashboardScreen } from 'src/features/dashboard/DashboardScreen';
 import { StartWashScreen } from 'src/features/startwash/StartWashScreen';
 import { AccountScreen } from 'src/features/account/AccountScreen';
 import { LogoSVG } from 'src/assets/SVGIcons';
 import { Text, View } from 'react-native';
 import { colors } from '@globals/globalStyles';
+import { DashboardNavigator } from 'src/features/dashboard/DashboardNavigator';
 
 export type TabsParamList = {
   dashboard: undefined;
@@ -29,6 +29,7 @@ export default function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           switch (route.name) {
             case 'dashboard':
@@ -60,20 +61,13 @@ export default function TabNavigator() {
               );
           }
         },
-        header: () => (
-          <View style={{ alignItems: 'center', backgroundColor: '#FFF' }}>
-            <LogoSVG />
-          </View>
-        ),
       })}
     >
       <Tab.Screen
         name="dashboard"
-        component={DashboardScreen}
+        component={DashboardNavigator}
         options={{
-          tabBarLabel: ({ focused, color }) => (
-            <Text style={getTabBarLabelStyle(focused, color)}>Dashboard</Text>
-          ),
+          tabBarLabel: ({ focused, color }) => <Text style={getTabBarLabelStyle(focused, color)}>Home</Text>,
         }}
       />
       <Tab.Screen
