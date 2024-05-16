@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
-import { AccountScreen } from 'src/features/account/AccountScreen';
 import { Text } from 'react-native';
 import { colors } from '@globals/globalStyles';
 import { DashboardNavigator } from 'src/features/dashboard/DashboardNavigator';
 import { StartWashNavigator } from 'src/features/startwash/StartWashNavigator';
+import { AccountNavigator } from 'src/features/account/AccountNavigator';
 
 export type TabsParamList = {
   dashboard: undefined;
@@ -80,7 +80,7 @@ export default function TabNavigator() {
       />
       <Tab.Screen
         name="account"
-        component={AccountScreen}
+        component={AccountNavigator}
         options={{
           tabBarLabel: ({ focused, color }) => (
             <Text style={getTabBarLabelStyle(focused, color)}>Account</Text>
