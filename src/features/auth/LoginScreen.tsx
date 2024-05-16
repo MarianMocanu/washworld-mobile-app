@@ -6,9 +6,8 @@ import { AuthStackParamList } from 'src/navigation/AuthNavigator';
 import { signIn } from './authSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/app/store';
-import { err } from 'react-native-svg';
-import { colors } from '@globals/globalStyles';
-
+import { colors, globalTextStyles } from '@globals/globalStyles';
+import Toast from 'react-native-toast-message';
 interface InputField {
   value: string;
   valid: boolean;
@@ -44,7 +43,7 @@ export const LoginScreen: FC<Props> = () => {
       });
     },
     passwordChange: (text: string) => {
-      setPassword({ value: text, valid: password.value.length >= 6, blurred: false });
+      setPassword({ value: text, valid: password.value.length > 0, blurred: false });
     },
     passwordBlur: () => {
       setPassword(prevState => {
@@ -53,39 +52,66 @@ export const LoginScreen: FC<Props> = () => {
     },
     login: (email: string, password: string) => {
       setIsLoading(true);
-      dispatch(signIn({ email, password })).finally(() => {
-        setIsLoading(false);
-      });
+      dispatch(signIn({ email, password }))
+        .then(res => {
+          if (res?.statusCode === 404) {
+            Toast.show({
+              type: 'error',
+              text1: 'User not found.',
+            });
+          }
+          if (res?.statusCode === 401) {
+            Toast.show({
+              type: 'error',
+              text1: 'Invalid password or email.',
+            });
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     },
   };
 
+  function navigateToSignup(): void {
+    navigation.navigate('signup');
+  }
+
   return (
     <View style={styles.container}>
-      <Text>login</Text>
+      <Text style={textStyles.heading}>Sign in</Text>
 
+      {/* validation moved to input prop because of errors (setter and render offset) */}
       <Input
+        keyboardType="email-address"
         placeholder="Email"
-        isValid={email.valid}
+        isValid={(emailRegex.test(email.value) && email.blurred) || !email.blurred || email.value.length == 0}
         errorMessage="Invalid email"
         onChangeText={handler.emailChange}
         onBlur={handler.emailBlur}
       />
       <Input
+        secureTextEntry={true}
         placeholder="Password"
-        isValid={password.valid}
-        errorMessage="Password must be at least 6 characters long"
+        isValid={(password.value.length > 0 && password.blurred) || !password.blurred}
+        errorMessage="Password must be provided"
         onChangeText={handler.passwordChange}
         onBlur={handler.passwordBlur}
       />
       {isLoading ? (
         <ActivityIndicator size="large" color={colors.primary.base} />
       ) : (
+        // TODO: Replace with actual custom button component
         <Button
-          title="Login"
+          title="Sign in"
           onPress={() => handler.login(email.value.toLowerCase(), password.value)}
           disabled={!password.valid || !email.valid}
         />
       )}
+      <Text onPress={navigateToSignup} style={[textStyles.default, styles.signUpMessage]}>
+        Dont have an account? <Text style={textStyles.link}>Sign up.</Text>
+      </Text>
+      <Toast />
     </View>
   );
 };
@@ -95,6 +121,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 40,
+    paddingHorizontal: 24,
+  },
+  signUpMessage: {
+    marginTop: 24,
+  },
+});
+
+const textStyles = StyleSheet.create({
+  heading: {
+    ...globalTextStyles.headingLarge,
+    color: colors.black.base,
+    paddingTop: 0,
+    paddingBottom: 24,
+  },
+  link: {
+    color: colors.primary.base,
+  },
+  default: {
+    fontSize: 18,
+    color: colors.grey[60],
   },
 });

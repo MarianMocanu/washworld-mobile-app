@@ -28,7 +28,7 @@ const Input = React.forwardRef<TextInput, Props>(
           placeholderTextColor={placeholderTextColor ?? colors.grey[30]}
           {...props}
         />
-        {<Text style={[styles.error, isValid && styles.hidden]}>{errorMessage}</Text>}
+        {<Text style={[isValid ? styles.hidden : styles.error]}>{errorMessage}</Text>}
       </View>
     );
   },
@@ -66,5 +66,9 @@ const styles = StyleSheet.create({
   hidden: {
     // done like so to avoid input field jumping while error message is shown
     width: 0,
+    fontSize: 12,
+    marginTop: 0,
+    fontWeight: '600',
+    marginBottom: 4,
   },
 });

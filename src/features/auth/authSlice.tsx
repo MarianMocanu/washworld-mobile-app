@@ -104,9 +104,13 @@ export const signIn = (payload: SignInPayloadType) => async (dispatch: AppDispat
       dispatch(authSlice.actions.failure());
       throw new Error('Invalid response from server while authenticating user');
     }
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
     dispatch(authSlice.actions.failure());
+    return {
+      type: 'error',
+      statusCode: error.response.data.statusCode,
+      message: 'Invalid response from server',
+    };
   } finally {
     dispatch(authSlice.actions.idle());
   }

@@ -34,6 +34,11 @@ export const colors = {
 export const fonts = {};
 
 export const globalTextStyles = {
+  headingLarge: {
+    fontFamily: 'gilroy-bold',
+    fontSize: 28,
+    lineHeight: 32,
+  },
   heading: {
     fontFamily: 'gilroy-bold',
     fontSize: 18,

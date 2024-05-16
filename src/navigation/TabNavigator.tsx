@@ -61,7 +61,7 @@ export default function TabNavigator() {
           }
         },
         header: () => (
-          <View style={{ alignItems: 'center', backgroundColor: '#FFF' }}>
+          <View style={{ alignItems: 'center', backgroundColor: '#FFF', paddingVertical: 8 }}>
             <LogoSVG />
           </View>
         ),
