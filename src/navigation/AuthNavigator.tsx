@@ -1,4 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View } from 'react-native';
+import { LogoSVG } from 'src/assets/SVGIcons';
 import { LoginScreen } from 'src/features/auth/LoginScreen';
 import { SignupScreen } from 'src/features/auth/SignupScreen';
 
@@ -14,9 +16,18 @@ const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export default function AuthStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="login">
-      <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="signup" component={SignupScreen} />
+    <Stack.Navigator
+      initialRouteName="login"
+      screenOptions={({ route }) => ({
+        header: () => (
+          <View style={{ alignItems: 'center', backgroundColor: '#FFF', paddingVertical: 8 }}>
+            <LogoSVG />
+          </View>
+        ),
+      })}
+    >
+      <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: true }} />
+      <Stack.Screen name="signup" component={SignupScreen} options={{ headerShown: true }} />
     </Stack.Navigator>
   );
 }

@@ -53,7 +53,7 @@ const Input = React.forwardRef<TextInput, Props>(
             </Button>
           )}
         </View>
-        <Text style={[styles.error, !isValid && styles.hidden]}>{errorMessage}</Text>
+        <Text style={[styles.error, isValid && styles.hidden]}>{errorMessage}</Text>
       </View>
     );
   },
@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
   error: {
     color: colors.tertiary.red,
     fontSize: 12,
-    marginTop: 4,
+    marginTop: 0,
+    marginBottom: 8,
     fontWeight: '600',
   },
   hidden: {
