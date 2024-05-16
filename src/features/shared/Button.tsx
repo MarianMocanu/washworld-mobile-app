@@ -1,21 +1,21 @@
 import { colors } from '@globals/globalStyles';
-import { FC } from 'react';
-import { StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import { FC, PropsWithChildren, ReactNode } from 'react';
+import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
-type Props = {
+interface Props extends PropsWithChildren {
   /**
    * Text to display inside the button
    */
-  text: string;
+  text?: string;
 
   /**
    * Style of the text inside the button
    */
-  textStyle?: TextStyle;
+  textStyle?: StyleProp<TextStyle>;
   /**
    * Style of the button
    */
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   /**
    * Whether the button should act as a link
    * Applies link styles
@@ -25,27 +25,109 @@ type Props = {
    * Function to call when the button is pressed
    */
   onPress?: () => void;
-};
+  /**
+   * Icon to display on the left side of the button
+   */
+  leftIcon?: ReactNode;
+  /**
+   * Icon to display on the right side of the button
+   */
+  rightIcon?: ReactNode;
 
-export const Button: FC<Props> = ({ text, style, link, textStyle, onPress }) => {
-  return (
-    <TouchableOpacity style={style} onPress={onPress}>
-      <Text style={[textStyles.default, link && textStyles.link, textStyle]}>{text}</Text>
+  /**
+   * Whether the button is the primary styled
+   */
+  primary?: boolean;
+
+  /**
+   * Whether the button is the primary styled but not selected
+   */
+  primaryUnselected?: boolean;
+}
+
+export const Button: FC<Props> = ({
+  text,
+  style,
+  link,
+  textStyle,
+  onPress,
+  rightIcon,
+  leftIcon,
+  children,
+  primary,
+  primaryUnselected,
+}) => {
+  return children ? (
+    <TouchableOpacity style={[style]} onPress={onPress}>
+      {children}
+    </TouchableOpacity>
+  ) : (
+    <TouchableOpacity
+      style={[
+        styles.horizontal,
+        primary && styles.primary,
+        primaryUnselected && styles.primaryUnselected,
+        style,
+      ]}
+      onPress={onPress}
+    >
+      {leftIcon}
+      {text && (
+        <Text
+          style={[
+            textStyles.default,
+            link && textStyles.link,
+            primary && textStyles.primary,
+            primaryUnselected && textStyles.primaryUnselected,
+            textStyle,
+          ]}
+        >
+          {text}
+        </Text>
+      )}
+      {rightIcon}
     </TouchableOpacity>
   );
 };
 
-const buttonStyles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  horizontal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  primary: {
+    height: 48,
+    backgroundColor: colors.primary.base,
+    borderRadius: 4,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  primaryUnselected: {
+    height: 48,
+    borderRadius: 4,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+});
 
 const textStyles = StyleSheet.create({
   default: {
     fontFamily: 'gilroy-medium',
   },
   link: {
-    fontFamily: 'gilroy-medium',
     fontSize: 14,
     lineHeight: 18,
     color: colors.primary.base,
     textDecorationLine: 'underline',
+  },
+  primary: {
+    fontSize: 16,
+    lineHeight: 18,
+    color: colors.white.base,
+  },
+  primaryUnselected: {
+    fontSize: 16,
+    lineHeight: 18,
+    color: colors.black.base,
   },
 });

@@ -10,7 +10,7 @@ type Props = {
   location: Location;
 };
 
-export const CarWashLocation: FC<Props> = ({ location }) => {
+export const WashLocation: FC<Props> = ({ location }) => {
   return (
     <View style={viewStyles.container}>
       <Image source={{ uri: location.image }} style={viewStyles.image} />

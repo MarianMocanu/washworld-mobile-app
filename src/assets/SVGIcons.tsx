@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Svg, { SvgProps, G, Path, Defs, ClipPath } from 'react-native-svg';
 
-export const LogoSVG = (props: SvgProps) => (
+export const LogoSVG: React.FC = (props: SvgProps) => (
   <Svg width={100} height={42} fill="none" {...props}>
     <G clipPath="url(#a)">
       <Path
