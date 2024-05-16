@@ -1,6 +1,7 @@
 import * as fonts from 'expo-font';
 import { useEffect, useState } from 'react';
 import { Main } from 'src/Main';
+import 'react-native-reanimated';
 import * as Location from 'expo-location';
 
 export default function App() {
