@@ -2,11 +2,11 @@ import { View, Text, StyleSheet, ScrollView, Switch, Pressable } from 'react-nat
 import { MaterialIcons } from '@expo/vector-icons';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AccStackParamList } from '../AccountScreen';
+import { AccountStackParamList } from '../AccountScreen';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { Button } from '@shared/Button';
 
-type Props = NativeStackScreenProps<AccStackParamList, 'AccountSettings'>;
+type Props = NativeStackScreenProps<AccountStackParamList, 'index'>;
 
 const AccountSettingsScreen = (props: Props) => {
   return (
@@ -37,17 +37,17 @@ const AccountSettingsScreen = (props: Props) => {
         <View style={styles.buttonContainer}>
           <Button
             text="Change subscription"
-            onPress={() => props.navigation.navigate('ChangeSubscription')}
+            onPress={() => props.navigation.navigate('subscription')}
             style={styles.button}
           />
           <Button
             text="Loyalty rewards"
-            onPress={() => props.navigation.navigate('LoyaltyRewards')}
+            onPress={() => props.navigation.navigate('rewards')}
             style={styles.button}
           />
           <Button
             text="Add another car"
-            onPress={() => props.navigation.navigate('AddAnotherCar')}
+            onPress={() => props.navigation.navigate('add-car')}
             style={styles.button}
           />
         </View>
@@ -57,12 +57,12 @@ const AccountSettingsScreen = (props: Props) => {
           <View style={styles.buttonContainer}>
             <Button
               text="Preferred location"
-              onPress={() => props.navigation.navigate('PreferredLocation')}
+              onPress={() => props.navigation.navigate('location')}
               style={styles.button}
             />
             <Button
               text="Preferred services"
-              onPress={() => props.navigation.navigate('PreferredServices')}
+              onPress={() => props.navigation.navigate('services')}
               style={styles.button}
             />
             <View style={styles.button}>
@@ -80,15 +80,15 @@ const AccountSettingsScreen = (props: Props) => {
         <View style={styles.section}>
           <Text style={styles.sectionHeading}>Help & Support</Text>
           <View style={styles.buttonContainer}>
-            <Button text="FAQs" onPress={() => props.navigation.navigate('FAQ')} style={styles.button} />
+            <Button text="FAQs" onPress={() => props.navigation.navigate('faq')} style={styles.button} />
             <Button
               text="Customer support"
-              onPress={() => props.navigation.navigate('CustomerSupport')}
+              onPress={() => props.navigation.navigate('support')}
               style={styles.button}
             />
             <Button
               text="Submit feedback"
-              onPress={() => props.navigation.navigate('SubmitFeedback')}
+              onPress={() => props.navigation.navigate('feedback')}
               style={styles.button}
             />
           </View>
@@ -99,17 +99,17 @@ const AccountSettingsScreen = (props: Props) => {
           <View style={styles.buttonContainer}>
             <Button
               text="Edit account details"
-              onPress={() => props.navigation.navigate('EditAccountDetails')}
+              onPress={() => props.navigation.navigate('details')}
               style={styles.button}
             />
             <Button
               text="Change password"
-              onPress={() => props.navigation.navigate('ChangePassword')}
+              onPress={() => props.navigation.navigate('change-password')}
               style={styles.button}
             />
             <Button
               text="Log out"
-              onPress={() => props.navigation.navigate('LogOut')}
+              onPress={() => props.navigation.navigate('log-out')}
               style={styles.button}
             />
           </View>

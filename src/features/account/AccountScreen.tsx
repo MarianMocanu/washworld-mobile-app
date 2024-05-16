@@ -1,6 +1,4 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { FC } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import AccountSettingsScreen from './screens/AccountSettingsScreen';
 import ChangeSubscriptionScreen from './screens/ChangeSubscriptionScreen';
 import LoyaltyRewardsScreen from './screens/LoyaltyRewardsScreen';
@@ -14,23 +12,23 @@ import LogOutScreen from './screens/LogOutScreen';
 import EditAccountDetailsScreen from './screens/EditAccountDetailsScreen';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
 
-export type AccStackParamList = {
-  AccountSettings: undefined;
-  ChangeSubscription: undefined;
-  LoyaltyRewards: undefined;
-  AddAnotherCar: undefined;
-  PreferredLocation: undefined;
-  PreferredServices: undefined;
+export type AccountStackParamList = {
+ 'index': undefined;
+ 'subscription': undefined;
+  'rewards': undefined;
+  'add-car': undefined;
+  'location': undefined;
+  'services': undefined;
   // Notifications: undefined;
-  FAQ: undefined;
-  CustomerSupport: undefined;
-  SubmitFeedback: undefined;
-  EditAccountDetails: undefined;
-  ChangePassword: undefined;
-  LogOut: undefined;
+  'faq': undefined;
+  'support': undefined;
+  'feedback': undefined;
+  'details': undefined;
+  'change-password': undefined;
+  'log-out': undefined;
 };
 
-const Stack = createNativeStackNavigator<AccStackParamList>();
+const Stack = createNativeStackNavigator<AccountStackParamList>();
 
 export const AccountScreen = () => {
   return (
@@ -40,21 +38,21 @@ export const AccountScreen = () => {
       }}
     >
       <Stack.Screen
-        name="AccountSettings"
+        name="index"
         component={AccountSettingsScreen}
         options={{ title: 'Account Settings' }}
       />
-      <Stack.Screen name="ChangeSubscription" component={ChangeSubscriptionScreen} />
-      <Stack.Screen name="LoyaltyRewards" component={LoyaltyRewardsScreen} />
-      <Stack.Screen name="AddAnotherCar" component={AddAnotherCarScreen} />
-      <Stack.Screen name="PreferredLocation" component={PreferredLocationScreen} />
-      <Stack.Screen name="PreferredServices" component={PreferredServicesScreen} />
-      <Stack.Screen name="FAQ" component={FAQScreen} />
-      <Stack.Screen name="CustomerSupport" component={CustomerSupportScreen} />
-      <Stack.Screen name="SubmitFeedback" component={SubmitFeedbackScreen} />
-      <Stack.Screen name="EditAccountDetails" component={EditAccountDetailsScreen} />
-      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
-      <Stack.Screen name="LogOut" component={LogOutScreen} />
+      <Stack.Screen name="subscription" component={ChangeSubscriptionScreen} />
+      <Stack.Screen name="rewards" component={LoyaltyRewardsScreen} />
+      <Stack.Screen name="add-car" component={AddAnotherCarScreen} />
+      <Stack.Screen name="location" component={PreferredLocationScreen} />
+      <Stack.Screen name="services" component={PreferredServicesScreen} />
+      <Stack.Screen name="faq" component={FAQScreen} />
+      <Stack.Screen name="support" component={CustomerSupportScreen} />
+      <Stack.Screen name="feedback" component={SubmitFeedbackScreen} />
+      <Stack.Screen name="details" component={EditAccountDetailsScreen} />
+      <Stack.Screen name="change-password" component={ChangePasswordScreen} />
+      <Stack.Screen name="log-out" component={LogOutScreen} />
       {/*  <Stack.Screen name="Notifications" component={NotificationsScreen} />
         <Stack.Screen name="Language" component={LanguageScreen} />*/}
     </Stack.Navigator>

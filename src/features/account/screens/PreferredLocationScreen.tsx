@@ -1,9 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
-import { View, Text, Button, TouchableOpacity } from 'react-native';
-import { AccStackParamList } from '../AccountScreen';
+import { View, Text, Button } from 'react-native';
+import { AccountStackParamList } from '../AccountScreen';
 
-type Props = NativeStackScreenProps<AccStackParamList, 'PreferredLocation'>;
+type Props = NativeStackScreenProps<AccountStackParamList, 'location'>;
 
 const PreferredLocationScreen = (props: Props) => {
   return (

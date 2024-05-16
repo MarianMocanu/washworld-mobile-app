@@ -1,9 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
-import { AccStackParamList } from '../AccountScreen';
+import { AccountStackParamList } from '../AccountScreen';
 
-type Props = NativeStackScreenProps<AccStackParamList, 'SubmitFeedback'>;
+type Props = NativeStackScreenProps<AccountStackParamList, 'feedback'>;
 
 const SubmitFeedbackScreen = (props: Props) => {
   return (

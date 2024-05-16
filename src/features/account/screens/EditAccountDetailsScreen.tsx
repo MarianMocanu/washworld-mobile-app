@@ -1,9 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
-import { AccStackParamList } from '../AccountScreen';
+import { AccountStackParamList } from '../AccountScreen';
 
-type Props = NativeStackScreenProps<AccStackParamList, 'EditAccountDetails'>;
+type Props = NativeStackScreenProps<AccountStackParamList, 'details'>;
 
 const EditAccountDetailsScreen = (props: Props) => {
   return (

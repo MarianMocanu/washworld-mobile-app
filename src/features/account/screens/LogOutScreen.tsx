@@ -1,10 +1,10 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
-import { AccStackParamList } from '../AccountScreen';
+import { AccountStackParamList } from '../AccountScreen';
 import { LogoSVG } from 'src/assets/SVGIcons';
 
-type Props = NativeStackScreenProps<AccStackParamList, 'LogOut'>;
+type Props = NativeStackScreenProps<AccountStackParamList, 'log-out'>;
 
 const LogOutScreen = (props: Props) => {
   return (
