@@ -1,7 +1,7 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import Input from '@shared/Input';
 import { FC, useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
-import Input from 'src/components/ui/Input';
 import { AuthStackParamList } from 'src/navigation/AuthNavigator';
 import { signIn } from './authSlice';
 import { useDispatch } from 'react-redux';

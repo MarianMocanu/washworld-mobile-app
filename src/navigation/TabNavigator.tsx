@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
-import { DashboardScreen } from 'src/features/dashboard/DashboardScreen';
-import { StartWashScreen } from 'src/features/startwash/StartWashScreen';
 import { AccountScreen } from 'src/features/account/AccountScreen';
-import { LogoSVG } from 'src/assets/SVGIcons';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 import { colors } from '@globals/globalStyles';
+import { DashboardNavigator } from 'src/features/dashboard/DashboardNavigator';
+import { StartWashNavigator } from 'src/features/startwash/StartWashNavigator';
 
 export type TabsParamList = {
   dashboard: undefined;
@@ -29,6 +28,7 @@ export default function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           switch (route.name) {
             case 'dashboard':
@@ -60,25 +60,18 @@ export default function TabNavigator() {
               );
           }
         },
-        header: () => (
-          <View style={{ alignItems: 'center', backgroundColor: '#FFF', paddingVertical: 8 }}>
-            <LogoSVG />
-          </View>
-        ),
       })}
     >
       <Tab.Screen
         name="dashboard"
-        component={DashboardScreen}
+        component={DashboardNavigator}
         options={{
-          tabBarLabel: ({ focused, color }) => (
-            <Text style={getTabBarLabelStyle(focused, color)}>Dashboard</Text>
-          ),
+          tabBarLabel: ({ focused, color }) => <Text style={getTabBarLabelStyle(focused, color)}>Home</Text>,
         }}
       />
       <Tab.Screen
         name="start-wash"
-        component={StartWashScreen}
+        component={StartWashNavigator}
         options={{
           tabBarLabel: ({ focused, color }) => (
             <Text style={getTabBarLabelStyle(focused, color)}>Start Wash</Text>

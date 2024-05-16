@@ -3,9 +3,13 @@ import { useEffect, useState } from 'react';
 import { Main } from 'src/Main';
 import { Provider as ReduxProvider } from 'react-redux';
 import { store } from 'src/app/store';
+import 'react-native-reanimated';
+import * as Location from 'expo-location';
 
 export default function App() {
   const [appReady, setAppReady] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [errorMessage, setErrorMessage] = useState<string>();
 
   async function loadFonts() {
     await fonts
@@ -20,8 +24,17 @@ export default function App() {
       });
   }
 
+  async function requestLocationPermission() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setErrorMessage('Permission to access location was denied');
+      return;
+    }
+  }
+
   useEffect(() => {
     loadFonts();
+    requestLocationPermission();
   }, []);
 
   if (appReady) {
