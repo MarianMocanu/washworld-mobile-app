@@ -43,6 +43,11 @@ interface Props extends PropsWithChildren {
    * Whether the button is the primary styled but not selected
    */
   primaryUnselected?: boolean;
+
+  /**
+   * Whether the button is disabled
+   */
+  disabled?: boolean;
 }
 
 export const Button: FC<Props> = ({
@@ -56,6 +61,7 @@ export const Button: FC<Props> = ({
   children,
   primary,
   primaryUnselected,
+  disabled,
 }) => {
   return children ? (
     <TouchableOpacity style={[style]} onPress={onPress}>
@@ -70,6 +76,7 @@ export const Button: FC<Props> = ({
         style,
       ]}
       onPress={onPress}
+      disabled={disabled}
     >
       {leftIcon}
       {text && (
