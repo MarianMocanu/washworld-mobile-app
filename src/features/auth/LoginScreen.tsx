@@ -1,13 +1,14 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Input from '@shared/Input';
 import { FC, useState } from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { AuthStackParamList } from 'src/navigation/AuthNavigator';
 import { signIn } from './authSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/app/store';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import Toast from 'react-native-toast-message';
+import { Button } from '@shared/Button';
 interface InputField {
   value: string;
   valid: boolean;
@@ -103,9 +104,11 @@ export const LoginScreen: FC<Props> = () => {
       ) : (
         // TODO: Replace with actual custom button component
         <Button
-          title="Sign in"
+          text="Sign in"
+          primary
           onPress={() => handler.login(email.value.toLowerCase(), password.value)}
           disabled={!password.valid || !email.valid}
+          style={{ width: '100%' }}
         />
       )}
       <Text onPress={navigateToSignup} style={[textStyles.default, styles.signUpMessage]}>
