@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, ScrollView, Switch, Pressable } from 'react-nat
 import { MaterialIcons } from '@expo/vector-icons';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AccountStackParamList } from '../AccountScreen';
+import { AccountStackParamList } from '../AccountNavigator';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { Button } from '@shared/Button';
 
@@ -197,4 +197,3 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 });
-

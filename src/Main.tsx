@@ -13,7 +13,9 @@ export const Main: FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <NavigationContainer>{auth.isSignedIn ? <TabNavigator /> : <AuthStackNavigator />}</NavigationContainer>
+      <NavigationContainer>
+        {!auth.isSignedIn ? <TabNavigator /> : <AuthStackNavigator />}
+      </NavigationContainer>
     </SafeAreaView>
   );
 };

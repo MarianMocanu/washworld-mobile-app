@@ -13,35 +13,27 @@ import EditAccountDetailsScreen from './screens/EditAccountDetailsScreen';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
 
 export type AccountStackParamList = {
- 'index': undefined;
- 'subscription': undefined;
-  'rewards': undefined;
+  index: undefined;
+  subscription: undefined;
+  rewards: undefined;
   'add-car': undefined;
-  'location': undefined;
-  'services': undefined;
+  location: undefined;
+  services: undefined;
   // Notifications: undefined;
-  'faq': undefined;
-  'support': undefined;
-  'feedback': undefined;
-  'details': undefined;
+  faq: undefined;
+  support: undefined;
+  feedback: undefined;
+  details: undefined;
   'change-password': undefined;
   'log-out': undefined;
 };
 
 const Stack = createNativeStackNavigator<AccountStackParamList>();
 
-export const AccountScreen = () => {
+export const AccountNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen
-        name="index"
-        component={AccountSettingsScreen}
-        options={{ title: 'Account Settings' }}
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" component={AccountSettingsScreen} options={{ title: 'Account Settings' }} />
       <Stack.Screen name="subscription" component={ChangeSubscriptionScreen} />
       <Stack.Screen name="rewards" component={LoyaltyRewardsScreen} />
       <Stack.Screen name="add-car" component={AddAnotherCarScreen} />
@@ -58,4 +50,3 @@ export const AccountScreen = () => {
     </Stack.Navigator>
   );
 };
-
