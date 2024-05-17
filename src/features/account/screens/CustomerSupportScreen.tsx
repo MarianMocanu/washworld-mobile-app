@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
-import { AccountStackParamList } from '../AccountScreen';
+import { AccountStackParamList } from '../AccountNavigator';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'support'>;
 
@@ -15,4 +15,3 @@ const CustomerSupportScreen = (props: Props) => {
 };
 
 export default CustomerSupportScreen;
-

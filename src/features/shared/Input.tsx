@@ -1,6 +1,15 @@
 import { colors } from '@globals/globalStyles';
 import React from 'react';
-import { StyleSheet, TextInput, Text, TextInputProps, View, TextStyle, ViewStyle } from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  Text,
+  TextInputProps,
+  View,
+  TextStyle,
+  ViewStyle,
+  StyleProp,
+} from 'react-native';
 import { Button } from '@shared/Button';
 
 type Props = React.PropsWithChildren<TextInputProps> & {
@@ -34,6 +43,7 @@ type Props = React.PropsWithChildren<TextInputProps> & {
    * @default undefined
    */
   onRightIconPress?: () => void;
+  style?: StyleProp<TextStyle>;
 };
 
 const Input = React.forwardRef<TextInput, Props>(
@@ -76,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'gilroy-medium',
     fontWeight: '500',
     color: colors.grey[80],
