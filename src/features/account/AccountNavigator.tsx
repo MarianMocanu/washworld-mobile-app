@@ -32,11 +32,7 @@ const Stack = createNativeStackNavigator<AccountStackParamList>();
 
 export const AccountNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" component={AccountSettingsScreen} options={{ title: 'Account Settings' }} />
       <Stack.Screen name="subscription" component={ChangeSubscriptionScreen} />
       <Stack.Screen name="rewards" component={LoyaltyRewardsScreen} />

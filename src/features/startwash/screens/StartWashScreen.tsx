@@ -1,46 +1,89 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, Keyboard, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { colors } from '@globals/globalStyles';
 import MapView, { Marker } from 'react-native-maps';
-import { LocationObject, getCurrentPositionAsync, reverseGeocodeAsync } from 'expo-location';
+import { getCurrentPositionAsync, LocationObject } from 'expo-location';
 import { ScreenHeader } from '@shared/ScreenHeader';
-import Input from '@shared/Input';
-import { MaterialIcons } from '@expo/vector-icons';
 import { ButtonGroup } from '@shared/ButtonGroup';
+import { AddressObject, AddressPicker, ReverseGeocodeResponse } from '../components/AddressPicker';
+import { Location, LocationStatus } from '@models/Location';
+import { WashLocation } from 'src/features/dashboard/components/WashLocation';
 
-type Props = {};
-
-export const StartWashScreen: FC<Props> = () => {
-  const [location, setLocation] = useState<LocationObject>();
-  const [inputValue, setInputValue] = useState('');
+export const StartWashScreen: FC = () => {
+  const [location, setLocation] = useState<AddressObject>({} as AddressObject);
   const [loading, setLoading] = useState(false);
   const mapRef = useRef<MapView>(null);
+
+  // create a new array of locations as dummy data, with 4 items
+  const locations = Array.from({ length: 6 }, (_, index) => {
+    return new Location(
+      index,
+      'Roskildevej 24',
+      'Copenhagen',
+      'Roskildevej',
+      '2500',
+      {
+        monday: { from: '08:00', to: '20:00' },
+        tuesday: { from: '08:00', to: '20:00' },
+        wednesday: { from: '08:00', to: '20:00' },
+        thursday: { from: '08:00', to: '20:00' },
+        friday: { from: '08:00', to: '20:00' },
+        saturday: { from: '08:00', to: '20:00' },
+        sunday: { from: '08:00', to: '20:00' },
+      },
+      LocationStatus.available,
+      'https://washworld.dk/_next/image?url=https%3A%2F%2Fwashworld-wordpress-production.storage.googleapis.com%2Fwp-content%2Fuploads%2F2021%2F11%2F28140219%2F2-vask.png&w=1920&q=50',
+      { latitude: 55.6786, longitude: 12.5635 },
+      new Date(),
+    );
+  });
 
   async function setCurrentLocation() {
     try {
       setLoading(true);
-      let location = await getCurrentPositionAsync();
-      setLocation(location);
-
-      let addresses = await reverseGeocodeAsync(location.coords);
-      if (addresses.length > 0 && addresses[0].name) {
-        setInputValue(addresses[0].name);
-      }
+      const currentLocation: LocationObject = await getCurrentPositionAsync();
+      const address = await reverseGeocode(currentLocation);
+      setLocation({
+        tekst: address.betegnelse,
+        adresse: {
+          husnr: address.husnr,
+          postnr: address.postnr,
+          postnrnavn: address.postnrnavn,
+          vejnavn: address.vejnavn,
+          x: currentLocation.coords.longitude,
+          y: currentLocation.coords.latitude,
+        },
+      });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
+  // TODO: Implement this function using the api here
+  // should fetch the closest car washes based on the location object which has coords
+  function handleAddressSelect(location: AddressObject) {
+    setLocation(location);
+  }
+
+  async function reverseGeocode(location: LocationObject): Promise<ReverseGeocodeResponse> {
+    const response = await fetch(
+      `https://api.dataforsyningen.dk/adgangsadresser/reverse?x=${encodeURIComponent(
+        location.coords.longitude,
+      )}&y=${encodeURIComponent(location.coords.latitude)}&struktur=mini`,
+    );
+    return await response.json();
+  }
+
   // Center the map when the location changes
   useEffect(() => {
-    if (location) {
+    if (location.adresse) {
       mapRef.current?.animateToRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.06,
+        longitude: location.adresse.x,
+        latitude: location.adresse.y,
         longitudeDelta: 0.02,
+        latitudeDelta: 0.06,
       });
     }
   }, [location]);
@@ -49,44 +92,36 @@ export const StartWashScreen: FC<Props> = () => {
     <View style={styles.container}>
       <ScreenHeader filterButtonShown />
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
         scrollEnabled={false}
-        keyboardDismissMode="interactive"
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets
+        keyboardDismissMode="interactive"
+        contentContainerStyle={styles.scrollContent}
       >
         <MapView
           ref={mapRef}
           style={styles.map}
           initialRegion={{
-            latitude: location?.coords.latitude ?? 55.640548407825584,
-            longitude: location?.coords.longitude ?? 12.583026625431271,
-            latitudeDelta: 0.09,
+            longitude: location.adresse?.x ?? 12.583026625431271,
+            latitude: location.adresse?.y ?? 55.640548407825584,
             longitudeDelta: 0.04,
+            latitudeDelta: 0.09,
           }}
         >
-          {location && (
+          {location.adresse && (
             <Marker
               coordinate={{
-                latitude: location?.coords.latitude,
-                longitude: location?.coords.longitude,
+                longitude: location.adresse.x,
+                latitude: location.adresse.y,
               }}
             />
           )}
         </MapView>
-        <Input
-          placeholder="City, street name or zip code"
-          onChangeText={text => setInputValue(text)}
-          value={inputValue}
-          rightIcon={
-            loading ? (
-              <ActivityIndicator color={colors.primary.base} size={'small'} />
-            ) : (
-              <MaterialIcons name="location-on" size={32} color={colors.primary.base} />
-            )
-          }
-          onRightIconPress={loading ? undefined : setCurrentLocation}
-          inputContainerStyle={styles.input}
+        <AddressPicker
+          onIconPress={setCurrentLocation}
+          address={location}
+          onAddressSelect={handleAddressSelect}
+          loading={loading}
         />
         <View style={styles.underMap}>
           <ButtonGroup
@@ -98,6 +133,14 @@ export const StartWashScreen: FC<Props> = () => {
             onPress={value => console.log(value)}
             initialIndex={0}
             containerStyle={styles.buttonsContainer}
+          />
+          <FlatList
+            data={locations}
+            keyExtractor={(item, index) => `location_${item.id.toString()}_${index.toString()}`}
+            renderItem={({ item }) => <WashLocation location={item} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginTop: 24 }}
           />
         </View>
       </ScrollView>
@@ -115,7 +158,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   map: {
-    flex: 3,
+    flex: 4,
     marginTop: 12,
     borderRadius: 4,
   },
@@ -124,13 +167,5 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     justifyContent: 'space-around',
-  },
-  input: {
-    backgroundColor: colors.white.base,
-    borderWidth: 1,
-    borderColor: colors.grey[10],
-    marginHorizontal: 8,
-    position: 'absolute',
-    top: -420,
   },
 });
