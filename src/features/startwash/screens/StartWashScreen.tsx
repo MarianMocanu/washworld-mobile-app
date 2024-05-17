@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { FlatList, Keyboard, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import MapView, { Marker } from 'react-native-maps';
 import { getCurrentPositionAsync, LocationObject } from 'expo-location';
@@ -7,7 +7,6 @@ import { ScreenHeader } from '@shared/ScreenHeader';
 import { ButtonGroup } from '@shared/ButtonGroup';
 import { AddressObject, AddressPicker, ReverseGeocodeResponse } from '../components/AddressPicker';
 import { Location, LocationStatus } from '@models/Location';
-import { WashLocation } from 'src/features/dashboard/components/WashLocation';
 import { LocationsList } from '@shared/LocationsList';
 
 export const StartWashScreen: FC = () => {
@@ -93,7 +92,7 @@ export const StartWashScreen: FC = () => {
     <View style={styles.container}>
       <ScreenHeader filterButtonShown />
       <View style={styles.body}>
-        <View style={{ flex: 4 }}>
+        <View style={{ flex: 5 }}>
           <MapView
             ref={mapRef}
             style={styles.map}
@@ -131,17 +130,11 @@ export const StartWashScreen: FC = () => {
             initialIndex={0}
             containerStyle={styles.buttonsContainer}
           />
-          <FlatList
-            data={locations}
-            keyExtractor={(item, index) => `location_${item.id.toString()}_${index.toString()}`}
-            renderItem={({ item }) => <WashLocation location={item} />}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
+
+          <Text style={textStyles.heading}>Nearby wash locations</Text>
+          <LocationsList locations={locations} />
         </View>
-        <Text style={textStyles.heading}>Nearby wash locations</Text>
-        <LocationsList locations={locations} />
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -160,11 +153,10 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   underMap: {
-    flex: 2,
-    paddingVertical: 24,
-    gap: 24,
+    flex: 3,
   },
   buttonsContainer: {
+    marginTop: 16,
     justifyContent: 'space-around',
   },
 });
