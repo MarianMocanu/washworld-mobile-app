@@ -1,7 +1,7 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Input from '@shared/Input';
 import { FC, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AuthStackParamList } from 'src/navigation/AuthNavigator';
 import { signIn } from './authSlice';
 import { useDispatch } from 'react-redux';
@@ -9,6 +9,7 @@ import { AppDispatch } from 'src/app/store';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import Toast from 'react-native-toast-message';
 import { Button } from '@shared/Button';
+
 interface InputField {
   value: string;
   valid: boolean;
@@ -79,7 +80,12 @@ export const LoginScreen: FC<Props> = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      scrollEnabled={false}
+      keyboardShouldPersistTaps="handled"
+      automaticallyAdjustKeyboardInsets
+    >
       <Text style={textStyles.heading}>Sign in</Text>
 
       {/* validation moved to input prop because of errors (setter and render offset) */}
@@ -102,7 +108,6 @@ export const LoginScreen: FC<Props> = () => {
       {isLoading ? (
         <ActivityIndicator size="large" color={colors.primary.base} />
       ) : (
-        // TODO: Replace with actual custom button component
         <Button
           text="Sign in"
           primary
@@ -115,7 +120,7 @@ export const LoginScreen: FC<Props> = () => {
         Dont have an account? <Text style={textStyles.link}>Sign up.</Text>
       </Text>
       <Toast />
-    </View>
+    </ScrollView>
   );
 };
 
