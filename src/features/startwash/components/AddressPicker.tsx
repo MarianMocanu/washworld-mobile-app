@@ -67,6 +67,7 @@ export const AddressPicker: FC<Props> = ({ onIconPress, address, onAddressSelect
     onAddressSelect(option);
     setInputValue(option.tekst);
     setAddressOptions([]);
+    inputRef.current?.blur();
   }
 
   useEffect(() => {
@@ -110,12 +111,13 @@ export const AddressPicker: FC<Props> = ({ onIconPress, address, onAddressSelect
           <FlatList
             data={addressOptions}
             keyExtractor={(item, index) => `address-option-${index}`}
+            keyboardShouldPersistTaps="handled"
             renderItem={({ item }) => (
               <Button style={styles.option} onPress={() => handleOnSelect(item)}>
                 <Text style={text.option}>{item.tekst}</Text>
               </Button>
             )}
-            style={styles.optionsContainer}
+            style={[styles.optionsContainer, { maxHeight: Math.min(4, addressOptions.length) * 48 }]}
           />
         )}
       </>
@@ -128,21 +130,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white.base,
     borderWidth: 1,
     borderColor: colors.grey[10],
-    marginHorizontal: 8,
-    position: 'absolute',
-    top: -460,
+    margin: 8,
   },
   optionsContainer: {
     marginHorizontal: 8,
     backgroundColor: colors.white.base,
-    position: 'absolute',
-    top: 80,
-    left: 24,
-    maxHeight: 192,
-    width: Dimensions.get('window').width - 64,
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.grey[10],
+    marginTop: -32,
   },
   option: {
     height: 48,

@@ -91,38 +91,34 @@ export const StartWashScreen: FC = () => {
   return (
     <View style={styles.container}>
       <ScreenHeader filterButtonShown />
-      <ScrollView
-        scrollEnabled={false}
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
-        keyboardDismissMode="interactive"
-        contentContainerStyle={styles.scrollContent}
-      >
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          initialRegion={{
-            longitude: location.adresse?.x ?? 12.583026625431271,
-            latitude: location.adresse?.y ?? 55.640548407825584,
-            longitudeDelta: 0.04,
-            latitudeDelta: 0.09,
-          }}
-        >
-          {location.adresse && (
-            <Marker
-              coordinate={{
-                longitude: location.adresse.x,
-                latitude: location.adresse.y,
-              }}
-            />
-          )}
-        </MapView>
-        <AddressPicker
-          onIconPress={setCurrentLocation}
-          address={location}
-          onAddressSelect={handleAddressSelect}
-          loading={loading}
-        />
+      <View style={styles.body}>
+        <View style={{ flex: 4 }}>
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            initialRegion={{
+              longitude: location.adresse?.x ?? 12.583026625431271,
+              latitude: location.adresse?.y ?? 55.640548407825584,
+              longitudeDelta: 0.04,
+              latitudeDelta: 0.09,
+            }}
+          >
+            {location.adresse && (
+              <Marker
+                coordinate={{
+                  longitude: location.adresse.x,
+                  latitude: location.adresse.y,
+                }}
+              />
+            )}
+          </MapView>
+          <AddressPicker
+            onIconPress={setCurrentLocation}
+            address={location}
+            onAddressSelect={handleAddressSelect}
+            loading={loading}
+          />
+        </View>
         <View style={styles.underMap}>
           <ButtonGroup
             data={[
@@ -140,10 +136,9 @@ export const StartWashScreen: FC = () => {
             renderItem={({ item }) => <WashLocation location={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ marginTop: 24 }}
           />
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -153,17 +148,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white.base,
   },
-  scrollContent: {
-    flex: 1,
+  body: {
     paddingHorizontal: 24,
+    flex: 1,
   },
   map: {
-    flex: 4,
-    marginTop: 12,
-    borderRadius: 4,
+    ...StyleSheet.absoluteFillObject,
   },
   underMap: {
     flex: 2,
+    justifyContent: 'space-between',
+    paddingVertical: 24,
+    gap: 24,
   },
   buttonsContainer: {
     justifyContent: 'space-around',
