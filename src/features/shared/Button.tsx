@@ -109,6 +109,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
+  primaryAlt: {
+    height: 46,
+    backgroundColor: colors.primary.base,
+    borderRadius: 4,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: colors.grey[10],
+  },
   primaryUnselected: {
     height: 48,
     borderRadius: 4,

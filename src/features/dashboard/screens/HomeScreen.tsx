@@ -2,14 +2,14 @@ import { colors, globalTextStyles } from '@globals/globalStyles';
 import { ProgressBar } from '@shared/ProgressBar';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { FC } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Button } from '@shared/Button';
 import { Location, LocationStatus } from '@models/Location';
-import { WashLocation } from '../components/WashLocation';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { DashboardStackParamList } from '../DashboardNavigator';
 import { ScreenHeader } from '@shared/ScreenHeader';
+import { LocationsList } from '@shared/LocationsList';
 
 type Props = {};
 
@@ -117,13 +117,7 @@ export const HomeScreen: FC<Props> = () => {
         </View>
         {/* Nearby wash locations */}
         <Text style={textStyles.heading}>Nearby wash locations</Text>
-        <FlatList
-          data={locations}
-          keyExtractor={(item, index) => `location_${item.id.toString()}_${index.toString()}`}
-          renderItem={({ item }) => <WashLocation location={item} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
+        <LocationsList locations={locations} />
       </ScrollView>
     </View>
   );
