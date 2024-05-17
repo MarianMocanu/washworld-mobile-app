@@ -151,13 +151,13 @@ const styles = StyleSheet.create({
   body: {
     paddingHorizontal: 24,
     flex: 1,
+    marginTop: 8,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
   },
   underMap: {
     flex: 2,
-    justifyContent: 'space-between',
     paddingVertical: 24,
     gap: 24,
   },
