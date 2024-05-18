@@ -45,6 +45,11 @@ interface Props extends PropsWithChildren {
   primaryUnselected?: boolean;
 
   /**
+   * Whether the button is the secondary styled
+   */
+  secondary?: boolean;
+
+  /**
    * Whether the button is disabled
    */
   disabled?: boolean;
@@ -62,9 +67,14 @@ export const Button: FC<Props> = ({
   primary,
   primaryUnselected,
   disabled,
+  secondary,
 }) => {
   return children ? (
-    <TouchableOpacity style={[style]} onPress={onPress}>
+    <TouchableOpacity
+      style={[style, primary && styles.primary, secondary && styles.secondary, disabled && styles.disabled]}
+      onPress={onPress}
+      disabled={disabled}
+    >
       {children}
     </TouchableOpacity>
   ) : (
@@ -72,7 +82,9 @@ export const Button: FC<Props> = ({
       style={[
         styles.horizontal,
         primary && styles.primary,
+        secondary && styles.secondary,
         primaryUnselected && styles.primaryUnselected,
+        disabled && styles.disabled,
         style,
       ]}
       onPress={onPress}
@@ -85,6 +97,7 @@ export const Button: FC<Props> = ({
             textStyles.default,
             link && textStyles.link,
             primary && textStyles.primary,
+            secondary && textStyles.secondary,
             primaryUnselected && textStyles.primaryUnselected,
             textStyle,
           ]}
@@ -109,6 +122,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
+  secondary: {
+    height: 48,
+    backgroundColor: colors.secondary.base,
+    borderRadius: 4,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
   primaryAlt: {
     height: 46,
     backgroundColor: colors.primary.base,
@@ -124,6 +144,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
+  disabled: {
+    opacity: 0.3,
+  },
 });
 
 const textStyles = StyleSheet.create({
@@ -137,6 +160,11 @@ const textStyles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   primary: {
+    fontSize: 16,
+    lineHeight: 18,
+    color: colors.white.base,
+  },
+  secondary: {
     fontSize: 16,
     lineHeight: 18,
     color: colors.white.base,

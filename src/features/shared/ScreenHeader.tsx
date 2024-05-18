@@ -1,5 +1,5 @@
 import { colors } from '@globals/globalStyles';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LogoSVG } from 'src/assets/SVGIcons';
 import { Button } from './Button';
@@ -22,6 +22,8 @@ type Props = {
    * Function to be called when the filter button is pressed
    */
   onFilterPress?: () => void;
+
+  overrideFilterIcon?: ReactNode;
 };
 
 export const ScreenHeader: FC<Props> = ({
@@ -29,6 +31,7 @@ export const ScreenHeader: FC<Props> = ({
   onFilterPress,
   backButtonShown,
   filterButtonShown,
+  overrideFilterIcon,
 }) => {
   return (
     <View style={styles.container}>
@@ -50,7 +53,13 @@ export const ScreenHeader: FC<Props> = ({
         {filterButtonShown && (
           <Button
             style={styles.pressableArea}
-            rightIcon={<MaterialIcons name="filter-list" style={styles.icon} color={colors.primary.base} />}
+            rightIcon={
+              overrideFilterIcon ? (
+                overrideFilterIcon
+              ) : (
+                <MaterialIcons name="filter-list" style={styles.icon} color={colors.primary.base} />
+              )
+            }
             onPress={onFilterPress}
           />
         )}
