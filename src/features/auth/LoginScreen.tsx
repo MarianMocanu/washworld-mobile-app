@@ -9,7 +9,7 @@ import { AppDispatch } from 'src/app/store';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import Toast from 'react-native-toast-message';
 import { Button } from '@shared/Button';
-import { InputField } from 'src/app/util';
+import { InputField } from '@models/InputField';
 
 type Props = {};
 
