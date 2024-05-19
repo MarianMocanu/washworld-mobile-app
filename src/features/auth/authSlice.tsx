@@ -55,6 +55,17 @@ export type AuthResponse = {
   token: string;
 };
 
+export type SignupResponse = {
+  createdAt: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  id: number;
+  isActive: boolean;
+  password: string;
+  role: string;
+};
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -120,10 +131,11 @@ export const signUp = (payload: SignUpPayloadType) => async (dispatch: AppDispat
   // set the status to loading
   dispatch(authSlice.actions.request());
   try {
-    const response = await axios.post<AuthResponse>('/auth/signup', payload);
-    const user = response.data.user;
+    const response = await axios.post<SignupResponse>('/auth/signup', payload);
+    const user = response.data.id;
     if (user) {
       dispatch(authSlice.actions.signupSuccess());
+      return response.data;
     } else {
       dispatch(authSlice.actions.failure());
       throw new Error('Invalid response from server while creating user');

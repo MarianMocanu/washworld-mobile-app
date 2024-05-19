@@ -14,7 +14,7 @@ export const Main: FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <NavigationContainer>
-        {!auth.isSignedIn ? <MainNavigator /> : <AuthStackNavigator />}
+        {auth.isSignedIn ? <MainNavigator /> : <AuthStackNavigator />}
       </NavigationContainer>
     </SafeAreaView>
   );
