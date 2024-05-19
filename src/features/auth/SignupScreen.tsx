@@ -15,7 +15,7 @@ import { User } from '@models/User';
 type Props = {};
 
 export const SignupScreen: FC<Props> = () => {
-  const navigation = useNavigation<NavigationProp<AuthStackParamList, 'login'>>();
+  const navigation = useNavigation<NavigationProp<AuthStackParamList, 'signup'>>();
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState<InputField>({
