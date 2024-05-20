@@ -1,14 +1,25 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { FC } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { FC, useLayoutEffect } from 'react';
+import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
 import AuthStackNavigator from './navigation/AuthNavigator';
-import { useSelector } from 'react-redux';
-import { RootState } from './app/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from './app/store';
 import MainNavigator from './navigation/MainNavigator';
+import { colors } from '@globals/globalStyles';
+import { autoSingIn } from './features/auth/authSlice';
 
 export const Main: FC = () => {
   const auth = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useLayoutEffect(() => {
+    dispatch(autoSingIn());
+  }, []);
+
+  if (auth.status === 'loading') {
+    return <ActivityIndicator size="large" color={colors.primary.base} style={{ flex: 1 }} />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
