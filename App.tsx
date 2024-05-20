@@ -6,6 +6,7 @@ import { store } from 'src/app/store';
 import 'react-native-reanimated';
 import * as Location from 'expo-location';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 export default function App() {
   const [appReady, setAppReady] = useState(false);
@@ -38,13 +39,17 @@ export default function App() {
     requestLocationPermission();
   }, []);
 
+  const queryClient = new QueryClient();
+
   if (appReady) {
     return (
-      <ReduxProvider store={store}>
-        <SafeAreaProvider>
-          <Main />
-        </SafeAreaProvider>
-      </ReduxProvider>
+      <QueryClientProvider client={queryClient}>
+        <ReduxProvider store={store}>
+          <SafeAreaProvider>
+            <Main />
+          </SafeAreaProvider>
+        </ReduxProvider>
+      </QueryClientProvider>
     );
   }
 }
