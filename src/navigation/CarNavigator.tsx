@@ -5,18 +5,15 @@ import { InstructionsScreen } from 'src/features/modals/screens/InstructionsScre
 import { ScanPlateScreen } from 'src/features/modals/screens/ScanPlateScreen';
 import { SelectServiceScreen } from 'src/features/modals/screens/SelectServiceScreen';
 import { WashProgressScreen } from 'src/features/modals/screens/WashProgressScreen';
+import { User } from '@models/User';
 
-export type ModalStackParamList = {
-  'select-service': undefined;
-  'scan-plate': undefined;
-  instructions: undefined;
-  'wash-progress': undefined;
-  'add-car': undefined;
+export type CarStackParamList = {
+  'car-add': { user: User };
 };
 
-const Stack = createNativeStackNavigator<ModalStackParamList>();
+const Stack = createNativeStackNavigator<CarStackParamList>();
 
-export default function ModalNavigator() {
+export default function CarNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -25,10 +22,7 @@ export default function ModalNavigator() {
         animation: 'fade_from_bottom',
       }}
     >
-      <Stack.Screen name="select-service" component={SelectServiceScreen} />
-      <Stack.Screen name="scan-plate" component={ScanPlateScreen} />
-      <Stack.Screen name="instructions" component={InstructionsScreen} />
-      <Stack.Screen name="wash-progress" component={WashProgressScreen} />
+      <Stack.Screen name="car-add" component={AddCarScreen} />
     </Stack.Navigator>
   );
 }
