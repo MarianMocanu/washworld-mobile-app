@@ -31,6 +31,8 @@ export class Location {
     longitude: number;
   };
   createdAt: Date;
+  updatedAt: Date;
+  distance?: number;
 
   constructor(
     id: number,
@@ -43,6 +45,8 @@ export class Location {
     image: string,
     coordinates: { latitude: number; longitude: number },
     createdAt: Date,
+    updatedAt: Date,
+    distance?: number,
   ) {
     this.id = id;
     this.address = address;
@@ -54,6 +58,8 @@ export class Location {
     this.image = image;
     this.coordinates = coordinates;
     this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.distance = distance;
   }
 
   static fromJson(json: any): Location {
@@ -68,6 +74,8 @@ export class Location {
       json.image,
       json.coordinates,
       json.createdAt,
+      json.updatedAt,
+      json.distance,
     );
   }
 
@@ -83,6 +91,8 @@ export class Location {
       image: this.image,
       coordinates: this.coordinates,
       createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      distance: this.distance,
     };
   }
 }

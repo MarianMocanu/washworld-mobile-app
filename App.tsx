@@ -9,6 +9,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 export default function App() {
+  const queryClient = new QueryClient();
   const [appReady, setAppReady] = useState(false);
   const [location, setLocation] = useState(null);
   const [errorMessage, setErrorMessage] = useState<string>();
