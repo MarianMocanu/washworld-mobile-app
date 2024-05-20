@@ -167,6 +167,35 @@ export const signOut = () => async (dispatch: AppDispatch) => {
   }
 };
 
+export const autoSignIn = () => async (dispatch: AppDispatch) => {
+  dispatch(authSlice.actions.request());
+  setTimeout(async () => {
+    try {
+      const storedToken = await getToken();
+      if (storedToken) {
+        const res = await axios.get<AuthResponse>('/auth/verify', {
+          headers: { authorization: storedToken },
+        });
+        const { user, token } = res.data;
+        if (user && token) {
+          await saveToken(token);
+          setTokenInAxiosHeaders(token);
+          dispatch(authSlice.actions.signinSuccess(user));
+        } else {
+          throw new Error('Invalid response from server');
+        }
+      } else {
+        throw new Error('No token found');
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(authSlice.actions.failure());
+    } finally {
+      dispatch(authSlice.actions.idle());
+    }
+  }, 2000);
+};
+
 export const { idle, request, signupSuccess, signinSuccess, signoutSuccess, failure } = authSlice.actions;
 
 export default authSlice.reducer;

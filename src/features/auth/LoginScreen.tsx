@@ -1,6 +1,6 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import Input from '@shared/Input';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AuthStackParamList } from 'src/navigation/AuthNavigator';
 import { signIn } from './authSlice';
@@ -15,6 +15,7 @@ type Props = {};
 
 export const LoginScreen: FC<Props> = () => {
   const navigation = useNavigation<NavigationProp<AuthStackParamList, 'login'>>();
+  const route = useRoute<RouteProp<AuthStackParamList, 'login'>>();
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState<InputField>({
@@ -73,6 +74,12 @@ export const LoginScreen: FC<Props> = () => {
   function navigateToSignup(): void {
     navigation.navigate('signup');
   }
+
+  useEffect(() => {
+    if (route.params && route.params.email && route.params.password) {
+      handler.login(route.params.email, route.params.password);
+    }
+  }, [route.params]);
 
   return (
     <ScrollView
