@@ -5,6 +5,7 @@ export interface Car {
   plateNumber: string;
   user?: User;
   userId?: number;
+  name?: string;
   events?: any[];
   createdAt?: string;
   updatedAt?: string;
