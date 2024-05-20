@@ -21,8 +21,17 @@ export const AddCarScreen: FC = () => {
     valid: false,
     blurred: false,
   });
+  const [carName, setCarName] = useState<InputField>({
+    value: '',
+    valid: false,
+    blurred: false,
+  });
   const [userId, setUserId] = useState<number>();
-  const { mutate, isSuccess, isError, isLoading } = useAddCar({ plateNumber: license.value, userId: userId });
+  const { mutate, isSuccess, isError, isLoading } = useAddCar({
+    plateNumber: license.value.toUpperCase(),
+    userId: userId,
+    name: carName.value,
+  });
   const licenseRegex = /^[A-Za-z]{2} ?\d{5}$/;
 
   const handler = {
@@ -32,9 +41,15 @@ export const AddCarScreen: FC = () => {
     licenseBlur: () => {
       setLicense({ ...license, blurred: true });
     },
+    carNameChange: (text: string) => {
+      setCarName({ value: text, valid: carName.value.length > 0, blurred: false });
+    },
+    carNameBlur: () => {
+      setLicense({ ...carName, blurred: true });
+    },
     addCar: () => {
       if (userId) {
-        mutate({ license: license.value.toUpperCase(), userId: userId });
+        mutate({ license: license.value.toUpperCase(), name: carName.value, userId: userId });
       }
     },
   };
@@ -68,6 +83,14 @@ export const AddCarScreen: FC = () => {
           errorMessage="Invalid license number. (fx. AB 12345)"
           onChangeText={handler.licenseChange}
           onBlur={handler.licenseBlur}
+        />
+        <Input
+          keyboardType="default"
+          placeholder="Car name"
+          isValid={carName.value.length > 0 || !carName.blurred || carName.value.length == 0}
+          errorMessage="Invalid license number. (fx. AB 12345)"
+          onChangeText={handler.carNameChange}
+          onBlur={handler.carNameBlur}
         />
         <Button
           primary

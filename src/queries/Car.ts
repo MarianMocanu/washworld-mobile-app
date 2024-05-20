@@ -27,6 +27,7 @@ export const useCars = (userId: number, enabled: boolean): UseQueryResult<Car[],
 // MUTATIONS
 
 export const useAddCar = (car: Omit<Car, 'id'>): UseMutationResult<number, Error> => {
+  console.log(car);
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [MUTATION_KEYS.ADD_CAR],
