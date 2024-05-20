@@ -7,14 +7,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from './app/store';
 import MainNavigator from './navigation/MainNavigator';
 import { colors } from '@globals/globalStyles';
-import { autoSingIn } from './features/auth/authSlice';
+import { autoSignIn } from './features/auth/authSlice';
 
 export const Main: FC = () => {
   const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
 
   useLayoutEffect(() => {
-    dispatch(autoSingIn());
+    dispatch(autoSignIn());
   }, []);
 
   if (auth.status === 'loading') {
