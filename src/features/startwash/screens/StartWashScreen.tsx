@@ -1,48 +1,35 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, MarkerPressEvent } from 'react-native-maps';
 import { getCurrentPositionAsync, LocationObject } from 'expo-location';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { ButtonGroup } from '@shared/ButtonGroup';
 import { AddressObject, AddressPicker, ReverseGeocodeResponse } from '../components/AddressPicker';
-import { Location, LocationStatus } from '@models/Location';
 import { LocationsList } from '@shared/LocationsList';
+import { useLocations } from '@queries/Locations';
 
 export const StartWashScreen: FC = () => {
   const [location, setLocation] = useState<AddressObject>({} as AddressObject);
   const [loading, setLoading] = useState(false);
   const mapRef = useRef<MapView>(null);
 
-  // create a new array of locations as dummy data, with 4 items
-  const locations = Array.from({ length: 6 }, (_, index) => {
-    return new Location(
-      index,
-      'Roskildevej 24',
-      'Copenhagen',
-      'Roskildevej',
-      '2500',
-      {
-        monday: { from: '08:00', to: '20:00' },
-        tuesday: { from: '08:00', to: '20:00' },
-        wednesday: { from: '08:00', to: '20:00' },
-        thursday: { from: '08:00', to: '20:00' },
-        friday: { from: '08:00', to: '20:00' },
-        saturday: { from: '08:00', to: '20:00' },
-        sunday: { from: '08:00', to: '20:00' },
-      },
-      LocationStatus.available,
-      'https://washworld.dk/_next/image?url=https%3A%2F%2Fwashworld-wordpress-production.storage.googleapis.com%2Fwp-content%2Fuploads%2F2021%2F11%2F28140219%2F2-vask.png&w=1920&q=50',
-      { latitude: 55.6786, longitude: 12.5635 },
-      new Date(),
-    );
-  });
+  const { data: locationsData } = useLocations(location.adresse?.x, location.adresse?.y);
+
+  console.log(
+    JSON.stringify(
+      locationsData?.map(item => item.distance),
+      null,
+      2,
+    ),
+  );
 
   async function setCurrentLocation() {
     try {
       setLoading(true);
       const currentLocation: LocationObject = await getCurrentPositionAsync();
-      const address = await reverseGeocode(currentLocation);
+      const { longitude, latitude } = currentLocation.coords;
+      const address = await reverseGeocode(longitude, latitude);
       setLocation({
         tekst: address.betegnelse,
         adresse: {
@@ -67,13 +54,33 @@ export const StartWashScreen: FC = () => {
     setLocation(location);
   }
 
-  async function reverseGeocode(location: LocationObject): Promise<ReverseGeocodeResponse> {
+  async function reverseGeocode(longitude: number, latitude: number): Promise<ReverseGeocodeResponse> {
     const response = await fetch(
       `https://api.dataforsyningen.dk/adgangsadresser/reverse?x=${encodeURIComponent(
-        location.coords.longitude,
-      )}&y=${encodeURIComponent(location.coords.latitude)}&struktur=mini`,
+        longitude,
+      )}&y=${encodeURIComponent(latitude)}&struktur=mini`,
     );
     return await response.json();
+  }
+
+  async function handleMarkerPress(event: MarkerPressEvent) {
+    const { longitude, latitude } = event.nativeEvent.coordinate;
+    try {
+      const address = await reverseGeocode(longitude, latitude);
+      setLocation({
+        tekst: address.betegnelse,
+        adresse: {
+          husnr: address.husnr,
+          postnr: address.postnr,
+          postnrnavn: address.postnrnavn,
+          vejnavn: address.vejnavn,
+          x: longitude,
+          y: latitude,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // Center the map when the location changes
@@ -111,6 +118,19 @@ export const StartWashScreen: FC = () => {
                 }}
               />
             )}
+
+            {locationsData?.map((location, index) => (
+              <Marker
+                key={`location-${index}-${location.id}`}
+                coordinate={{
+                  longitude: location.coordinates.longitude,
+                  latitude: location.coordinates.latitude,
+                }}
+                icon={require('../../../assets/wwpin.png')}
+                pinColor={colors.secondary.base}
+                onPress={handleMarkerPress}
+              />
+            ))}
           </MapView>
           <AddressPicker
             onIconPress={setCurrentLocation}
@@ -132,7 +152,7 @@ export const StartWashScreen: FC = () => {
           />
 
           <Text style={textStyles.heading}>Nearby wash locations</Text>
-          <LocationsList locations={locations} />
+          <LocationsList locations={locationsData ?? []} />
         </View>
       </View>
     </View>
