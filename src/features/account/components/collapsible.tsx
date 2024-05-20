@@ -43,10 +43,10 @@ export const Collapsible: FC<Props> = ({ title, subTitle, rewardsIconColor, rewa
         </View>
         <MaterialIcons
           name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-          style={{ fontSize: 32, lineHeight: 32, color: '#BBBBBB', marginLeft: 'auto' }}
+          style={{ fontSize: 40, lineHeight: 40, color: '#BBBBBB', marginLeft: 'auto' }}
         />
       </TouchableOpacity>
-      <Animated.View style={[styles.content, { height: heightInterpolate }]}>
+      <Animated.View style={{ height: heightInterpolate }}>
         {expanded && <View>{children}</View>}
       </Animated.View>
     </View>
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
   },
   clickableArea: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   titleContainer: {
     marginLeft: 12,
@@ -71,9 +72,6 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     ...globalTextStyles.inactive,
-  },
-  content: {
-    // overflow: 'hidden',
   },
 });
 

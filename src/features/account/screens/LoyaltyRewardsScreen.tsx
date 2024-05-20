@@ -1,24 +1,32 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { AccountStackParamList } from '../AccountNavigator';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { MaterialIcons } from '@expo/vector-icons';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { ProgressBar } from '@shared/ProgressBar';
+import { InfoModal } from '../../shared/InfoModal';
 import { Collapsible } from '../components/collapsible';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'rewards'>;
 
 const LoyaltyRewardsScreen = (props: Props) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleInfoModal = () => {
+    // setEntryIdToDelete(entryId);
+    setIsModalVisible(true);
+  };
+
   return (
     <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
       <ScreenHeader backButtonShown onBackPress={() => props.navigation.goBack()} />
       {/* Header */}
       <View style={[styles.horizontal, styles.justify]}>
         <Text style={styles.heading}>Loyalty Rewards </Text>
-        <TouchableOpacity style={styles.modalButton} onPress={() => console.log('loyalty rewards modal')}>
+        <TouchableOpacity style={styles.modalButton} onPress={() => handleInfoModal()}>
           <MaterialIcons name={'question-mark'} style={{ fontSize: 24, lineHeight: 24, color: '#FFF' }} />
         </TouchableOpacity>
       </View>
@@ -111,6 +119,15 @@ const LoyaltyRewardsScreen = (props: Props) => {
           </Collapsible>
         </View>
       </View>
+      <InfoModal
+        visible={isModalVisible}
+        heading={'Loyalty rewards'}
+        text={
+          'Loyalty rewards only apply to the highest earned level. The rewards are not additive with previous levels.'
+        }
+        buttonText={'Close'}
+        handlePress={() => setIsModalVisible(false)}
+      />
     </ScrollView>
   );
 };
