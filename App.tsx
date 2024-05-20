@@ -5,6 +5,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { store } from 'src/app/store';
 import 'react-native-reanimated';
 import * as Location from 'expo-location';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
   const [appReady, setAppReady] = useState(false);
@@ -40,7 +41,9 @@ export default function App() {
   if (appReady) {
     return (
       <ReduxProvider store={store}>
-        <Main />
+        <SafeAreaProvider>
+          <Main />
+        </SafeAreaProvider>
       </ReduxProvider>
     );
   }
