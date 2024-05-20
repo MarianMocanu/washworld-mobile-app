@@ -167,7 +167,7 @@ export const signOut = () => async (dispatch: AppDispatch) => {
   }
 };
 
-export const autoSingIn = () => async (dispatch: AppDispatch) => {
+export const autoSignIn = () => async (dispatch: AppDispatch) => {
   dispatch(authSlice.actions.request());
   setTimeout(async () => {
     try {
