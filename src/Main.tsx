@@ -1,17 +1,19 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { FC, useLayoutEffect } from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import AuthStackNavigator from './navigation/AuthNavigator';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from './app/store';
 import MainNavigator from './navigation/MainNavigator';
 import { colors } from '@globals/globalStyles';
 import { autoSignIn } from './features/auth/authSlice';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const Main: FC = () => {
   const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
+  const insets = useSafeAreaInsets();
 
   useLayoutEffect(() => {
     dispatch(autoSignIn());
@@ -22,12 +24,12 @@ export const Main: FC = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <StatusBar style="auto" />
       <NavigationContainer>
         {auth.isSignedIn ? <MainNavigator /> : <AuthStackNavigator />}
       </NavigationContainer>
-    </SafeAreaView>
+    </View>
   );
 };
 
