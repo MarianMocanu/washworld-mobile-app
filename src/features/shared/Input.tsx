@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 4,
+    maxHeight: 72,
   },
   horizontal: {
     flexDirection: 'row',
