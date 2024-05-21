@@ -26,7 +26,7 @@ const Stack = createNativeStackNavigator<MainStackParamsList>();
 export default function MainNavigator() {
   const navigation = useNavigation<NavigationProp<MainStackParamsList>>();
   const auth = useSelector((state: RootState) => state.auth);
-  const { data, isLoading, refetch } = useCars(auth.user && auth.user.id ? auth.user.id : 0, false);
+  const { data, isLoading, refetch } = useCars(auth.user && auth.user.id ? auth.user.id : 0);
 
   const navigateToCarAdd = () => {
     if (!auth.user) return;

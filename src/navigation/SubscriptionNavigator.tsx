@@ -1,7 +1,6 @@
 import { colors } from '@globals/globalStyles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { User } from '@models/User';
-import { AddSubscriptionScreen } from 'src/features/stacks/subscripton/add/AddSubscriptionScreen';
+import { AddSubscriptionScreen } from 'src/features/stacks/subscription/add/AddSubscriptionScreen';
 
 export type SubscriptionStackParamList = {
   'subscription-add': undefined;
