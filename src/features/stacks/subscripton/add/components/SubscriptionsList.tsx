@@ -16,11 +16,11 @@ export const SubscriptionsList = () => {
   return (
     <View>
       <Text>SubscriptionList</Text>
-      {data.map((level: { name: string }, index: number) => (
+      {data.map((level: { name: string; price: number }, index: number) => (
         <RadioButton
           key={index}
           label={level.name}
-          price={index + 1 + '00 kr./mo.'}
+          price={level.price + ' kr./mo.'}
           value={index}
           selected={selectedValue === index}
           onSelect={setSelectedValue}
