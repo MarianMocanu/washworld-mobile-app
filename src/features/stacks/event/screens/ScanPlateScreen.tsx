@@ -5,13 +5,15 @@ import { ScreenHeader } from '@shared/ScreenHeader';
 import { FC, useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, StyleSheet, Text, View } from 'react-native';
 import { CarInTerminal } from 'src/assets/SVGImages';
-import { ModalStackParamList } from 'src/navigation/ModalNavigator';
 import { MaterialIcons } from '@expo/vector-icons';
+import { EventStackParamList } from 'src/navigation/EventNavigator';
 
 export const ScanPlateScreen: FC = () => {
-  const navigation = useNavigation<NavigationProp<ModalStackParamList, 'scan-plate'>>();
+  const navigation = useNavigation<NavigationProp<EventStackParamList, 'scan-plate'>>();
   const [scanning, setScanning] = useState(false);
   const [scannedSuccess, setScannedSuccess] = useState(false);
+
+  // find a terminal that offers that service and it is available
 
   function handleOnScanPress() {
     setScanning(true);
@@ -37,10 +39,12 @@ export const ScanPlateScreen: FC = () => {
       <View style={styles.screenContent}>
         <Text style={text.title}>Before you start</Text>
         <CarInTerminal style={{ alignSelf: 'center' }} />
-        <Text style={text.title}>TERMINAL 01</Text>
-        <Text style={text.regular}>
-          Align your car with the indicated terminal to have your plate scanned.
-        </Text>
+        <View style={{ gap: 24, paddingVertical: 48 }}>
+          <Text style={text.title}>TERMINAL 01</Text>
+          <Text style={text.regular}>
+            Align your car with the indicated terminal to have your plate scanned.
+          </Text>
+        </View>
         <Button primary style={styles.button} onPress={handleOnScanPress} disabled={scanning}>
           <Text style={text.button}>{scanning ? 'Scanning' : 'Scan'}</Text>
           {scanning && (

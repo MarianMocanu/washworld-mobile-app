@@ -1,4 +1,11 @@
-import { UseMutationResult, UseQueryResult, useMutation, useQuery, useQueryClient } from 'react-query';
+import {
+  QueryObserverOptions,
+  UseMutationResult,
+  UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 import axios from 'src/app/axios';
 import { User } from '@models/User';
 import { Car } from '@models/Car';
@@ -13,14 +20,17 @@ export const MUTATION_KEYS = {
 
 // QUERIES
 
-export const useCars = (userId: number, enabled: boolean): UseQueryResult<Car[], Error> => {
+export const useCars = (
+  userId: number | undefined,
+  options: Pick<QueryObserverOptions, 'enabled'>,
+): UseQueryResult<Car[], Error> => {
   return useQuery({
     queryKey: [QUERY_KEYS.USER_CARS],
     queryFn: async function fetchUserCars() {
       const data = (await axios.get(`/cars/user/${userId}`)).data;
       return data as Car[];
     },
-    enabled: enabled,
+    enabled: options.enabled ?? true,
   });
 };
 

@@ -4,6 +4,7 @@ import axios from 'src/app/axios';
 
 export const TERMINAL_KEYS = {
   TERMINALS_BY_LOCATION: 'terminals-by-location',
+  AVAILABLE_TERMINAL: 'available-terminal',
 };
 
 export const useTerminals = (
@@ -17,5 +18,18 @@ export const useTerminals = (
       return response.data as Terminal[];
     },
     enabled: options?.enabled ?? true,
+  });
+};
+
+export const useAvailableTerminal = (
+  serviceId: number,
+  options?: Pick<QueryObserverOptions, 'enabled'>,
+): UseQueryResult<Terminal, Error> => {
+  return useQuery({
+    queryKey: [TERMINAL_KEYS.AVAILABLE_TERMINAL, serviceId],
+    queryFn: async function fetchAvailableTerminal() {
+      const response = await axios.get<Terminal>(`/terminals/available/${serviceId}`);
+      return response.data as Terminal;
+    },
   });
 };

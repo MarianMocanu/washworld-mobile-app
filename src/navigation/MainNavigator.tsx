@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
-import ModalNavigator, { ModalStackParamList } from './ModalNavigator';
+import EventNavigator, { EventStackParamList } from './EventNavigator';
 import CarNavigator from './CarNavigator';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
@@ -9,14 +9,14 @@ import { useEffect } from 'react';
 import { useCars } from 'src/queries/Car';
 import SubscriptionNavigator from './SubscriptionNavigator';
 
-type ModalStackScreen = {
-  screen: keyof ModalStackParamList;
-  params: ModalStackParamList[keyof ModalStackParamList];
+type EventStack = {
+  screen: keyof EventStackParamList;
+  params: EventStackParamList[keyof EventStackParamList];
 };
 
 export type MainStackParamsList = {
   tabs: undefined;
-  modals: ModalStackScreen;
+  'stacks-event': EventStack;
   'stacks-car': { screen: string };
   'stacks-subscription': { screen: string };
 };
@@ -51,7 +51,7 @@ export default function MainNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="tabs" component={TabNavigator} />
-      <Stack.Screen name="modals" component={ModalNavigator} />
+      <Stack.Screen name="stacks-event" component={EventNavigator} />
       <Stack.Screen name="stacks-car" component={CarNavigator} />
       <Stack.Screen name="stacks-subscription" component={SubscriptionNavigator} />
     </Stack.Navigator>

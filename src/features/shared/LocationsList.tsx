@@ -7,7 +7,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Status } from './Status';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { ModalStackParamList } from 'src/navigation/ModalNavigator';
 
 type LocationsListProps = {
   locations: Location[];
@@ -20,7 +19,10 @@ export const LocationsList: FC<LocationsListProps> = ({ locations, modalLocation
 
   function handleOnSelectLocation() {
     if (modalLocation) {
-      navigation.navigate('modals', { screen: 'select-service', params: { locationId: modalLocation.id } });
+      navigation.navigate('stacks-event', {
+        screen: 'select-service',
+        params: { locationId: modalLocation.id },
+      });
       setModalLocation(null);
     }
   }
