@@ -7,7 +7,7 @@ import { SelectServiceScreen } from 'src/features/modals/screens/SelectServiceSc
 import { WashProgressScreen } from 'src/features/modals/screens/WashProgressScreen';
 
 export type ModalStackParamList = {
-  'select-service': undefined;
+  'select-service': { locationId: number };
   'scan-plate': undefined;
   instructions: undefined;
   'wash-progress': undefined;

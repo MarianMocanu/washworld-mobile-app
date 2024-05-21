@@ -1,8 +1,8 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { Service, ServiceType } from '@models/Service';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { ScreenHeader } from '@shared/ScreenHeader';
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -12,24 +12,44 @@ import {
   Text,
   View,
 } from 'react-native';
-import { MainStackParamsList } from 'src/navigation/MainNavigator';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Button } from '@shared/Button';
+import { ModalStackParamList } from 'src/navigation/ModalNavigator';
+import { useTerminals } from '@queries/Terminals';
+import { Terminal } from '@models/Terminal';
+import { StepsList } from '../components/StepsList';
 
 export const SelectServiceScreen: FC = () => {
-  const navigation = useNavigation<NavigationProp<MainStackParamsList, 'modals'>>();
-  const flatListRef = useRef<FlatList>(null);
+  const navigation = useNavigation<NavigationProp<ModalStackParamList, 'select-service'>>();
 
+  const route = useRoute<RouteProp<ModalStackParamList, 'select-service'>>();
+  const { locationId } = route.params;
+
+  const flatListRef = useRef<FlatList>(null);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
 
-  // create a new array of services as dummy data, with 5 items
-  const services = Array.from({ length: 5 }, (_, index) => {
-    return new Service(index, new Date(), ServiceType.auto, 100);
-  });
+  const { data: terminalsData } = useTerminals(locationId, { enabled: !!locationId });
+  const [automatedServices, setAutomatedServices] = useState<Service[]>([]);
+
+  function getDistinctAutomatedServices(terminals: Terminal[]): Service[] {
+    const allServices: Service[] = terminals.reduce((acc, terminal) => {
+      if (terminal.services) {
+        acc.push(...terminal.services);
+      }
+      return acc;
+    }, [] as Service[]);
+
+    const distinctAutomatedServices: Service[] = allServices.filter((service, index, self) => {
+      if (service.type === ServiceType.auto) {
+        return index === self.findIndex(serv => serv.id === service.id);
+      }
+    });
+    return distinctAutomatedServices;
+  }
 
   function scrollToNextItem() {
     const nextIndex = currentItemIndex + 1;
-    if (nextIndex < services.length) {
+    if (nextIndex < automatedServices.length) {
       flatListRef.current?.scrollToIndex({ index: nextIndex });
       setCurrentItemIndex(nextIndex);
     }
@@ -49,86 +69,42 @@ export const SelectServiceScreen: FC = () => {
   }
 
   function handleOnPress() {
-    navigation.navigate('modals', { screen: 'scan-plate' });
+    navigation.navigate('scan-plate');
   }
+
+  useEffect(() => {
+    if (terminalsData) {
+      setAutomatedServices(getDistinctAutomatedServices(terminalsData));
+    }
+  }, [terminalsData]);
 
   return (
     <View style={styles.container}>
-      <ScreenHeader backButtonShown onBackPress={() => navigation.navigate('tabs')} />
+      <ScreenHeader backButtonShown onBackPress={navigation.goBack} />
       <View style={styles.screenContent}>
         <Text style={text.title}>Select service</Text>
         <View style={styles.listHeader}>
           <Button style={styles.iconButton} onPress={scrollToPreviousItem} disabled={currentItemIndex === 0}>
             <MaterialIcons name="chevron-left" style={styles.arrowIcon} />
           </Button>
-          <Text style={text.serviceLevel}>Basic</Text>
+          <Text style={text.serviceLevel}>
+            {automatedServices.length ? automatedServices[currentItemIndex].levels![0].name : 'N/A'}
+          </Text>
           <Button
             style={styles.iconButton}
             onPress={scrollToNextItem}
-            disabled={currentItemIndex === services.length - 1}
+            disabled={currentItemIndex === automatedServices.length - 1}
           >
             <MaterialIcons name="chevron-right" style={styles.arrowIcon} />
           </Button>
         </View>
         <FlatList
           ref={flatListRef}
-          data={services}
+          data={automatedServices}
           keyExtractor={item => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.primary.base} />
-                <Text style={text.stepActive}>Car soap</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.primary.base} />
-                <Text style={text.stepActive}>Drying</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.primary.base} />
-                <Text style={text.stepActive}>Brush wash</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.primary.base} />
-                <Text style={text.stepActive}>High pressure rinse</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.primary.base} />
-                <Text style={text.stepActive}>Wheel wash</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.primary.base} />
-                <Text style={text.stepActive}>Rinse wax</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.grey[30]} />
-                <Text style={text.stepInactive}>Undercarriage wash*</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.grey[30]} />
-                <Text style={text.stepInactive}>Polishing</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.grey[30]} />
-                <Text style={text.stepInactive}>Insect repellent</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.grey[30]} />
-                <Text style={text.stepInactive}>Degreasing</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.grey[30]} />
-                <Text style={text.stepInactive}>Foam Splash</Text>
-              </View>
-              <View style={styles.itemStep}>
-                <MaterialIcons name="check" style={styles.checkIcon} color={colors.grey[30]} />
-                <Text style={text.stepInactive}>Extra drying</Text>
-              </View>
-            </View>
-          )}
+          renderItem={({ item }: { item: Service }) => <StepsList stepsData={item.steps} numberOfSteps={2} />}
           pagingEnabled
           horizontal
-          contentContainerStyle={styles.listContent}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={updateCurrentItemIndex}
         />
@@ -153,18 +129,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 24,
   },
-  listContent: {
-    marginHorizontal: 24,
-  },
-  listItem: {
-    width: Dimensions.get('window').width - 48,
-    height: Dimensions.get('window').height,
-  },
-  itemStep: {
-    flexDirection: 'row',
-    height: 28,
-    alignItems: 'center',
-  },
   arrowIcon: {
     fontSize: 24,
     lineHeight: 24,
@@ -178,11 +142,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 4,
   },
-  checkIcon: {
-    fontSize: 24,
-    lineHeight: 24,
-    paddingRight: 8,
-  },
 });
 
 const text = StyleSheet.create({
@@ -195,17 +154,5 @@ const text = StyleSheet.create({
     fontSize: 24,
     lineHeight: 28,
     color: colors.black.base,
-  },
-  stepActive: {
-    fontFamily: 'gilroy-medium',
-    fontSize: 18,
-    lineHeight: 22,
-    color: colors.grey[90],
-  },
-  stepInactive: {
-    fontFamily: 'gilroy-medium',
-    fontSize: 18,
-    lineHeight: 22,
-    color: colors.grey[30],
   },
 });

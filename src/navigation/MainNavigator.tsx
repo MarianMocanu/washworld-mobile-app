@@ -1,17 +1,22 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
-import ModalNavigator from './ModalNavigator';
+import ModalNavigator, { ModalStackParamList } from './ModalNavigator';
 import CarNavigator from './CarNavigator';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useCars } from 'src/queries/Car';
 import SubscriptionNavigator from './SubscriptionNavigator';
 
+type ModalStackScreen = {
+  screen: keyof ModalStackParamList;
+  params: ModalStackParamList[keyof ModalStackParamList];
+};
+
 export type MainStackParamsList = {
   tabs: undefined;
-  modals: { screen: string };
+  modals: ModalStackScreen;
   'stacks-car': { screen: string };
   'stacks-subscription': { screen: string };
 };

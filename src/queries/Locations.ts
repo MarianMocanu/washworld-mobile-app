@@ -2,7 +2,7 @@ import { QueryObserverOptions, UseQueryResult, useQuery } from 'react-query';
 import { Location } from '@models/Location';
 import axios from 'src/app/axios';
 
-export const USER_KEYS = {
+export const LOCATION_KEYS = {
   ALL_LOCATIONS: 'all-locations',
 };
 
@@ -12,7 +12,7 @@ export const useLocations = (
   options?: Pick<QueryObserverOptions, 'enabled'>,
 ): UseQueryResult<Location[], Error> => {
   return useQuery({
-    queryKey: [USER_KEYS.ALL_LOCATIONS, latitude, longitude],
+    queryKey: [LOCATION_KEYS.ALL_LOCATIONS, latitude, longitude],
     queryFn: async function fetchAllLocations() {
       const params: { latitude?: number; longitude?: number } = {};
       if (latitude) {
@@ -21,9 +21,6 @@ export const useLocations = (
       if (longitude) {
         params.longitude = longitude;
       }
-
-      console.log(params);
-
       const { data } = await axios.get<Location[]>('/locations', { params });
       return data as Location[];
     },
