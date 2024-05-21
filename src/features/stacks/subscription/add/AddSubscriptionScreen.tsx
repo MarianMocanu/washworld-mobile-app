@@ -44,6 +44,7 @@ export const AddSubscriptionScreen: FC = () => {
           onPress={() => {
             console.log(selectedValue);
           }}
+          disabled={!selectedValue}
         >
           <Text style={text.button}>Next</Text>
           <MaterialIcons name="arrow-forward" style={styles.icon} />
