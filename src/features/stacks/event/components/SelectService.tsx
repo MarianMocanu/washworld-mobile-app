@@ -57,6 +57,8 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
 
   const currentFocusedService = useMemo(() => services[currentItemIndex], [services, currentItemIndex]);
 
+  const hasSubscription = useMemo(() => !!subscriptionData, [subscriptionData]);
+
   const isServiceIncludedInSubscription = useMemo(() => {
     if (subscriptionData && currentFocusedService?.levels) {
       return currentFocusedService.levels[0].id <= subscriptionData.level.id;
@@ -118,9 +120,9 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
       {services.length && currentFocusedService && currentFocusedService.levels ? (
         <View style={styles.horizontal}>
           <Text style={text.serviceLevel}>{currentFocusedService.levels[0].name}</Text>
-          {!subscriptionData ? (
+          {!hasSubscription ? (
             <Text style={text.priceBig}>
-              {currentFocusedService.levels[0].price}
+              {currentFocusedService.price}
               <Text style={text.priceSmall}>kr.</Text>
             </Text>
           ) : null}
