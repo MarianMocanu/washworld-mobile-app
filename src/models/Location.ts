@@ -22,6 +22,7 @@ export class Location {
   address: string;
   city: string;
   streetName: string;
+  streetNumber: string;
   postalCode: string;
   openingHours: OpeningHours;
   status: LocationStatus;
@@ -39,6 +40,7 @@ export class Location {
     address: string,
     city: string,
     streetName: string,
+    streetNumber: string,
     postalCode: string,
     openingHours: OpeningHours,
     status: LocationStatus,
@@ -52,6 +54,7 @@ export class Location {
     this.address = address;
     this.city = city;
     this.streetName = streetName;
+    this.streetNumber = streetNumber;
     this.postalCode = postalCode;
     this.openingHours = openingHours;
     this.status = status;
@@ -68,6 +71,7 @@ export class Location {
       json.address,
       json.city,
       json.streetName,
+      json.streetNumber,
       json.postalCode,
       json.openingHours,
       json.status,
@@ -85,6 +89,7 @@ export class Location {
       address: this.address,
       city: this.city,
       streetName: this.streetName,
+      streetNumber: this.streetNumber,
       postalCode: this.postalCode,
       openingHours: this.openingHours,
       status: this.status,

@@ -98,6 +98,7 @@ export const LoginScreen: FC<Props> = () => {
         errorMessage="Invalid email"
         onChangeText={handler.emailChange}
         onBlur={handler.emailBlur}
+        autoCapitalize="none"
       />
       <Input
         secureTextEntry={true}
@@ -106,6 +107,7 @@ export const LoginScreen: FC<Props> = () => {
         errorMessage="Password must be provided"
         onChangeText={handler.passwordChange}
         onBlur={handler.passwordBlur}
+        autoCapitalize="none"
       />
       {isLoading ? (
         <ActivityIndicator size="large" color={colors.primary.base} />

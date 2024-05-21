@@ -1,6 +1,6 @@
 import { colors } from '@globals/globalStyles';
 import { Location } from '@models/Location';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { FlatList, Image, Modal, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { Button } from './Button';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -10,15 +10,21 @@ import { MainStackParamsList } from 'src/navigation/MainNavigator';
 
 type LocationsListProps = {
   locations: Location[];
+  modalLocation: Location | null;
+  setModalLocation: (location: Location | null) => void;
 };
 
-export const LocationsList: FC<LocationsListProps> = ({ locations }) => {
-  const [modalLocation, setModalLocation] = useState<Location | null>();
+export const LocationsList: FC<LocationsListProps> = ({ locations, modalLocation, setModalLocation }) => {
   const navigation = useNavigation<NavigationProp<MainStackParamsList, 'tabs'>>();
 
   function handleOnSelectLocation() {
-    setModalLocation(null);
-    navigation.navigate('modals', { screen: 'start-wash' });
+    if (modalLocation) {
+      navigation.navigate('stacks-event', {
+        screen: 'select-service',
+        params: { locationId: modalLocation.id },
+      });
+      setModalLocation(null);
+    }
   }
 
   return (
@@ -50,7 +56,9 @@ export const LocationsList: FC<LocationsListProps> = ({ locations }) => {
                     resizeMode="cover"
                   />
                   <View style={{ gap: 4 }}>
-                    <Text style={textStyles.locationTitle}>{modalLocation?.address}</Text>
+                    <Text style={textStyles.locationTitle}>
+                      {modalLocation?.streetName + ' ' + modalLocation?.streetNumber}
+                    </Text>
                     <Text style={textStyles.locationSubtitle}>
                       {modalLocation?.postalCode + ' ' + modalLocation?.city}
                     </Text>
@@ -64,8 +72,8 @@ export const LocationsList: FC<LocationsListProps> = ({ locations }) => {
                       <Text style={textStyles.location}>Vacuum station</Text>
                     </View>
                     <View style={viewStyles.horizontal}>
-                      <Text style={[{ paddingRight: 8 }, textStyles.location]}>Automatic: 03</Text>
-                      <Text style={textStyles.location}>Self-wash: 01</Text>
+                      <Text style={[{ paddingRight: 8 }, textStyles.location]}>Automatic: 07</Text>
+                      <Text style={textStyles.location}>Self-wash: 07</Text>
                     </View>
                   </View>
                 </View>

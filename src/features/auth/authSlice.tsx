@@ -178,6 +178,7 @@ export const autoSignIn = () => async (dispatch: AppDispatch) => {
         });
         const { user, token } = res.data;
         if (user && token) {
+          console.log({ token });
           await saveToken(token);
           setTokenInAxiosHeaders(token);
           dispatch(authSlice.actions.signinSuccess(user));

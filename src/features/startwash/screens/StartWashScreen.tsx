@@ -1,28 +1,22 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import MapView, { Marker, MarkerPressEvent } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { getCurrentPositionAsync, LocationObject } from 'expo-location';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { ButtonGroup } from '@shared/ButtonGroup';
 import { AddressObject, AddressPicker, ReverseGeocodeResponse } from '../components/AddressPicker';
 import { LocationsList } from '@shared/LocationsList';
 import { useLocations } from '@queries/Locations';
+import { Location } from '@models/Location';
 
 export const StartWashScreen: FC = () => {
-  const [location, setLocation] = useState<AddressObject>({} as AddressObject);
+  const [address, setAddress] = useState<AddressObject>({} as AddressObject);
+  const [modalLocation, setModalLocation] = useState<Location | null>(null);
   const [loading, setLoading] = useState(false);
   const mapRef = useRef<MapView>(null);
 
-  const { data: locationsData } = useLocations(location.adresse?.x, location.adresse?.y);
-
-  console.log(
-    JSON.stringify(
-      locationsData?.map(item => item.distance),
-      null,
-      2,
-    ),
-  );
+  const { data: locationsData } = useLocations(address.adresse?.x, address.adresse?.y);
 
   async function setCurrentLocation() {
     try {
@@ -30,7 +24,7 @@ export const StartWashScreen: FC = () => {
       const currentLocation: LocationObject = await getCurrentPositionAsync();
       const { longitude, latitude } = currentLocation.coords;
       const address = await reverseGeocode(longitude, latitude);
-      setLocation({
+      setAddress({
         tekst: address.betegnelse,
         adresse: {
           husnr: address.husnr,
@@ -48,12 +42,6 @@ export const StartWashScreen: FC = () => {
     }
   }
 
-  // TODO: Implement this function using the api here
-  // should fetch the closest car washes based on the location object which has coords
-  function handleAddressSelect(location: AddressObject) {
-    setLocation(location);
-  }
-
   async function reverseGeocode(longitude: number, latitude: number): Promise<ReverseGeocodeResponse> {
     const response = await fetch(
       `https://api.dataforsyningen.dk/adgangsadresser/reverse?x=${encodeURIComponent(
@@ -63,37 +51,21 @@ export const StartWashScreen: FC = () => {
     return await response.json();
   }
 
-  async function handleMarkerPress(event: MarkerPressEvent) {
-    const { longitude, latitude } = event.nativeEvent.coordinate;
-    try {
-      const address = await reverseGeocode(longitude, latitude);
-      setLocation({
-        tekst: address.betegnelse,
-        adresse: {
-          husnr: address.husnr,
-          postnr: address.postnr,
-          postnrnavn: address.postnrnavn,
-          vejnavn: address.vejnavn,
-          x: longitude,
-          y: latitude,
-        },
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  async function handleMarkerPress(location: Location) {
+    setModalLocation(location);
   }
 
   // Center the map when the location changes
   useEffect(() => {
-    if (location.adresse) {
+    if (address.adresse) {
       mapRef.current?.animateToRegion({
-        longitude: location.adresse.x,
-        latitude: location.adresse.y,
+        longitude: address.adresse.x,
+        latitude: address.adresse.y,
         longitudeDelta: 0.02,
         latitudeDelta: 0.06,
       });
     }
-  }, [location]);
+  }, [address]);
 
   return (
     <View style={styles.container}>
@@ -104,17 +76,17 @@ export const StartWashScreen: FC = () => {
             ref={mapRef}
             style={styles.map}
             initialRegion={{
-              longitude: location.adresse?.x ?? 12.583026625431271,
-              latitude: location.adresse?.y ?? 55.640548407825584,
-              longitudeDelta: 0.04,
-              latitudeDelta: 0.09,
+              longitude: address.adresse?.x ?? 12.583026625431271,
+              latitude: address.adresse?.y ?? 55.640548407825584,
+              longitudeDelta: 0.1,
+              latitudeDelta: 0.2,
             }}
           >
-            {location.adresse && (
+            {address.adresse && (
               <Marker
                 coordinate={{
-                  longitude: location.adresse.x,
-                  latitude: location.adresse.y,
+                  longitude: address.adresse.x,
+                  latitude: address.adresse.y,
                 }}
               />
             )}
@@ -127,15 +99,15 @@ export const StartWashScreen: FC = () => {
                   latitude: location.coordinates.latitude,
                 }}
                 icon={require('../../../assets/wwpin.png')}
-                pinColor={colors.secondary.base}
-                onPress={handleMarkerPress}
+                pinColor={colors.tertiary.blue}
+                onPress={() => handleMarkerPress(location)}
               />
             ))}
           </MapView>
           <AddressPicker
             onIconPress={setCurrentLocation}
-            address={location}
-            onAddressSelect={handleAddressSelect}
+            address={address}
+            onAddressSelect={value => setAddress(value)}
             loading={loading}
           />
         </View>
@@ -152,7 +124,11 @@ export const StartWashScreen: FC = () => {
           />
 
           <Text style={textStyles.heading}>Nearby wash locations</Text>
-          <LocationsList locations={locationsData ?? []} />
+          <LocationsList
+            locations={locationsData ?? []}
+            modalLocation={modalLocation}
+            setModalLocation={setModalLocation}
+          />
         </View>
       </View>
     </View>
