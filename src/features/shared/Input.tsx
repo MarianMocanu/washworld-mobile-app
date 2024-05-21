@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 4,
-    maxHeight: 48,
+    maxHeight: 72,
   },
   horizontal: {
     flexDirection: 'row',
@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 8,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.white.cream,
   },
   input: {
     fontSize: 16,

@@ -45,7 +45,7 @@ export const AddCarScreen: FC = () => {
       setCarName({ value: text, valid: carName.value.length > 0, blurred: false });
     },
     carNameBlur: () => {
-      setLicense({ ...carName, blurred: true });
+      setCarName({ ...carName, blurred: true });
     },
     addCar: () => {
       if (userId) {
@@ -72,26 +72,28 @@ export const AddCarScreen: FC = () => {
       <View style={styles.screenContent}>
         <Text style={text.title}>Add a car</Text>
         <Text style={[text.regular, { alignSelf: 'center' }]}>Provide information about your vehicle.</Text>
-        <Input
-          keyboardType="default"
-          placeholder="License plate number"
-          isValid={
-            (licenseRegex.test(license.value) && license.blurred) ||
-            !license.blurred ||
-            license.value.length == 0
-          }
-          errorMessage="Invalid license number. (fx. AB 12345)"
-          onChangeText={handler.licenseChange}
-          onBlur={handler.licenseBlur}
-        />
-        <Input
-          keyboardType="default"
-          placeholder="Car name"
-          isValid={carName.value.length > 0 || !carName.blurred || carName.value.length == 0}
-          errorMessage="Car name is required."
-          onChangeText={handler.carNameChange}
-          onBlur={handler.carNameBlur}
-        />
+        <View>
+          <Input
+            keyboardType="default"
+            placeholder="License plate number"
+            isValid={
+              (licenseRegex.test(license.value) && license.blurred) ||
+              !license.blurred ||
+              license.value.length == 0
+            }
+            errorMessage="Invalid license number. (fx. AB 12345)"
+            onChangeText={handler.licenseChange}
+            onBlur={handler.licenseBlur}
+          />
+          <Input
+            keyboardType="default"
+            placeholder="Car name"
+            isValid={carName.value.length > 0 || !carName.blurred || carName.value.length == 0}
+            errorMessage="Car name is required."
+            onChangeText={handler.carNameChange}
+            onBlur={handler.carNameBlur}
+          />
+        </View>
         <Button
           primary
           style={styles.button}
@@ -122,6 +124,7 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 24,
     gap: 24,
+    display: 'flex',
   },
   card: {
     backgroundColor: colors.white.cream,
