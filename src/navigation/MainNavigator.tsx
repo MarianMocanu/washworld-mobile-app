@@ -25,19 +25,13 @@ const Stack = createNativeStackNavigator<MainStackParamsList>();
 
 export default function MainNavigator() {
   const navigation = useNavigation<NavigationProp<MainStackParamsList>>();
-  const auth = useSelector((state: RootState) => state.auth);
-  const { data, isLoading, refetch } = useCars(auth.user && auth.user.id ? auth.user.id : 0);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { data, isLoading } = useCars(user?.id, { enabled: !!user });
 
   const navigateToCarAdd = () => {
-    if (!auth.user) return;
+    if (!user) return;
     navigation.navigate('stacks-car', { screen: 'car-add' });
   };
-
-  useEffect(() => {
-    if (auth.user && auth.user.id) {
-      refetch();
-    }
-  }, [auth.user]);
 
   useEffect(() => {
     if (!isLoading && data) {
