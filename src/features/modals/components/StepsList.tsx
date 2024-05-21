@@ -9,29 +9,36 @@ type Props = {
   /**
    * The data of the steps to be displayed.
    */
-  steps: Step[];
+  steps?: Step[];
 };
 
 export const StepsList: FC<Props> = ({ steps }) => {
-  const { data: stepsData } = useSteps();
+  const { data: stepsData, isFetched } = useSteps();
 
-  stepsData?.forEach((step, index) => {
-    console.log(step.id, steps[index].id);
-  });
-
-  return (
-    <FlatList
-      data={stepsData ?? []}
-      keyExtractor={item => `step_${item.id}`}
-      renderItem={({ item, index }) => (
-        <View style={styles.item}>
-          <MaterialIcons name="check" style={styles.icon} color={colors.primary.base} />
-          <Text style={text.stepInactive}>{item.name}</Text>
-        </View>
-      )}
-      contentContainerStyle={styles.list}
-    />
-  );
+  if (isFetched && steps) {
+    return (
+      <FlatList
+        data={stepsData}
+        keyExtractor={item => `step_${item.id}`}
+        renderItem={({ item, index }) => (
+          <View style={styles.item}>
+            <MaterialIcons
+              name="check"
+              style={styles.icon}
+              color={steps[index] && steps[index].id === item.id ? colors.primary.base : colors.grey[30]}
+            />
+            <Text style={steps[index] && steps[index].id === item.id ? text.stepActive : text.stepInactive}>
+              {item.name}
+            </Text>
+          </View>
+        )}
+        scrollEnabled={false}
+        contentContainerStyle={styles.list}
+      />
+    );
+  } else {
+    return null;
+  }
 };
 
 const styles = StyleSheet.create({

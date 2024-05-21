@@ -102,7 +102,7 @@ export const SelectServiceScreen: FC = () => {
           ref={flatListRef}
           data={automatedServices}
           keyExtractor={item => item.id.toString()}
-          renderItem={({ item }: { item: Service }) => <StepsList stepsData={item.steps} numberOfSteps={2} />}
+          renderItem={({ item }: { item: Service }) => <StepsList steps={item.steps} />}
           pagingEnabled
           horizontal
           showsHorizontalScrollIndicator={false}
