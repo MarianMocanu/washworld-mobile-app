@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { AccountStackParamList } from '../AccountNavigator';
-import { SubscriptionsList } from 'src/features/stacks/subscripton/add/components/SubscriptionsList';
+import { SubscriptionsList } from '@shared/SubscriptionsList';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'subscription'>;
 
@@ -15,4 +15,3 @@ const ChangeSubscriptionScreen = (props: Props) => {
 };
 
 export default ChangeSubscriptionScreen;
-

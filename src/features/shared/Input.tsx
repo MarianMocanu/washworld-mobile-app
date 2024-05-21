@@ -50,7 +50,7 @@ const Input = React.forwardRef<TextInput, Props>(
   ({ placeholderTextColor, errorMessage, isValid, onRightIconPress, ...props }: Props, ref) => {
     return (
       <View style={[styles.wrapper]}>
-        <View style={[styles.horizontal, props.inputContainerStyle]}>
+        <View style={[styles.horizontal, props.inputContainerStyle, !isValid && styles.invalid]}>
           <TextInput
             ref={ref}
             style={[styles.input, props.style]}
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 4,
-    maxHeight: 72,
+    maxHeight: 48,
   },
   horizontal: {
     flexDirection: 'row',
@@ -111,5 +111,9 @@ const styles = StyleSheet.create({
     width: 36,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  invalid: {
+    borderColor: colors.tertiary.red,
+    borderWidth: 1,
   },
 });

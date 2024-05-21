@@ -50,6 +50,11 @@ interface Props extends PropsWithChildren {
   secondary?: boolean;
 
   /**
+   * Whether the button is the secondary styled
+   */
+  tertiary?: boolean;
+
+  /**
    * Whether the button is disabled
    */
   disabled?: boolean;
@@ -68,10 +73,17 @@ export const Button: FC<Props> = ({
   primaryUnselected,
   disabled,
   secondary,
+  tertiary,
 }) => {
   return children ? (
     <TouchableOpacity
-      style={[style, primary && styles.primary, secondary && styles.secondary, disabled && styles.disabled]}
+      style={[
+        style,
+        primary && styles.primary,
+        secondary && styles.secondary,
+        disabled && styles.disabled,
+        tertiary && styles.tertiary,
+      ]}
       onPress={onPress}
       disabled={disabled}
     >
@@ -85,6 +97,7 @@ export const Button: FC<Props> = ({
         secondary && styles.secondary,
         primaryUnselected && styles.primaryUnselected,
         disabled && styles.disabled,
+        tertiary && styles.tertiary,
         style,
       ]}
       onPress={onPress}
@@ -99,6 +112,7 @@ export const Button: FC<Props> = ({
             primary && textStyles.primary,
             secondary && textStyles.secondary,
             primaryUnselected && textStyles.primaryUnselected,
+            tertiary && textStyles.tertiary,
             textStyle,
           ]}
         >
@@ -147,6 +161,15 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.3,
   },
+  tertiary: {
+    height: 48,
+    backgroundColor: 'transparent',
+    borderRadius: 4,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: colors.grey[10],
+  },
 });
 
 const textStyles = StyleSheet.create({
@@ -173,5 +196,10 @@ const textStyles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 18,
     color: colors.black.base,
+  },
+  tertiary: {
+    fontSize: 16,
+    lineHeight: 18,
+    color: colors.grey[90],
   },
 });

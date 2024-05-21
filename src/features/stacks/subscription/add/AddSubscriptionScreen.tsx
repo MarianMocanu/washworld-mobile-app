@@ -2,30 +2,60 @@ import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Button } from '@shared/Button';
 import { ScreenHeader } from '@shared/ScreenHeader';
-import { FC } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { FC, useState } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TabsParamList } from 'src/navigation/TabNavigator';
+import RadioButton from '@shared/RadioButton';
+import { useLevels } from '@queries/Levels';
+import { Level } from '@models/Level';
 
 export const AddSubscriptionScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<TabsParamList, 'dashboard'>>();
-
+  const { data, isLoading, error } = useLevels();
+  const [selectedValue, setSelectedValue] = useState<number | null>(null);
   return (
     <View style={styles.container}>
       <ScreenHeader backButtonShown onBackPress={navigation.goBack} />
       <View style={styles.screenContent}>
         <Text style={text.title}>Add subscription</Text>
-        <Text style={[text.regular, { alignSelf: 'center' }]}>Pick subscription.</Text>
+        <Text style={[text.regular, { alignSelf: 'center' }]}>Pick a subscription level.</Text>
+
+        {isLoading && <ActivityIndicator />}
+        {!isLoading && data && (
+          <View>
+            {data.map((level: Level) => (
+              <RadioButton
+                key={level.id}
+                label={level.name}
+                price={level.price + ' kr./mo.'}
+                value={level.id}
+                selected={selectedValue === level.id}
+                onSelect={setSelectedValue}
+                disabled={false}
+              />
+            ))}
+          </View>
+        )}
 
         <Button
           primary
           style={styles.button}
           onPress={() => {
-            console.log('XD');
+            console.log(selectedValue);
           }}
         >
           <Text style={text.button}>Next</Text>
           <MaterialIcons name="arrow-forward" style={styles.icon} />
+        </Button>
+        <Button
+          tertiary
+          style={styles.button}
+          onPress={() => {
+            navigation.navigate('dashboard');
+          }}
+        >
+          <Text style={text.buttonAlt}>Skip</Text>
         </Button>
       </View>
     </View>
@@ -80,5 +110,11 @@ const text = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: colors.white.base,
+  },
+  buttonAlt: {
+    fontFamily: 'gilroy-medium',
+    fontSize: 16,
+    lineHeight: 24,
+    color: colors.black.base,
   },
 });
