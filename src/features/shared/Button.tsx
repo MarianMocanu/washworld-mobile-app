@@ -35,7 +35,7 @@ interface Props extends PropsWithChildren {
   rightIcon?: ReactNode;
 
   /**
-   * Whether the button is the primary styled
+   * Whether the button is the primary styled (green)
    */
   primary?: boolean;
 
@@ -45,12 +45,12 @@ interface Props extends PropsWithChildren {
   primaryUnselected?: boolean;
 
   /**
-   * Whether the button is the secondary styled
+   * Whether the button is the secondary styled (orange)
    */
   secondary?: boolean;
 
   /**
-   * Whether the button is the secondary styled
+   * Whether the button is the tertiary styled (outlined)
    */
   tertiary?: boolean;
 
