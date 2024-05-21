@@ -1,5 +1,5 @@
 import { Button } from '@shared/Button';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -20,6 +20,8 @@ import { AppDispatch, RootState } from 'src/app/store';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { setCarId } from '../screens/eventSlice';
 import { useCars } from '@queries/Car';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { MainStackParamsList } from 'src/navigation/MainNavigator';
 
 type Props = {
   /**
@@ -41,6 +43,7 @@ type Props = {
 };
 
 export const SelectService: FC<Props> = ({ title, services, onSelectPress, containerStyle }) => {
+  const navigation = useNavigation<NavigationProp<MainStackParamsList, 'stacks-car'>>();
   const flatListRef = useRef<FlatList>(null);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
@@ -49,7 +52,17 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
   const { data: subscriptionData } = useSubscription(user?.id, {
     enabled: !!user?.id,
   });
+
   const { data: carsData } = useCars(user?.id, { enabled: !!user?.id });
+
+  const currentFocusedService = useMemo(() => services[currentItemIndex], [services, currentItemIndex]);
+
+  const isServiceIncludedInSubscription = useMemo(() => {
+    if (subscriptionData && currentFocusedService?.levels) {
+      return currentFocusedService.levels[0].id <= subscriptionData.level.id;
+    }
+    return true;
+  }, [subscriptionData, services, currentItemIndex]);
 
   function scrollToNextItem() {
     const nextIndex = currentItemIndex + 1;
@@ -72,11 +85,19 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
     setCurrentItemIndex(index);
   }
 
+  function handleOnPressUpgradeSubscription() {
+    navigation.navigate('tabs', { screen: 'account', params: { screen: 'subscription' } });
+  }
+
   useEffect(() => {
     if (carsData && carsData.length) {
       dispatch(setCarId(carsData[0].id));
     }
   }, []);
+
+  useEffect(() => {
+    setCurrentItemIndex(0);
+  }, [services]);
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -85,7 +106,6 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
           <MaterialIcons name="chevron-left" style={styles.arrowIcon} />
         </Button>
         <Text style={text.title}>{title}</Text>
-
         <Button
           style={styles.button}
           onPress={scrollToNextItem}
@@ -94,12 +114,13 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
           <MaterialIcons name="chevron-right" style={styles.arrowIcon} />
         </Button>
       </View>
-      {services.length ? (
+
+      {services.length && currentFocusedService && currentFocusedService.levels ? (
         <View style={styles.horizontal}>
-          <Text style={text.serviceLevel}>{services[currentItemIndex].levels![0].name}</Text>
+          <Text style={text.serviceLevel}>{currentFocusedService.levels[0].name}</Text>
           {!subscriptionData ? (
             <Text style={text.priceBig}>
-              {services[currentItemIndex].levels![0].price}
+              {currentFocusedService.levels[0].price}
               <Text style={text.priceSmall}>kr.</Text>
             </Text>
           ) : null}
@@ -116,10 +137,15 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
         onMomentumScrollEnd={updateCurrentItemIndex}
       />
       <Button
-        text="Select"
-        primary
+        text={isServiceIncludedInSubscription ? 'Select' : 'Upgrade subscription'}
+        primary={isServiceIncludedInSubscription ? true : false}
+        secondary={!isServiceIncludedInSubscription ? true : false}
         style={{ marginHorizontal: 24 }}
-        onPress={() => onSelectPress(services[currentItemIndex].id)}
+        onPress={
+          isServiceIncludedInSubscription
+            ? () => onSelectPress(services[currentItemIndex].id)
+            : handleOnPressUpgradeSubscription
+        }
       />
     </View>
   );
@@ -154,6 +180,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  upgradeButton: {
+    position: 'absolute',
+    top: Dimensions.get('window').height / 3,
+    left: 0,
+    width: Dimensions.get('window').width - 96,
+    marginHorizontal: 24,
+    alignSelf: 'center',
   },
 });
 

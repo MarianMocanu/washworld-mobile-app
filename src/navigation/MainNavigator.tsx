@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import TabNavigator from './TabNavigator';
+import TabNavigator, { TabsParamList } from './TabNavigator';
 import EventNavigator, { EventStackParamList } from './EventNavigator';
 import CarNavigator from './CarNavigator';
 import { useSelector } from 'react-redux';
@@ -14,8 +14,13 @@ type EventStack = {
   params: EventStackParamList[keyof EventStackParamList];
 };
 
+type Tabs = {
+  screen: keyof TabsParamList;
+  params: TabsParamList[keyof TabsParamList];
+};
+
 export type MainStackParamsList = {
-  tabs: undefined;
+  tabs: Tabs;
   'stacks-event': EventStack;
   'stacks-car': { screen: string };
   'stacks-subscription': { screen: string };

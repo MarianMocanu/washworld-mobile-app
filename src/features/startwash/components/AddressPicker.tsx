@@ -105,6 +105,7 @@ export const AddressPicker: FC<Props> = ({ onIconPress, address, onAddressSelect
           inputContainerStyle={styles.input}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          isValid
         />
 
         {addressOptions.length > 0 && isFocused && (

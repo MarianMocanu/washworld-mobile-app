@@ -28,7 +28,7 @@ export const useAvailableTerminal = (
   return useQuery({
     queryKey: [TERMINAL_KEYS.AVAILABLE_TERMINAL, serviceId],
     queryFn: async function fetchAvailableTerminal() {
-      const response = await axios.get<Terminal>(`/terminals/available/${serviceId}`);
+      const response = await axios.get<Terminal>(`/terminals/available/service/${serviceId}`);
       return response.data as Terminal;
     },
   });

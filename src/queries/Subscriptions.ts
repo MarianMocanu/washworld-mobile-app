@@ -13,7 +13,7 @@ export const useSubscription = (
   return useQuery({
     queryKey: [SUBSCRIPTION_KEYS.SUBSCRIPTION_USER],
     queryFn: async function fetchSubscriptionForUser() {
-      const response = await axios.get<Subscription>(`/subscriptions/${userId}`);
+      const response = await axios.get<Subscription>(`/subscriptions/user/${userId}`);
       return response.data as Subscription;
     },
     enabled: options?.enabled ?? true,

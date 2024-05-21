@@ -5,12 +5,17 @@ import { Text } from 'react-native';
 import { colors } from '@globals/globalStyles';
 import { DashboardNavigator } from 'src/features/dashboard/DashboardNavigator';
 import { StartWashNavigator } from 'src/features/startwash/StartWashNavigator';
-import { AccountNavigator } from 'src/features/account/AccountNavigator';
+import { AccountNavigator, AccountStackParamList } from 'src/features/account/AccountNavigator';
+
+type AccountStack = {
+  screen: keyof AccountStackParamList;
+  params?: AccountStackParamList[keyof AccountStackParamList];
+};
 
 export type TabsParamList = {
   dashboard: undefined;
   'start-wash': undefined;
-  account: undefined;
+  account: AccountStack;
 };
 
 const Tab = createBottomTabNavigator<TabsParamList>();
