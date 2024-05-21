@@ -88,7 +88,7 @@ export const AddCarScreen: FC = () => {
           keyboardType="default"
           placeholder="Car name"
           isValid={carName.value.length > 0 || !carName.blurred || carName.value.length == 0}
-          errorMessage="Invalid license number. (fx. AB 12345)"
+          errorMessage="Car name is required."
           onChangeText={handler.carNameChange}
           onBlur={handler.carNameBlur}
         />
@@ -98,7 +98,7 @@ export const AddCarScreen: FC = () => {
           onPress={() => {
             handler.addCar();
           }}
-          disabled={licenseRegex.test(license.value) ? false : true}
+          disabled={licenseRegex.test(license.value) && carName.value.length > 0 ? false : true}
         >
           {isLoading ? (
             <ActivityIndicator color={colors.white.base} />

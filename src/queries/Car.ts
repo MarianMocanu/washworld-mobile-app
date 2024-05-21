@@ -13,21 +13,20 @@ export const MUTATION_KEYS = {
 
 // QUERIES
 
-export const useCars = (userId: number, enabled: boolean): UseQueryResult<Car[], Error> => {
+export const useCars = (userId?: number): UseQueryResult<Car[], Error> => {
   return useQuery({
     queryKey: [QUERY_KEYS.USER_CARS],
     queryFn: async function fetchUserCars() {
       const data = (await axios.get(`/cars/user/${userId}`)).data;
       return data as Car[];
     },
-    enabled: enabled,
   });
 };
 
 // MUTATIONS
 
 export const useAddCar = (car: Omit<Car, 'id'>): UseMutationResult<number, Error> => {
-  console.log(car);
+  // console.log(car);
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [MUTATION_KEYS.ADD_CAR],
