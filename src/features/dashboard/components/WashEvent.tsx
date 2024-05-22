@@ -10,11 +10,13 @@ type Props = {
    * The event to display
    */
   event: Event;
+
+  onPress: () => void;
 };
 
-export const WashEvent: FC<Props> = ({ event }) => {
+export const WashEvent: FC<Props> = ({ event, onPress }) => {
   return (
-    <Button style={viewStyles.container}>
+    <Button style={viewStyles.container} onPress={onPress}>
       <Image source={{ uri: event.terminal.location?.image }} style={viewStyles.image} />
       <View style={viewStyles.content}>
         <Text

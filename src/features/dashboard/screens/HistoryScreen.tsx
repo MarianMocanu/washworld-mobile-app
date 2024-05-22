@@ -1,5 +1,5 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { DashboardStackParamList } from '../DashboardNavigator';
 import { colors, globalTextStyles } from '@globals/globalStyles';
@@ -22,7 +22,9 @@ export const HistoryScreen: FC = () => {
         ListHeaderComponent={<Text style={textStyles.heading}>Recent washes</Text>}
         data={events}
         keyExtractor={(item, index) => `event_${item.id.toString()}_${index.toString()}`}
-        renderItem={({ item: event }) => <WashEvent event={event} />}
+        renderItem={({ item: event }) => (
+          <WashEvent event={event} onPress={() => navigation.navigate('washDetails', { event })} />
+        )}
         style={{ paddingHorizontal: 24 }}
       />
     </View>
