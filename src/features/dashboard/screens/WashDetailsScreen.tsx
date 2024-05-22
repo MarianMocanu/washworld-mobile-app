@@ -15,29 +15,61 @@ type Props = {
 export const WashDetailsScreen: React.FC<Props> = ({ route }) => {
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'history'>>();
   const { event } = route.params;
-  console.log(event);
 
   return (
     <View style={styles.mainContainer}>
-      <Text style={textStyles.header}>Details</Text>
       <ScreenHeader backButtonShown onBackPress={() => navigation.goBack()} />
+      <Text style={textStyles.header}>Wash details</Text>
       <View style={styles.container}>
         <Text style={textStyles.heading}>Car</Text>
-        <Text style={textStyles.item}>Car license plate</Text>
-        <Text style={textStyles.item}>Car name</Text>
+        <View style={styles.row}>
+          <Text style={textStyles.label}>Car license plate</Text>
+          <Text style={textStyles.value}>{event.car.plateNumber}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={textStyles.label}>Car name</Text>
+          <Text style={textStyles.value}>{event.car.name}</Text>
+        </View>
       </View>
       <View style={styles.container}>
-        <Text style={textStyles.heading}>Service Information</Text>
-        <Text style={textStyles.item}>Date</Text>
-        <Text style={textStyles.item}>Service Type</Text>
-        <Text style={textStyles.item}>Program</Text>
-        <Text style={textStyles.item}>Price</Text>
+        <Text style={textStyles.heading}>Service information</Text>
+        <View style={styles.row}>
+          <Text style={textStyles.label}>Date</Text>
+          <Text style={textStyles.value}>{new Date(event.createdAt).toLocaleDateString()}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={textStyles.label}>Service type</Text>
+          <Text style={textStyles.value}>{event.service.type}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={textStyles.label}>Program</Text>
+          <Text style={textStyles.value}>Premium Plus</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={textStyles.label}>Price</Text>
+          <Text style={textStyles.value}>Subscription</Text>
+        </View>
       </View>
       <View style={styles.container}>
         <Text style={textStyles.heading}>Location</Text>
-        <Text style={textStyles.item}>Car Wash</Text>
-        <Text style={textStyles.item}>City</Text>
-        <Text style={textStyles.item}>Address</Text>
+        <View style={styles.row}>
+          <Text style={textStyles.label}>Carwash</Text>
+          <Text
+            style={textStyles.value}
+          >{`${event.terminal.location?.city}, ${event.terminal.location?.streetName}`}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={textStyles.label}>City</Text>
+          <Text
+            style={textStyles.value}
+          >{`${event.terminal.location?.city} ${event.terminal.location?.postalCode}`}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={textStyles.label}>Address</Text>
+          <Text
+            style={textStyles.value}
+          >{`${event.terminal.location?.streetName} ${event.terminal.location?.streetNumber}`}</Text>
+        </View>
       </View>
     </View>
   );
@@ -47,38 +79,43 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: colors.white.base,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   container: {
-    paddingHorizontal: 24,
+    backgroundColor: colors.white.cream,
+    padding: 16,
+    borderRadius: 8,
+    marginVertical: 8,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
 });
 
 const textStyles = StyleSheet.create({
-  backButton: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: colors.black.base,
-  },
   header: {
     ...globalTextStyles.headingLarge,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginHorizontal: 24,
+    textAlign: 'center',
+    marginBottom: 16,
+    paddingTop: 16,
   },
   heading: {
     ...globalTextStyles.heading,
     color: colors.black.base,
-    paddingTop: 32,
-    paddingBottom: 16,
+    marginBottom: 16,
   },
-  item: {
+  label: {
     fontFamily: 'gilroy-medium',
     fontSize: 16,
     color: colors.black.base,
-    paddingTop: 10,
-    paddingBottom: 10,
+  },
+  value: {
+    fontFamily: 'gilroy-medium',
+    fontSize: 16,
+    color: colors.grey[80],
   },
 });
 

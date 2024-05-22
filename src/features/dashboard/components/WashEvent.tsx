@@ -41,6 +41,7 @@ const viewStyles = StyleSheet.create({
     gap: 8,
     backgroundColor: colors.white.cream,
     padding: 8,
+    borderRadius: 4,
   },
   content: {
     flex: 1,

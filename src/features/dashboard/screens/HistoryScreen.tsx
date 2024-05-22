@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white.base,
+    borderRadius: 4,
   },
 });
 
@@ -50,9 +51,9 @@ const textStyles = StyleSheet.create({
     color: colors.black.base,
   },
   heading: {
-    ...globalTextStyles.heading,
-    color: colors.black.base,
+    ...globalTextStyles.headingLarge,
+    textAlign: 'center',
+    marginBottom: 16,
     paddingTop: 32,
-    paddingBottom: 16,
   },
 });
