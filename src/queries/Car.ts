@@ -36,14 +36,13 @@ export const useCars = (
 
 // MUTATIONS
 
-export const useAddCar = (car: Omit<Car, 'id'>): UseMutationResult<number, Error> => {
-  // console.log(car);
+export const useAddCar = (car: Partial<Car>, id?: number): UseMutationResult<Car, Error> => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [MUTATION_KEYS.ADD_CAR],
     mutationFn: async function addCar() {
-      const response = await axios.post(`/cars/`, car);
-      return response.data;
+      const response = await axios.post<Car>(`/cars/`, { ...car, userId: id });
+      return response.data as Car;
     },
     onSuccess() {
       queryClient.invalidateQueries([QUERY_KEYS.USER_CARS]);

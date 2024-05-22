@@ -1,6 +1,6 @@
 import { colors } from '@globals/globalStyles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AddCarScreen } from 'src/features/stacks/car/add/AddCarScreen';
+import { AddCarScreen } from 'src/features/stacks/car/AddCarScreen';
 import { InstructionsScreen } from 'src/features/stacks/event/screens/InstructionsScreen';
 import { ScanPlateScreen } from 'src/features/stacks/event/screens/ScanPlateScreen';
 import { SelectServiceScreen } from 'src/features/stacks/event/screens/SelectServiceScreen';

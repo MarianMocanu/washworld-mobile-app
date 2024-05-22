@@ -1,5 +1,5 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Button } from '@shared/Button';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { FC, useState } from 'react';
@@ -9,14 +9,19 @@ import { TabsParamList } from 'src/navigation/TabNavigator';
 import RadioButton from '@shared/RadioButton';
 import { useLevels } from '@queries/Levels';
 import { Level } from '@models/Level';
+import { MainStackParamsList } from 'src/navigation/MainNavigator';
+import { PaymentStackParamList } from 'src/navigation/PaymentNavigator';
+import { SubscriptionStackParamList } from 'src/navigation/SubscriptionNavigator';
 
 export const AddSubscriptionScreen: FC = () => {
-  const navigation = useNavigation<NavigationProp<TabsParamList, 'dashboard'>>();
+  const tabNavigation = useNavigation<NavigationProp<TabsParamList, 'dashboard'>>();
+  const mainNavigation = useNavigation<NavigationProp<MainStackParamsList>>();
+  const route = useRoute<RouteProp<SubscriptionStackParamList, 'subscription-add'>>();
   const { data, isLoading, error } = useLevels();
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
   return (
     <View style={styles.container}>
-      <ScreenHeader backButtonShown onBackPress={navigation.goBack} />
+      <ScreenHeader backButtonShown onBackPress={tabNavigation.goBack} />
       <View style={styles.screenContent}>
         <Text style={text.title}>Add subscription</Text>
         <Text style={[text.regular, { alignSelf: 'center' }]}>Pick a subscription level.</Text>
@@ -42,9 +47,14 @@ export const AddSubscriptionScreen: FC = () => {
           primary
           style={styles.button}
           onPress={() => {
-            console.log(selectedValue);
+            // console.log(selectedValue);
+            selectedValue &&
+              mainNavigation.navigate('stacks-payment', {
+                screen: 'payment-add',
+                params: { levelId: selectedValue, carId: route.params.carId },
+              });
           }}
-          disabled={!selectedValue}
+          disabled={!selectedValue || !route.params.carId}
         >
           <Text style={text.button}>Next</Text>
           <MaterialIcons name="arrow-forward" style={styles.icon} />
@@ -53,7 +63,7 @@ export const AddSubscriptionScreen: FC = () => {
           tertiary
           style={styles.button}
           onPress={() => {
-            navigation.navigate('dashboard');
+            tabNavigation.navigate('dashboard');
           }}
         >
           <Text style={text.buttonAlt}>Skip</Text>

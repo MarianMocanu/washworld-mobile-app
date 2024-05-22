@@ -7,11 +7,22 @@ import { RootState } from 'src/app/store';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { useCars } from 'src/queries/Car';
-import SubscriptionNavigator from './SubscriptionNavigator';
+import SubscriptionNavigator, { SubscriptionStackParamList } from './SubscriptionNavigator';
+import PaymentNavigator, { PaymentStackParamList } from './PaymentNavigator';
 
 type EventStack = {
   screen: keyof EventStackParamList;
   params: EventStackParamList[keyof EventStackParamList];
+};
+
+type SubscriptionStack = {
+  screen: keyof SubscriptionStackParamList;
+  params: SubscriptionStackParamList[keyof SubscriptionStackParamList];
+};
+
+type PaymentStack = {
+  screen: keyof PaymentStackParamList;
+  params: PaymentStackParamList[keyof PaymentStackParamList];
 };
 
 type Tabs = {
@@ -23,7 +34,8 @@ export type MainStackParamsList = {
   tabs: Tabs;
   'stacks-event': EventStack;
   'stacks-car': { screen: string };
-  'stacks-subscription': { screen: string };
+  'stacks-subscription': SubscriptionStack;
+  'stacks-payment': PaymentStack;
 };
 
 const Stack = createNativeStackNavigator<MainStackParamsList>();
@@ -53,6 +65,7 @@ export default function MainNavigator() {
       <Stack.Screen name="stacks-event" component={EventNavigator} />
       <Stack.Screen name="stacks-car" component={CarNavigator} />
       <Stack.Screen name="stacks-subscription" component={SubscriptionNavigator} />
+      <Stack.Screen name="stacks-payment" component={PaymentNavigator} />
     </Stack.Navigator>
   );
 }
