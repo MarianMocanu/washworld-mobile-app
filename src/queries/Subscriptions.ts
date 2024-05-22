@@ -1,9 +1,13 @@
 import { Subscription } from '@models/Subscription';
-import { QueryObserverOptions, UseQueryResult, useQuery } from 'react-query';
+import { QueryObserverOptions, UseQueryResult, useMutation, useQuery } from 'react-query';
 import axios from 'src/app/axios';
 
 export const SUBSCRIPTION_KEYS = {
   SUBSCRIPTION_USER: 'subscription-for-user',
+};
+
+export const MUTATION_KEYS = {
+  ADD_SUBSCRIPTION: 'add-subscription',
 };
 
 export const useSubscriptions = (
@@ -17,5 +21,17 @@ export const useSubscriptions = (
       return response.data as Subscription[];
     },
     enabled: options?.enabled ?? true,
+  });
+};
+
+export const useAddSubscription = (levelId?: number, carId?: number) => {
+  return useMutation({
+    mutationKey: [MUTATION_KEYS.ADD_SUBSCRIPTION],
+    mutationFn: async function addSubscription() {
+      if (levelId && carId) {
+        const response = await axios.post<Subscription>(`/subscriptions/`, { levelId, carId });
+        return response.data as Subscription;
+      }
+    },
   });
 };

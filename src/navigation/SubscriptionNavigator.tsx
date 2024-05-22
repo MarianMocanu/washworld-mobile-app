@@ -1,9 +1,9 @@
 import { colors } from '@globals/globalStyles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AddSubscriptionScreen } from 'src/features/stacks/subscription/add/AddSubscriptionScreen';
+import { AddSubscriptionScreen } from 'src/features/stacks/subscription/AddSubscriptionScreen';
 
 export type SubscriptionStackParamList = {
-  'subscription-add': undefined;
+  'subscription-add': { carId: number };
 };
 
 const Stack = createNativeStackNavigator<SubscriptionStackParamList>();

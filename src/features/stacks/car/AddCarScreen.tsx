@@ -12,6 +12,8 @@ import { RootState } from 'src/app/store';
 import { useSelector } from 'react-redux';
 import { SubscriptionStackParamList } from 'src/navigation/SubscriptionNavigator';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
+import { User } from '@models/User';
+import { Car } from '@models/Car';
 
 export const AddCarScreen: FC = () => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -26,12 +28,14 @@ export const AddCarScreen: FC = () => {
     valid: false,
     blurred: false,
   });
-  const [userId, setUserId] = useState<number>();
-  const { mutate, isSuccess, isError, isLoading } = useAddCar({
-    plateNumber: license.value.toUpperCase(),
-    userId: userId,
-    name: carName.value,
-  });
+  const [user, setUser] = useState<User>();
+  const { mutate, isSuccess, isError, isLoading, data } = useAddCar(
+    {
+      plateNumber: license.value.toUpperCase(),
+      name: carName.value,
+    },
+    user?.id,
+  );
   const licenseRegex = /^[A-Za-z]{2} ?\d{5}$/;
 
   const handler = {
@@ -48,23 +52,23 @@ export const AddCarScreen: FC = () => {
       setCarName({ ...carName, blurred: true });
     },
     addCar: () => {
-      if (userId) {
-        mutate({ license: license.value.toUpperCase(), name: carName.value, userId: userId });
+      if (user) {
+        mutate({ license: license.value.toUpperCase(), name: carName.value, user: user });
       }
     },
   };
 
   useEffect(() => {
-    if (auth.user && auth.user.id) {
-      setUserId(auth.user.id);
+    if (auth.user) {
+      setUser(auth.user);
     }
   }, [auth.user]);
 
   useEffect(() => {
-    if (isSuccess) {
-      navigation.navigate('stacks-subscription', { screen: 'subscription-add' });
+    if (isSuccess && data) {
+      navigation.navigate('stacks-subscription', { screen: 'subscription-add', params: { carId: data.id } });
     }
-  }, [isSuccess]);
+  }, [isSuccess, data]);
 
   return (
     <View style={styles.container}>
