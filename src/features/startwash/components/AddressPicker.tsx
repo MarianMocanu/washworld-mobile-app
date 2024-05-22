@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.grey[10],
-    marginTop: -32,
+    marginTop: -8,
   },
   option: {
     height: 48,

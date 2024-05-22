@@ -13,12 +13,12 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Service } from '@models/Service';
-import { StepsList } from './StepsList';
+import { StepsList } from '../stacks/event/components/StepsList';
 import { useSubscription } from '@queries/Subscriptions';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'src/app/store';
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import { setCarId } from '../screens/eventSlice';
+import { setCarId } from '../stacks/event/screens/eventSlice';
 import { useCars } from '@queries/Car';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';

@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import { useTerminals } from '@queries/Terminals';
 import { Terminal } from '@models/Terminal';
 import { EventStackParamList } from 'src/navigation/EventNavigator';
-import { SelectService } from '../components/SelectService';
+import { SelectService } from '../../../shared/SelectService';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/app/store';
 import { setServiceId } from './eventSlice';
