@@ -34,6 +34,7 @@ export const StepsList: FC<Props> = ({ steps }) => {
         )}
         scrollEnabled={false}
         contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
       />
     );
   } else {

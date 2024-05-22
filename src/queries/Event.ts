@@ -1,13 +1,22 @@
-import { QueryObserverOptions, UseQueryResult, useQuery, UseMutationResult, useMutation, useQueryClient } from 'react-query';
+import {
+  QueryObserverOptions,
+  UseQueryResult,
+  useQuery,
+  UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from 'react-query';
 import { Event } from '@models/Event';
 import axios, { AxiosError } from 'src/app/axios';
 
 export const EVENT_QUERY_KEYS = {
   EVENTS: 'events',
 };
+
 export const EVENT_MUTATION_KEYS = {
   CREATE_EVENT: 'create-event',
 };
+
 export const useEvents = (
   userId: number | undefined,
   options: Pick<QueryObserverOptions, 'enabled'>,
@@ -26,10 +35,11 @@ export const useEvents = (
     enabled: options.enabled ?? true,
   });
 };
+
 type CreateEventPayload = {
   carId?: number;
-  terminalId?: number;
   serviceId?: number;
+  terminalId?: number;
 };
 
 export const useCreateEvent = (): UseMutationResult<Event, AxiosError, CreateEventPayload> => {
@@ -38,8 +48,8 @@ export const useCreateEvent = (): UseMutationResult<Event, AxiosError, CreateEve
     mutationKey: [EVENT_MUTATION_KEYS.CREATE_EVENT],
     mutationFn: async function createEvent(payload: CreateEventPayload) {
       const response = await axios.post<Event>(`/events`, payload);
-    },
       return response.data as Event;
+    },
     onError: error => {
       console.error('Error creating event', error);
     },

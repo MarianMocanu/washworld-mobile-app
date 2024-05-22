@@ -9,15 +9,16 @@ import { EventStackParamList } from 'src/navigation/EventNavigator';
 import { SelectService } from '../../../shared/SelectService';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/app/store';
-import { setServiceId } from './eventSlice';
+import { setLocationId, setServiceId } from './eventSlice';
 
 export const SelectServiceScreen: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<NavigationProp<EventStackParamList, 'select-service'>>();
   const route = useRoute<RouteProp<EventStackParamList, 'select-service'>>();
-  const { locationId } = route.params;
 
+  const { locationId } = route.params;
   const { data: terminalsData } = useTerminals(locationId, { enabled: !!locationId });
+
   const [automatedServices, setAutomatedServices] = useState<Service[]>([]);
   const [selectedServiceId, setSelectedServiceId] = useState(0);
 
@@ -40,6 +41,7 @@ export const SelectServiceScreen: FC = () => {
   useEffect(() => {
     if (selectedServiceId) {
       dispatch(setServiceId(selectedServiceId));
+      dispatch(setLocationId(locationId));
       navigation.navigate('scan-plate');
       setSelectedServiceId(0);
     }

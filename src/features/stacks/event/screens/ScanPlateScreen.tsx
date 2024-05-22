@@ -15,12 +15,17 @@ import { setTerminalId } from './eventSlice';
 export const ScanPlateScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<EventStackParamList, 'scan-plate'>>();
   const dispatch = useDispatch<AppDispatch>();
+  const { locationId } = useSelector((state: RootState) => state.event);
 
   const [scanning, setScanning] = useState(false);
   const [scannedSuccess, setScannedSuccess] = useState(false);
 
-  const { serviceId, carId, terminalId } = useSelector((state: RootState) => state.event);
-  const { data: availableTerminalData } = useAvailableTerminal(serviceId, { enabled: !!serviceId });
+  const { serviceId } = useSelector((state: RootState) => state.event);
+  const { data: availableTerminalData } = useAvailableTerminal(locationId, serviceId, {
+    enabled: !!serviceId && !!locationId,
+  });
+
+  console.log({ availableTerminalData });
 
   function handleOnScanPress() {
     setScanning(true);

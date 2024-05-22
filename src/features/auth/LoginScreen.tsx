@@ -33,7 +33,7 @@ export const LoginScreen: FC<Props> = () => {
 
   const handler = {
     emailChange: (text: string) => {
-      setEmail({ value: text, valid: emailRegex.test(email.value), blurred: false });
+      setEmail({ value: text, valid: emailRegex.test(text), blurred: false });
     },
     emailBlur: () => {
       setEmail(prevState => {
