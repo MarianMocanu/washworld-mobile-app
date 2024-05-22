@@ -4,7 +4,7 @@ import { AddPaymentScreen } from 'src/features/stacks/payment/AddPaymentScreen';
 // import { AddSubscriptionScreen } from 'src/features/stacks/subscription/AddSubscriptionScreen';
 
 export type PaymentStackParamList = {
-  'payment-add': { levelId?: number };
+  'payment-add': { levelId?: number; carId?: number };
 };
 
 const Stack = createNativeStackNavigator<PaymentStackParamList>();
