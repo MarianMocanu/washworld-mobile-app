@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Service } from '@models/Service';
-import { StepsList } from './StepsList';
 import { useSubscriptions } from '@queries/Subscriptions';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'src/app/store';
@@ -22,6 +21,7 @@ import { setCarId } from '../stacks/event/screens/eventSlice';
 import { useCars } from '@queries/Car';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
+import { StepsList } from '../stacks/event/components/StepsList';
 
 type Props = {
   /**
@@ -49,7 +49,7 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data: subscriptionData } = useSubscriptions(user?.id, {
+  const { data: subscriptionsData } = useSubscriptions(user?.id, {
     enabled: !!user?.id,
   });
 
@@ -57,14 +57,14 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
 
   const currentFocusedService = useMemo(() => services[currentItemIndex], [services, currentItemIndex]);
 
-  const hasSubscription = useMemo(() => !!subscriptionData, [subscriptionData]);
+  const hasSubscription = useMemo(() => !!subscriptionsData, [subscriptionsData]);
 
   const isServiceIncludedInSubscription = useMemo(() => {
-    if (subscriptionData && currentFocusedService?.levels) {
-      return currentFocusedService.levels[0].id <= subscriptionData.level.id;
+    if (subscriptionsData && currentFocusedService?.levels) {
+      return currentFocusedService.levels[0].id <= subscriptionsData[0].level.id;
     }
     return true;
-  }, [subscriptionData, services, currentItemIndex]);
+  }, [subscriptionsData, services, currentItemIndex]);
 
   function scrollToNextItem() {
     const nextIndex = currentItemIndex + 1;
