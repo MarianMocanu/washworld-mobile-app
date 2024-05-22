@@ -218,9 +218,12 @@ const textStyles = StyleSheet.create({
     color: colors.grey[80],
   },
   address: {
+    fontFamily: 'gilroy-medium',
+    fontSize: 14,
+    lineHeight: 18,
     color: colors.primary.base,
     textDecorationLine: 'underline',
-    marginRight: 20,
+    marginRight: 8,
   },
   washDate: {
     ...globalTextStyles.inactive,

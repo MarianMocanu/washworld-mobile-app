@@ -3,15 +3,22 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Button } from '@shared/Button';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { FC } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { ModalStackParamList } from 'src/navigation/ModalNavigator';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { EventStackParamList } from 'src/navigation/EventNavigator';
 
 export const InstructionsScreen: FC = () => {
-  const navigation = useNavigation<NavigationProp<ModalStackParamList, 'instructions'>>();
+  const navigation = useNavigation<NavigationProp<EventStackParamList, 'instructions'>>();
 
   function handleOnPress() {
-    navigation.navigate('wash-progress');
+    Alert.alert(
+      'Warning!',
+      'This action will close the terminal gate and start the wash process. This action cannot be undone. Are you sure you want to proceed?',
+      [
+        { text: 'Cancel', style: 'destructive' },
+        { text: 'Proceed', onPress: () => navigation.navigate('wash-progress') },
+      ],
+    );
   }
 
   return (

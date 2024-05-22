@@ -22,14 +22,20 @@ export const useTerminals = (
 };
 
 export const useAvailableTerminal = (
-  serviceId: number,
+  locationId: number | undefined,
+  serviceId: number | undefined,
   options?: Pick<QueryObserverOptions, 'enabled'>,
 ): UseQueryResult<Terminal, Error> => {
   return useQuery({
     queryKey: [TERMINAL_KEYS.AVAILABLE_TERMINAL, serviceId],
     queryFn: async function fetchAvailableTerminal() {
-      const response = await axios.get<Terminal>(`/terminals/available/service/${serviceId}`);
+      const response = await axios.get<Terminal>(`/terminals/available`, {
+        params: { locationId, serviceId },
+      });
+
+      console.log({ data: response.data });
       return response.data as Terminal;
     },
+    enabled: options?.enabled ?? true,
   });
 };

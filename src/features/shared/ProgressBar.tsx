@@ -1,6 +1,6 @@
-import { colors } from '@globals/globalStyles';
-import { FC } from 'react';
-import { Text, View } from 'react-native';
+import React, { FC, useEffect, useRef, useState } from 'react';
+import { View, Text, StyleProp, ViewStyle, Animated } from 'react-native';
+import { colors } from '@globals/globalStyles'; // Ensure this import is correct
 
 type Props = {
   /**
@@ -8,29 +8,70 @@ type Props = {
    * It controls the width of the filled portion of the progress bar.
    * The value should be between 0 and 100.
    */
-  progress: number;
+  progress?: number;
+  /**
+   * The duration prop represents the duration in seconds for the progress bar to animate from 0 to 100%.
+   */
+  duration?: number;
   /**
    * The color prop represents the color of the filled portion of the progress bar.
    * The default value is the primary color from the global styles.
    */
   color?: string;
+  /**
+   * Additional container styles
+   */
+  style?: StyleProp<ViewStyle>;
 };
 
-export const ProgressBar: FC<Props> = ({ progress, color }) => {
+export const ProgressBar: FC<Props> = ({ progress = 0, duration, color, style }) => {
+  const animatedProgress = useRef(new Animated.Value(0)).current;
+  const [displayProgress, setDisplayProgress] = useState(0);
+
+  useEffect(() => {
+    if (duration) {
+      // Animate the progress from 0 to 100 over the specified duration
+      Animated.timing(animatedProgress, {
+        toValue: 100,
+        duration: duration * 1000,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      // Set the progress directly if duration is not provided
+      animatedProgress.setValue(progress);
+      setDisplayProgress(progress);
+    }
+
+    // Add listener to update display progress
+    const listenerId = animatedProgress.addListener(({ value }) => {
+      setDisplayProgress(Math.round(value));
+    });
+
+    // Cleanup listener on unmount
+    return () => {
+      animatedProgress.removeListener(listenerId);
+    };
+  }, [duration, progress]);
+
+  const animatedWidth = animatedProgress.interpolate({
+    inputRange: [0, 100],
+    outputRange: ['0%', '100%'],
+  });
+
   return (
-    <View style={{ paddingTop: 24 }}>
+    <View style={[{ paddingTop: 24 }, style]}>
       <View
         style={{
-          width: 'auto',
+          width: '100%',
           height: 8,
           borderRadius: 100,
           backgroundColor: colors.grey[10],
           overflow: 'hidden',
         }}
       >
-        <View
+        <Animated.View
           style={{
-            width: `${progress}%`,
+            width: animatedWidth,
             height: '100%',
             borderRadius: 100,
             backgroundColor: color ? color : colors.primary.base,
@@ -40,7 +81,7 @@ export const ProgressBar: FC<Props> = ({ progress, color }) => {
       <Text
         style={{
           position: 'absolute',
-          right: `${100 - progress}%`,
+          right: `${100 - displayProgress}%`,
           top: 10,
           fontFamily: 'gilroy-semibold',
           fontSize: 12,
@@ -48,7 +89,7 @@ export const ProgressBar: FC<Props> = ({ progress, color }) => {
           color: colors.grey[60],
         }}
       >
-        {progress}%
+        {displayProgress}%
       </Text>
     </View>
   );
