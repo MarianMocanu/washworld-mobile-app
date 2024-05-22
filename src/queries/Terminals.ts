@@ -22,7 +22,7 @@ export const useTerminals = (
 };
 
 export const useAvailableTerminal = (
-  serviceId: number,
+  serviceId: number | undefined,
   options?: Pick<QueryObserverOptions, 'enabled'>,
 ): UseQueryResult<Terminal, Error> => {
   return useQuery({
@@ -31,5 +31,6 @@ export const useAvailableTerminal = (
       const response = await axios.get<Terminal>(`/terminals/available/service/${serviceId}`);
       return response.data as Terminal;
     },
+    enabled: options?.enabled ?? true,
   });
 };
