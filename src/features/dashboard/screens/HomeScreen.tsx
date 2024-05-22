@@ -21,8 +21,7 @@ type Props = {};
 export const HomeScreen: FC<Props> = () => {
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
-  const [limit] = useState(4);
-  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, limit);
+  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, 4);
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
   const [modalLocation, setModalLocation] = useState<Location | null>(null);

@@ -12,7 +12,7 @@ export const useEvents = (
   limit: number | undefined,
 ): UseQueryResult<Event[], Error> => {
   return useQuery({
-    queryKey: [QUERY_KEYS.EVENTS],
+    queryKey: [QUERY_KEYS.EVENTS, limit],
     queryFn: async function fetchEvents() {
       let url = `/events/user/${userId}`;
       if (limit) {
@@ -24,4 +24,3 @@ export const useEvents = (
     enabled: options.enabled ?? true,
   });
 };
-
