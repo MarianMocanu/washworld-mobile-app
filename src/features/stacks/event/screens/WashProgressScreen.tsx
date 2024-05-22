@@ -1,6 +1,6 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { ScreenHeader } from '@shared/ScreenHeader';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -13,11 +13,32 @@ import {
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Button } from '@shared/Button';
 import { ProgressBar } from '@shared/ProgressBar';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/app/store';
+import { useCreateEvent } from '@queries/Event';
 
 export const WashProgressScreen: FC = () => {
   const [visible, setVisible] = useState(false);
 
+  const event = useSelector((state: RootState) => state.event);
+
+  const { mutate: createEventMutation } = useCreateEvent();
+
   function handleEmergencyStop() {}
+
+  // start wash progress
+  // create an event in db and reset the event state in redux
+  // display wash progress steps with duration
+
+  useEffect(() => {
+    if (event.carId && event.serviceId && event.terminalId) {
+      createEventMutation({
+        carId: event.carId,
+        serviceId: event.serviceId,
+        terminalId: event.terminalId,
+      });
+    }
+  }, [event]);
 
   return (
     <View style={styles.container}>
