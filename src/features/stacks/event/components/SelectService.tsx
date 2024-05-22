@@ -14,7 +14,7 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { Service } from '@models/Service';
 import { StepsList } from './StepsList';
-import { useSubscription } from '@queries/Subscriptions';
+import { useSubscriptions } from '@queries/Subscriptions';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'src/app/store';
 import { colors, globalTextStyles } from '@globals/globalStyles';
@@ -49,7 +49,7 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data: subscriptionData } = useSubscription(user?.id, {
+  const { data: subscriptionData } = useSubscriptions(user?.id, {
     enabled: !!user?.id,
   });
 

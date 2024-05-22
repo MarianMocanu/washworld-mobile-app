@@ -7,8 +7,8 @@ export const LOCATION_KEYS = {
 };
 
 export const useLocations = (
-  longitude: number | undefined,
-  latitude: number | undefined,
+  longitude?: number | undefined,
+  latitude?: number | undefined,
   options?: Pick<QueryObserverOptions, 'enabled'>,
 ): UseQueryResult<Location[], Error> => {
   return useQuery({
