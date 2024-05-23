@@ -23,7 +23,7 @@ export const HistoryScreen: FC = () => {
         data={events}
         keyExtractor={(item, index) => `event_${item.id.toString()}_${index.toString()}`}
         renderItem={({ item: event }) => (
-          <WashEvent event={event} onPress={() => navigation.navigate('washDetails', { event })} />
+          <WashEvent event={event} onPress={() => navigation.navigate('wash-details', { event })} />
         )}
         style={{ paddingHorizontal: 24 }}
       />
@@ -32,11 +32,6 @@ export const HistoryScreen: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  pressableArea: {
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    borderRadius: 24,
-  },
   container: {
     flex: 1,
     backgroundColor: colors.white.base,
@@ -45,11 +40,6 @@ const styles = StyleSheet.create({
 });
 
 const textStyles = StyleSheet.create({
-  backButton: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: colors.black.base,
-  },
   heading: {
     ...globalTextStyles.headingLarge,
     textAlign: 'center',

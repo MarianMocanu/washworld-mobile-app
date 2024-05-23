@@ -159,10 +159,6 @@ const viewStyles = StyleSheet.create({
   justify: {
     justifyContent: 'space-between',
   },
-  linkButton: {
-    flex: 1,
-    paddingLeft: 24,
-  },
   subscription: {
     height: 48,
     paddingHorizontal: 12,

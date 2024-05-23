@@ -1,19 +1,20 @@
-import React from 'react';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import React, { FC } from 'react';
+import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
 import { View, Text, StyleSheet } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { DashboardStackParamList } from '../DashboardNavigator';
 
-type WashDetailsScreenRouteProp = RouteProp<DashboardStackParamList, 'washDetails'>;
+type WashDetailsScreenRouteProp = RouteProp<DashboardStackParamList, 'wash-details'>;
 
 type Props = {
   route: WashDetailsScreenRouteProp;
 };
 
-export const WashDetailsScreen: React.FC<Props> = ({ route }) => {
+export const WashDetailsScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'history'>>();
+  const route = useRoute<RouteProp<DashboardStackParamList, 'wash-details'>>();
   const { event } = route.params;
 
   return (
@@ -79,14 +80,13 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: colors.white.base,
-    paddingHorizontal: 16,
-    paddingTop: 16,
   },
   container: {
     backgroundColor: colors.white.cream,
     padding: 16,
     borderRadius: 8,
     marginVertical: 8,
+    marginHorizontal: 16,
   },
   row: {
     flexDirection: 'row',
@@ -100,7 +100,7 @@ const textStyles = StyleSheet.create({
     ...globalTextStyles.headingLarge,
     textAlign: 'center',
     marginBottom: 16,
-    paddingTop: 16,
+    paddingTop: 32,
   },
   heading: {
     ...globalTextStyles.heading,
@@ -118,4 +118,3 @@ const textStyles = StyleSheet.create({
     color: colors.grey[80],
   },
 });
-
