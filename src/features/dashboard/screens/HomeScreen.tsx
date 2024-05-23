@@ -24,7 +24,7 @@ export const HomeScreen: FC<Props> = () => {
 
   const [modalLocation, setModalLocation] = useState<Location | null>(null);
 
-  const { data: events } = useEvents(user?.id, { enabled: !!user?.id });
+  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, 4);
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
 
@@ -117,7 +117,7 @@ export const HomeScreen: FC<Props> = () => {
               }
             />
           </View>
-          {events.slice(-4).map((event, index) => (
+          {events.map((event, index) => (
             <View key={index.toString()} style={viewStyles.wash}>
               <Text style={textStyles.plateNumber}>{event.car.plateNumber}</Text>
               <Button

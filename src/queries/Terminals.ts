@@ -51,6 +51,7 @@ export const TERMINAL_MUTATION_KEYS = {
 
 type UpdateTerminalPayload = {
   terminalId: number;
+  status: TerminalStatus;
 };
 
 export const useBookTerminal = (
@@ -59,10 +60,9 @@ export const useBookTerminal = (
   const queryClient = useQueryClient();
   return useMutation<Terminal, AxiosError, UpdateTerminalPayload>({
     mutationKey: [TERMINAL_MUTATION_KEYS.MARK_TERMINAL_AS_BUSY, terminalId],
-    mutationFn: async function updateTerminal({ terminalId }) {
-      const response = await axios.patch<Terminal>(`/terminals/${terminalId}`, {
-        status: TerminalStatus.busy,
-      });
+    mutationFn: async function updateTerminal({ terminalId, status }) {
+      console.log({ terminalId, status });
+      const response = await axios.patch<Terminal>(`/terminals/${terminalId}`, { status });
       return response.data as Terminal;
     },
     onError: error => {
@@ -70,7 +70,6 @@ export const useBookTerminal = (
     },
     onSettled: () => {
       queryClient.invalidateQueries([TERMINAL_QUERY_KEYS.TERMINALS_BY_LOCATION]);
-      queryClient.invalidateQueries([TERMINAL_QUERY_KEYS.AVAILABLE_TERMINAL]);
     },
   });
 };

@@ -12,6 +12,7 @@ import { ServiceStepsList } from '../components/ServiceStepsList';
 import { EmergencyStopModal } from '../components/EmergencyStopModal';
 import { useBookTerminal } from '@queries/Terminals';
 import { CarWashing } from 'src/assets/SVGImages';
+import { TerminalStatus } from '@models/Terminal';
 
 export const WashProgressScreen: FC = () => {
   const event = useSelector((state: RootState) => state.event);
@@ -36,7 +37,7 @@ export const WashProgressScreen: FC = () => {
 
   useEffect(() => {
     if (event.terminalId) {
-      bookTerminal({ terminalId: event.terminalId });
+      bookTerminal({ terminalId: event.terminalId, status: TerminalStatus.busy });
     }
   }, []);
 

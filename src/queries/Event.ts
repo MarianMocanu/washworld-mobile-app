@@ -11,6 +11,7 @@ import axios, { AxiosError } from 'src/app/axios';
 
 export const EVENT_QUERY_KEYS = {
   EVENTS: 'events',
+  RECENT_EVENTS: 'recent-events',
 };
 
 export const EVENT_MUTATION_KEYS = {
@@ -23,7 +24,7 @@ export const useEvents = (
   limit?: number,
 ): UseQueryResult<Event[], Error> => {
   return useQuery({
-    queryKey: [EVENT_QUERY_KEYS.EVENTS, userId],
+    queryKey: [limit ? EVENT_QUERY_KEYS.RECENT_EVENTS : EVENT_QUERY_KEYS.EVENTS, userId],
     queryFn: async function fetchEvents() {
       let url = `/events/user/${userId}`;
       const response = await axios.get(url, { params: { limit } });
@@ -52,6 +53,7 @@ export const useCreateEvent = (userId: number): UseMutationResult<Event, AxiosEr
     },
     onSuccess: () => {
       queryClient.invalidateQueries([EVENT_QUERY_KEYS.EVENTS, userId]);
+      queryClient.invalidateQueries([EVENT_QUERY_KEYS.RECENT_EVENTS, userId]);
     },
   });
 };

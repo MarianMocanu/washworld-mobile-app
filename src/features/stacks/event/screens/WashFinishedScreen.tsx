@@ -3,14 +3,15 @@ import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navig
 import { Button } from '@shared/Button';
 import { FC, useEffect } from 'react';
 import { BackHandler, StyleSheet, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 'src/app/store';
-import { CheckCircle } from 'src/assets/SVGIcons';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from 'src/app/store';
 import { EventStackParamList } from 'src/navigation/EventNavigator';
 import { TabsParamList } from 'src/navigation/TabNavigator';
 import { resetEvent } from './eventSlice';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { CarWashed } from 'src/assets/SVGImages';
+import { useBookTerminal } from '@queries/Terminals';
+import { TerminalStatus } from '@models/Terminal';
 
 export const WashFinishedScreen: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +19,14 @@ export const WashFinishedScreen: FC = () => {
   const route = useRoute<RouteProp<EventStackParamList, 'wash-finished'>>();
   const { stopped } = route.params;
 
+  const event = useSelector((state: RootState) => state.event);
+  const { mutate: releaseBookedTerminal } = useBookTerminal(event.terminalId!);
+
   function handleOnPress() {
+    releaseBookedTerminal({
+      terminalId: event.terminalId!,
+      status: TerminalStatus.idle,
+    });
     navigation.navigate('dashboard');
     dispatch(resetEvent());
   }
@@ -35,7 +43,6 @@ export const WashFinishedScreen: FC = () => {
       <ScreenHeader />
       <View style={[styles.screenContent, { justifyContent: 'center', marginTop: -76 }]}>
         <Text style={text.title}>{stopped ? 'Wash stopped' : 'Wash complete'}</Text>
-        {/* <CheckCircle style={{ alignSelf: 'center' }} /> */}
         <CarWashed style={{ alignSelf: 'center' }} />
         <Text style={[text.regular, { alignSelf: 'center' }]}>Proceed through the gate!</Text>
         <Button text="Finish" primary onPress={handleOnPress} />
