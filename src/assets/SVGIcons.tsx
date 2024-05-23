@@ -16,3 +16,21 @@ export const LogoSVG: React.FC = (props: SvgProps) => (
     </Defs>
   </Svg>
 );
+
+export const CheckCircle = (props: SvgProps) => (
+  <Svg width={48} height={49} fill="none" {...props}>
+    <G clipPath="url(#a)">
+      <Path
+        fill="#34B566"
+        fillRule="evenodd"
+        d="M24 48.5c13.255 0 24-10.745 24-24S37.255.5 24 .5 0 11.245 0 24.5s10.745 24 24 24Zm-9.646-25.507 5.483 5.33L33.646 14.9 36 17.189 19.837 32.9 12 25.281l2.354-2.288Z"
+        clipRule="evenodd"
+      />
+    </G>
+    <Defs>
+      <ClipPath id="a">
+        <Path fill="#fff" d="M0 .5h48v48H0z" />
+      </ClipPath>
+    </Defs>
+  </Svg>
+);

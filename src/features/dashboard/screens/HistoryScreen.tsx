@@ -13,7 +13,7 @@ export const HistoryScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'history'>>();
 
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
-  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, undefined);
+  const { data: events } = useEvents(user?.id, { enabled: !!user?.id });
 
   return (
     <View style={styles.container}>

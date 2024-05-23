@@ -12,7 +12,7 @@ type Props = {
   steps?: Step[];
 };
 
-export const StepsList: FC<Props> = ({ steps }) => {
+export const AllStepsList: FC<Props> = ({ steps }) => {
   const { data: stepsData, isFetched } = useSteps();
 
   if (isFetched && steps) {

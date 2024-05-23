@@ -21,7 +21,7 @@ import { setCarId } from '../stacks/event/screens/eventSlice';
 import { useCars } from '@queries/Car';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { StepsList } from '../stacks/event/components/StepsList';
+import { AllStepsList } from '../stacks/event/components/AllStepsList';
 
 type Props = {
   /**
@@ -132,7 +132,7 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
         ref={flatListRef}
         data={services}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item }: { item: Service }) => <StepsList steps={item.steps} />}
+        renderItem={({ item }: { item: Service }) => <AllStepsList steps={item.steps} />}
         pagingEnabled
         horizontal
         showsHorizontalScrollIndicator={false}

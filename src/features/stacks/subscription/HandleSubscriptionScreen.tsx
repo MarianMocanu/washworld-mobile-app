@@ -2,7 +2,7 @@ import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Button } from '@shared/Button';
 import { ScreenHeader } from '@shared/ScreenHeader';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TabsParamList } from 'src/navigation/TabNavigator';
@@ -35,7 +35,7 @@ export const AddSubscriptionScreen: FC = () => {
     refetchSubscription();
   }, [auth.user]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (subscriptionData && route.params.carId) {
       const activeSubscription = subscriptionData.find(sub => sub.car.id === route.params.carId);
       setActiveSubscription(activeSubscription ? activeSubscription : null);

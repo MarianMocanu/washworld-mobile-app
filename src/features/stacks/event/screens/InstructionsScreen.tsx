@@ -13,7 +13,7 @@ export const InstructionsScreen: FC = () => {
   function handleOnPress() {
     Alert.alert(
       'Warning!',
-      'This action will close the terminal gate and start the wash process. This action cannot be undone. Are you sure you want to proceed?',
+      'This action will close the terminal gate and start the wash process. Are you sure you want to proceed?',
       [
         { text: 'Cancel', style: 'destructive' },
         { text: 'Proceed', onPress: () => navigation.navigate('wash-progress') },

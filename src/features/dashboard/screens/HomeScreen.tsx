@@ -19,12 +19,13 @@ import { LocationsList } from '@shared/LocationsList';
 type Props = {};
 
 export const HomeScreen: FC<Props> = () => {
-  const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
   const navigation2 = useNavigation<NavigationProp<any>>();
-  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, undefined);
+  const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
+  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, 4);
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
+
   const [modalLocation, setModalLocation] = useState<Location | null>(null);
 
   const loyaltyLevels = [
@@ -124,8 +125,8 @@ export const HomeScreen: FC<Props> = () => {
               }
             />
           </View>
-          {events.slice(-4).map((event, index) => (
-            <View key={index} style={viewStyles.wash}>
+          {events.map((event, index) => (
+            <View key={index.toString()} style={viewStyles.wash}>
               <Text style={textStyles.plateNumber}>{event.car.plateNumber}</Text>
               <Button
                 style={{ flex: 1, paddingLeft: 24 }}
