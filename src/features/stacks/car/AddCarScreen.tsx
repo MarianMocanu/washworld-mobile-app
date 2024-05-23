@@ -66,7 +66,10 @@ export const AddCarScreen: FC = () => {
 
   useEffect(() => {
     if (isSuccess && data) {
-      navigation.navigate('stacks-subscription', { screen: 'subscription-add', params: { carId: data.id } });
+      navigation.navigate('stacks-subscription', {
+        screen: 'subscription-handle',
+        params: { carId: data.id },
+      });
     }
   }, [isSuccess, data]);
 
