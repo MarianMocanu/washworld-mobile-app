@@ -5,12 +5,46 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AccountStackParamList } from '../AccountNavigator';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { Button } from '@shared/Button';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { MainStackParamsList } from 'src/navigation/MainNavigator';
+import { useCars } from '@queries/Car';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/app/store';
+import { CarPickerModal } from '@shared/CarPickerModal';
+import { useState } from 'react';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'index'>;
 
 const AccountSettingsScreen = (props: Props) => {
+  const mainNavigation = useNavigation<NavigationProp<MainStackParamsList>>();
+
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { data } = useCars(user?.id, { enabled: !!user });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleChangeSubscription = () => {
+    if (data && data?.length > 1) {
+      setIsModalVisible(true);
+    } else if (data?.length === 1) {
+      mainNavigation.navigate('stacks-subscription', {
+        screen: 'subscription-handle',
+        params: { carId: data[0].id },
+      });
+    } else {
+      console.log('Navigate to add car?');
+    }
+  };
+
   return (
     <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
+      <CarPickerModal
+        visible={isModalVisible}
+        heading={'Please select a car'}
+        buttonText={'Cancel'}
+        carData={data}
+        handlePress={() => setIsModalVisible(false)}
+        setVisible={setIsModalVisible}
+      />
       {/* Populate userInfo with user data */}
       <View style={styles.userInfo}>
         <View style={styles.iconNamePlan}>
@@ -37,7 +71,7 @@ const AccountSettingsScreen = (props: Props) => {
         <View style={styles.buttonContainer}>
           <Button
             text="Change subscription"
-            onPress={() => props.navigation.navigate('subscription')}
+            onPress={() => handleChangeSubscription()}
             style={styles.button}
           />
           <Button
@@ -197,3 +231,4 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 });
+
