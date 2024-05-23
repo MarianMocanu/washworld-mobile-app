@@ -1,10 +1,16 @@
 import { colors } from '@globals/globalStyles';
+import { Subscription } from '@models/Subscription';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AddPaymentScreen } from 'src/features/stacks/payment/AddPaymentScreen';
 // import { AddSubscriptionScreen } from 'src/features/stacks/subscription/AddSubscriptionScreen';
 
 export type PaymentStackParamList = {
-  'payment-add': { levelId?: number; carId?: number };
+  'payment-add': {
+    previousSubscription?: Subscription;
+    levelId?: number;
+    carId?: number;
+    successRoute: string;
+  };
 };
 
 const Stack = createNativeStackNavigator<PaymentStackParamList>();

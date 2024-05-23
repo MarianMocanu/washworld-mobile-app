@@ -7,29 +7,46 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { RootState } from 'src/app/store';
 import { useSelector } from 'react-redux';
-import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { User } from '@models/User';
 import { PaymentStackParamList } from 'src/navigation/PaymentNavigator';
-import { useAddSubscription } from '@queries/Subscriptions';
+import { useAddSubscription, useUpdateSubscription } from '@queries/Subscriptions';
 import Toast from 'react-native-toast-message';
 import { useLevels } from '@queries/Levels';
 import { Level } from '@models/Level';
 import Input from '@shared/Input';
 import { InputField } from '@models/InputField';
 
+type PriceToDisplay = {
+  subtotal: number;
+  tax: number;
+  total: number;
+};
+
 export const AddPaymentScreen: FC = () => {
-  const auth = useSelector((state: RootState) => state.auth);
-  const navigation = useNavigation<NavigationProp<MainStackParamsList>>();
+  const navigation = useNavigation<NavigationProp<any>>();
   const route = useRoute<RouteProp<PaymentStackParamList, 'payment-add'>>();
   const { levelId, carId } = route.params;
+
+  const { data: levelData, isLoading: areLevelsLoading } = useLevels();
+  const [selectedLevel, setSelectedLevel] = useState<Level>();
+  const [previousLevel, setPreviousLevel] = useState<Level | undefined>();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [priceToDisplay, setPriceToDisplay] = useState<PriceToDisplay>();
+
   const { mutate, isSuccess, isLoading, isError, data } = useAddSubscription(
     levelId ? levelId : 0,
     carId ? carId : 0,
   );
-  const { data: levelData, isLoading: areLevelsLoading } = useLevels();
-  const [selectedLevel, setSelectedLevel] = useState<Level>();
 
-  const [isProcessing, setIsProcessing] = useState(false);
+  const {
+    mutate: subscriptionUpdateMutate,
+    isSuccess: subsciptionUpdateIsSuccess,
+    isLoading: subscriptionUpdateIsLoading,
+    isError: subscriptionUpdateIsError,
+    data: subscriptionUpdateData,
+  } = useUpdateSubscription(
+    route.params.previousSubscription ? route.params.previousSubscription.id : 0,
+    levelId ? levelId : 0,
+  );
 
   const [cardNumber, setCardNumber] = useState<InputField>({
     value: '',
@@ -71,12 +88,45 @@ export const AddPaymentScreen: FC = () => {
         type: 'success',
         text1: 'Subscription created.',
       });
+      setTimeout(() => {
+        navigation.navigate(route.params.successRoute);
+      }, 3000);
     }
-  }, [isSuccess]);
+    if (subsciptionUpdateIsSuccess) {
+      Toast.show({
+        type: 'success',
+        text1: 'Subscription updated.',
+      });
+      setTimeout(() => {
+        navigation.navigate(route.params.successRoute);
+      }, 3000);
+    }
+  }, [isSuccess, subsciptionUpdateIsSuccess]);
 
   useEffect(() => {
     setSelectedLevel(levelData.find((level: Level) => level.id === levelId));
   }, [areLevelsLoading, levelData]);
+
+  useEffect(() => {
+    if (route.params.previousSubscription && selectedLevel) {
+      const previousLevel = levelData.find(
+        (level: Level) => level.id === route.params.previousSubscription?.level.id,
+      );
+      const totalPrice = selectedLevel?.price - previousLevel?.price;
+      setPreviousLevel(previousLevel);
+      setPriceToDisplay({
+        subtotal: totalPrice * 0.75,
+        tax: totalPrice * 0.25,
+        total: totalPrice,
+      });
+    } else if (selectedLevel) {
+      setPriceToDisplay({
+        subtotal: selectedLevel?.price * 0.75,
+        tax: selectedLevel?.price * 0.25,
+        total: selectedLevel?.price,
+      });
+    }
+  }, [route.params.previousSubscription, selectedLevel, levelData]);
 
   const handler = {
     mutation: () => {
@@ -84,6 +134,13 @@ export const AddPaymentScreen: FC = () => {
       setTimeout(() => {
         setIsProcessing(false);
         mutate();
+      }, 2000);
+    },
+    update: () => {
+      setIsProcessing(true);
+      setTimeout(() => {
+        setIsProcessing(false);
+        subscriptionUpdateMutate();
       }, 2000);
     },
     cardNumberChange: (text: string) => {
@@ -131,7 +188,9 @@ export const AddPaymentScreen: FC = () => {
           <View style={styles.overlay}>
             <View style={styles.overlayModal}>
               <View>
-                <Text style={[text.heading, { color: colors.white.base }]}>Processing payment...</Text>
+                <Text style={[text.heading, { color: colors.white.base }]}>
+                  {priceToDisplay && priceToDisplay?.total <= 0 ? 'Updating...' : 'Processing payment...'}
+                </Text>
                 <ActivityIndicator size={'large'} color={colors.white.base} />
               </View>
             </View>
@@ -212,40 +271,41 @@ export const AddPaymentScreen: FC = () => {
             />
           </View>
           <View>
-            {areLevelsLoading ? (
-              <ActivityIndicator />
-            ) : (
+            {areLevelsLoading && <ActivityIndicator />}
+            {!areLevelsLoading && priceToDisplay && priceToDisplay.total > 0 && (
               <>
                 <View style={styles.summaryItem}>
                   <Text style={[text.regular, text.gray]}>Subtotal:</Text>
-                  <Text style={[text.regular, text.gray]}>
-                    {selectedLevel && selectedLevel?.price * 0.75} kr
-                  </Text>
+                  <Text style={[text.regular, text.gray]}>{priceToDisplay?.subtotal} kr</Text>
                 </View>
                 <View style={styles.summaryItem}>
                   <Text style={[text.regular, text.gray]}>Tax:</Text>
-                  <Text style={[text.regular, text.gray]}>
-                    {selectedLevel && selectedLevel?.price * 0.25} kr
-                  </Text>
+                  <Text style={[text.regular, text.gray]}>{priceToDisplay?.tax} kr</Text>
                 </View>
                 <View style={[styles.summaryItem, styles.summaryTotal]}>
-                  <Text style={[text.heading]}>Tax:</Text>
-                  <Text style={[text.heading]}>{selectedLevel && selectedLevel?.price.toFixed(2)} kr</Text>
+                  <Text style={[text.heading]}>Total:</Text>
+                  <Text style={[text.heading]}>{priceToDisplay?.total.toFixed(2)} kr</Text>
                 </View>
               </>
+            )}
+            {!areLevelsLoading && priceToDisplay && priceToDisplay.total <= 0 && (
+              <View style={[styles.summaryItem]}>
+                <Text style={[text.heading]}>Total:</Text>
+                <Text style={[text.heading, { color: colors.primary.base }]}>Free</Text>
+              </View>
             )}
           </View>
           <Button
             primary
             style={styles.button}
             onPress={() => {
-              handler.mutation();
+              previousLevel ? handler.update() : handler.mutation();
             }}
             disabled={
               cardNumber.valid && cardExpiry.valid && cardCVC.valid && cardHolder.valid ? false : true
             }
           >
-            {isLoading ? (
+            {isLoading || subscriptionUpdateIsLoading ? (
               <ActivityIndicator color={colors.white.base} />
             ) : (
               <>

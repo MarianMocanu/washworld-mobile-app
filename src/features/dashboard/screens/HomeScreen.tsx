@@ -21,10 +21,8 @@ type Props = {};
 export const HomeScreen: FC<Props> = () => {
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
-
-  const [modalLocation, setModalLocation] = useState<Location | null>(null);
-
   const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, 4);
+  const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
 
@@ -75,7 +73,15 @@ export const HomeScreen: FC<Props> = () => {
           <Text style={textStyles.heading}>Active subscription</Text>
           <View style={viewStyles.subscription}>
             {subscriptions[0] && (
-              <Text style={textStyles.subscription}>
+              <Text
+                style={textStyles.subscription}
+                onPress={() =>
+                  navigation2.navigate('stacks-subscription', {
+                    screen: 'subscription-handle',
+                    params: { carId: subscriptions[0].car.id },
+                  })
+                }
+              >
                 {subscriptions[0].car.plateNumber} - {subscriptions[0].level.name}
               </Text>
             )}
