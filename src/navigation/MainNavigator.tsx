@@ -62,7 +62,7 @@ export default function MainNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="tabs" component={TabNavigator} />
-      <Stack.Screen name="stacks-event" component={EventNavigator} />
+      <Stack.Screen name="stacks-event" component={EventNavigator} options={{ gestureEnabled: false }} />
       <Stack.Screen name="stacks-car" component={CarNavigator} />
       <Stack.Screen name="stacks-subscription" component={SubscriptionNavigator} />
       <Stack.Screen name="stacks-payment" component={PaymentNavigator} />

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { View, Text, StyleProp, ViewStyle, Animated } from 'react-native';
+import { View, Text, StyleProp, ViewStyle, Animated, Easing } from 'react-native';
 import { colors } from '@globals/globalStyles'; // Ensure this import is correct
 
 type Props = {
@@ -35,6 +35,7 @@ export const ProgressBar: FC<Props> = ({ progress = 0, duration, color, style })
         toValue: 100,
         duration: duration * 1000,
         useNativeDriver: false,
+        easing: Easing.linear,
       }).start();
     } else {
       // Set the progress directly if duration is not provided
@@ -81,7 +82,7 @@ export const ProgressBar: FC<Props> = ({ progress = 0, duration, color, style })
       <Text
         style={{
           position: 'absolute',
-          right: `${100 - displayProgress}%`,
+          right: `${100 - displayProgress - 5}%`,
           top: 10,
           fontFamily: 'gilroy-semibold',
           fontSize: 12,
