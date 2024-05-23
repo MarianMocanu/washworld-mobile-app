@@ -60,7 +60,7 @@ export default function MainNavigator() {
   }, [isLoading, data]);
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false, animation: 'none' }}>
       <Stack.Screen name="tabs" component={TabNavigator} />
       <Stack.Screen name="stacks-event" component={EventNavigator} options={{ gestureEnabled: false }} />
       <Stack.Screen name="stacks-car" component={CarNavigator} />
