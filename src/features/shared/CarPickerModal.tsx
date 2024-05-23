@@ -1,11 +1,11 @@
-import { colors } from '@globals/globalStyles';
+import { colors, globalTextStyles } from '@globals/globalStyles';
 import { Button } from '@shared/Button';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ReactNode } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Car } from '@models/Car';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
+import { Subscription } from '@models/Subscription';
 
 interface InfoModalProps {
   /**
@@ -19,7 +19,7 @@ interface InfoModalProps {
   heading: string;
   text?: string;
   buttonText?: string;
-  carData: Car[] | undefined;
+  subscriptionData: Subscription[] | undefined;
   setVisible: (value: boolean) => void;
 }
 
@@ -28,7 +28,7 @@ export const CarPickerModal: React.FC<InfoModalProps> = ({
   handlePress,
   heading,
   buttonText,
-  carData,
+  subscriptionData,
   setVisible,
 }) => {
   const mainNavigation = useNavigation<NavigationProp<MainStackParamsList>>();
@@ -46,20 +46,11 @@ export const CarPickerModal: React.FC<InfoModalProps> = ({
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalHeading}>{heading}</Text>
-          {carData?.map((car: Car, index: number) => (
+          {subscriptionData?.map((subscription, index: number) => (
             <Button
-              // text={car.plateNumber + '   ' + car.name}
               key={index}
-              onPress={() => navigateToSubscription(car.id)}
+              onPress={() => navigateToSubscription(subscription.car.id)}
               style={styles.carButton}
-              // leftIcon={
-              //   <MaterialIcons
-              //     name="directions-car"
-              //     size={24}
-              //     color={colors.grey[60]}
-              //     style={{ lineHeight: 24 }}
-              //   />
-              // }
             >
               <MaterialIcons
                 name="directions-car"
@@ -67,8 +58,14 @@ export const CarPickerModal: React.FC<InfoModalProps> = ({
                 color={colors.grey[60]}
                 style={{ lineHeight: 24 }}
               />
-              <Text style={[styles.modalText, styles.license]}>{car.plateNumber}</Text>
-              <Text style={styles.modalText}>{car.name}</Text>
+              <View>
+                <Text style={[styles.modalText]}>
+                  {subscription.car.plateNumber + ' - ' + subscription.car.name}
+                </Text>
+                <Text style={[styles.modalText, styles.carSubscription]}>
+                  {subscription.level.name || 'no subscription'}
+                </Text>
+              </View>
             </Button>
           ))}
           <Button primary={true} onPress={handlePress} text={buttonText} style={styles.button} />
@@ -86,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    backgroundColor: colors.white.cream,
+    backgroundColor: colors.white.base,
     justifyContent: 'center',
     alignItems: 'flex-start',
     padding: 24,
@@ -108,17 +105,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 20,
     width: '100%',
-    borderColor: colors.primary.base,
-    borderWidth: 2,
-    backgroundColor: colors.white.base,
+    backgroundColor: colors.white.cream,
     height: 48,
     borderRadius: 4,
     paddingHorizontal: 16,
   },
   modalText: {
     fontFamily: 'gilroy-medium',
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 18,
+  },
+  carSubscription: {
+    ...globalTextStyles.inactive,
   },
   button: {
     alignSelf: 'stretch',

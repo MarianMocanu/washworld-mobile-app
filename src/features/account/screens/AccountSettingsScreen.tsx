@@ -12,6 +12,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { CarPickerModal } from '@shared/CarPickerModal';
 import { useState } from 'react';
+import { useSubscriptions } from '@queries/Subscriptions';
+import { Subscription } from '@models/Subscription';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'index'>;
 
@@ -20,6 +22,8 @@ const AccountSettingsScreen = (props: Props) => {
 
   const { user } = useSelector((state: RootState) => state.auth);
   const { data } = useCars(user?.id, { enabled: !!user });
+  const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleChangeSubscription = () => {
@@ -31,7 +35,7 @@ const AccountSettingsScreen = (props: Props) => {
         params: { carId: data[0].id },
       });
     } else {
-      console.log('Navigate to add car?');
+      console.log('No car registered, navigate to add car?');
     }
   };
 
@@ -41,7 +45,7 @@ const AccountSettingsScreen = (props: Props) => {
         visible={isModalVisible}
         heading={'Please select a car'}
         buttonText={'Cancel'}
-        carData={data}
+        subscriptionData={subscriptions}
         handlePress={() => setIsModalVisible(false)}
         setVisible={setIsModalVisible}
       />
