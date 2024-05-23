@@ -21,11 +21,44 @@ type Props = {};
 export const HomeScreen: FC<Props> = () => {
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
-  const [limit] = useState(4);
-  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, limit);
+  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, undefined);
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
   const [modalLocation, setModalLocation] = useState<Location | null>(null);
+
+  const loyaltyLevels = [
+    {
+      name: 'Base',
+      color: colors.primary.base,
+    },
+    {
+      name: 'Silver',
+      color: colors.tertiary.silver,
+      goal: 12,
+    },
+    {
+      name: 'Gold',
+      color: colors.tertiary.gold,
+      goal: 48,
+    },
+    {
+      name: 'Diamond',
+      color: colors.tertiary.diamond,
+      goal: 96,
+    },
+  ];
+
+  const currentLevel =
+    loyaltyLevels.slice(1).find(level => (events?.length ?? 0) < (level.goal ?? Infinity)) ||
+    loyaltyLevels[0];
+
+  function calculateProgress(eventsLength: number | undefined, goal: number | undefined): number {
+    if (goal === undefined || eventsLength === undefined) {
+      return 0;
+    }
+    const progress = (eventsLength / goal) * 100;
+    return Math.floor(progress);
+  }
 
   function navigateToHistory() {
     navigation.navigate('history');
@@ -56,12 +89,14 @@ export const HomeScreen: FC<Props> = () => {
           <View style={viewStyles.progress}>
             <View style={[viewStyles.horizontal, viewStyles.justify]}>
               <View style={viewStyles.horizontal}>
-                <RewardsIcon color={colors.tertiary.diamond} size={24} />
-                <Text style={textStyles.loyaltyLevel}>Diamond</Text>
+                <RewardsIcon color={currentLevel.color} size={24} />
+                <Text style={textStyles.loyaltyLevel}>{currentLevel.name}</Text>
               </View>
-              <Text style={textStyles.loyaltyStatus}>72/96 washes</Text>
+              <Text style={textStyles.loyaltyStatus}>
+                {events?.length ?? 0}/{currentLevel.goal ?? 0} washes
+              </Text>
             </View>
-            <ProgressBar progress={80} />
+            <ProgressBar progress={calculateProgress(events?.length, currentLevel.goal)} />
           </View>
           {/* Recent washes */}
           <View style={[viewStyles.horizontal, viewStyles.justify]}>
@@ -80,7 +115,7 @@ export const HomeScreen: FC<Props> = () => {
               }
             />
           </View>
-          {events.map((event, index) => (
+          {events.slice(-4).map((event, index) => (
             <View key={index} style={viewStyles.wash}>
               <Text style={textStyles.plateNumber}>{event.car.plateNumber}</Text>
               <Button

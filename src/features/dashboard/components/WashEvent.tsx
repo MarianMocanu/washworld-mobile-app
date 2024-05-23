@@ -1,5 +1,5 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import { Location } from '@models/Location';
+import { Event } from '@models/Event';
 import { FC } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -7,24 +7,26 @@ import { Button } from '@shared/Button';
 
 type Props = {
   /**
-   * The location to display
+   * The event to display
    */
-  location: Location;
+  event: Event;
+
+  onPress: () => void;
 };
 
-export const WashEvent: FC<Props> = ({ location }) => {
+export const WashEvent: FC<Props> = ({ event, onPress }) => {
   return (
-    <Button style={viewStyles.container}>
-      <Image source={{ uri: location.image }} style={viewStyles.image} />
+    <Button style={viewStyles.container} onPress={onPress}>
+      <Image source={{ uri: event.terminal.location?.image }} style={viewStyles.image} />
       <View style={viewStyles.content}>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           style={textStyles.address}
-        >{`${location.city}, ${location.streetName}`}</Text>
+        >{`${event.terminal.location?.city}, ${event.terminal.location?.streetName}`}</Text>
 
-        <Text style={textStyles.plateNumber}>DA 21 322</Text>
-        <Text style={textStyles.date}>21/04/24</Text>
+        <Text style={textStyles.plateNumber}>{event.car.plateNumber}</Text>
+        <Text style={textStyles.date}>{new Date(event.createdAt).toLocaleDateString()}</Text>
       </View>
       <MaterialIcons name="keyboard-arrow-right" style={viewStyles.icon} />
     </Button>
@@ -34,9 +36,12 @@ export const WashEvent: FC<Props> = ({ location }) => {
 const viewStyles = StyleSheet.create({
   container: {
     marginHorizontal: 8,
-    marginVertical: 12,
+    marginVertical: 8,
     flexDirection: 'row',
     gap: 8,
+    backgroundColor: colors.white.cream,
+    padding: 8,
+    borderRadius: 4,
   },
   content: {
     flex: 1,
