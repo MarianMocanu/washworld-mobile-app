@@ -1,12 +1,10 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import { ProgressBar } from '@shared/ProgressBar';
-import { RewardsIcon } from '@shared/RewardsIcon';
 import { FC, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { useSubscriptions } from '@queries/Subscriptions';
-import { useEvents } from '@queries/Event';
+import { useEvents, useEventsNumber } from '@queries/Event';
 import { Button } from '@shared/Button';
 import { useLocations } from '@queries/Locations';
 import { Location } from '@models/Location';
@@ -15,6 +13,8 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { DashboardStackParamList } from '../DashboardNavigator';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { LocationsList } from '@shared/LocationsList';
+import { TabsParamList } from 'src/navigation/TabNavigator';
+import RewardsProgress from '@shared/RewardsProgress';
 
 type Props = {};
 
@@ -24,44 +24,16 @@ export const HomeScreen: FC<Props> = () => {
   const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, undefined);
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
+  const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });
   const [modalLocation, setModalLocation] = useState<Location | null>(null);
-
-  const loyaltyLevels = [
-    {
-      name: 'Base',
-      color: colors.primary.base,
-    },
-    {
-      name: 'Silver',
-      color: colors.tertiary.silver,
-      goal: 12,
-    },
-    {
-      name: 'Gold',
-      color: colors.tertiary.gold,
-      goal: 48,
-    },
-    {
-      name: 'Diamond',
-      color: colors.tertiary.diamond,
-      goal: 96,
-    },
-  ];
-
-  const currentLevel =
-    loyaltyLevels.slice(1).find(level => (events?.length ?? 0) < (level.goal ?? Infinity)) ||
-    loyaltyLevels[0];
-
-  function calculateProgress(eventsLength: number | undefined, goal: number | undefined): number {
-    if (goal === undefined || eventsLength === undefined) {
-      return 0;
-    }
-    const progress = (eventsLength / goal) * 100;
-    return Math.floor(progress);
-  }
+  const navigationAccount = useNavigation<NavigationProp<TabsParamList>>();
 
   function navigateToHistory() {
     navigation.navigate('history');
+  }
+
+  function navigateToRewards() {
+    navigationAccount.navigate('account', { screen: 'rewards' });
   }
 
   if (subscriptions && events && locations) {
@@ -70,7 +42,9 @@ export const HomeScreen: FC<Props> = () => {
         <ScreenHeader />
         <ScrollView contentContainerStyle={viewStyles.scrollContainer}>
           {/* Active subscription  */}
-          <Text style={textStyles.heading}>Active subscription</Text>
+          <Text style={textStyles.heading} onPress={navigateToRewards}>
+            Active subscription
+          </Text>
           <View style={viewStyles.subscription}>
             {subscriptions[0] && (
               <Text style={textStyles.subscription}>
@@ -85,19 +59,7 @@ export const HomeScreen: FC<Props> = () => {
           )} */}
           </View>
           {/* Current progress */}
-          <Text style={textStyles.heading}>Current rewards progress</Text>
-          <View style={viewStyles.progress}>
-            <View style={[viewStyles.horizontal, viewStyles.justify]}>
-              <View style={viewStyles.horizontal}>
-                <RewardsIcon color={currentLevel.color} size={24} />
-                <Text style={textStyles.loyaltyLevel}>{currentLevel.name}</Text>
-              </View>
-              <Text style={textStyles.loyaltyStatus}>
-                {events?.length ?? 0}/{currentLevel.goal ?? 0} washes
-              </Text>
-            </View>
-            <ProgressBar progress={calculateProgress(events?.length, currentLevel.goal)} />
-          </View>
+          <RewardsProgress heading={'Current Rewards Progress'} />
           {/* Recent washes */}
           <View style={[viewStyles.horizontal, viewStyles.justify]}>
             <Text style={textStyles.heading}>Recent washes</Text>

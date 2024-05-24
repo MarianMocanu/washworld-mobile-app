@@ -11,6 +11,7 @@ import axios, { AxiosError } from 'src/app/axios';
 
 export const EVENT_QUERY_KEYS = {
   EVENTS: 'events',
+  EVENT_COUNT_FOR_USER: 'eventCountForUser',
 };
 
 export const EVENT_MUTATION_KEYS = {
@@ -36,6 +37,20 @@ export const useEvents = (
   });
 };
 
+export const useEventsNumber = (
+  userId: number | undefined,
+  options: Pick<QueryObserverOptions, 'enabled'>,
+): UseQueryResult<number, Error> => {
+  return useQuery({
+    queryKey: [EVENT_QUERY_KEYS.EVENT_COUNT_FOR_USER],
+    queryFn: async function fetchEventsNumber() {
+      const response = await axios.get(`/events/user/${userId}/count`);
+      return response.data as number;
+    },
+    enabled: options.enabled ?? true,
+  });
+};
+
 type CreateEventPayload = {
   carId?: number;
   serviceId?: number;
@@ -54,7 +69,7 @@ export const useCreateEvent = (): UseMutationResult<Event, AxiosError, CreateEve
       console.error('Error creating event', error);
     },
     onSettled: () => {
-      queryClient.invalidateQueries([EVENT_QUERY_KEYS.EVENTS]);
+      queryClient.invalidateQueries([EVENT_QUERY_KEYS.EVENTS, EVENT_QUERY_KEYS.EVENT_COUNT_FOR_USER]);
     },
   });
 };
