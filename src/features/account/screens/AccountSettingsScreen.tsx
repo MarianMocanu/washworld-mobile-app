@@ -38,7 +38,6 @@ const AccountSettingsScreen = (props: Props) => {
       console.log('No car registered, navigate to add car?');
     }
   };
-
   return (
     <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
       <CarPickerModal
@@ -51,15 +50,18 @@ const AccountSettingsScreen = (props: Props) => {
         setVisible={setIsModalVisible}
       />
       {/* User info section */}
-      {/* Populate userInfo with user data */}
       <View style={styles.userInfo}>
         <View style={styles.iconNamePlan}>
           <View style={styles.userIcon}>
-            <Text style={styles.iconText}>JP</Text>
+            <Text style={styles.iconText}>
+              {(user?.firstName && user?.firstName.charAt(0) + user?.lastName.charAt(0)) || 'AA'}
+            </Text>
           </View>
-
           <View style={styles.namePlan}>
-            <Text style={styles.fullName}>Jesper Poulsen</Text>
+            <Text style={styles.fullName}>
+              {(user?.firstName && user?.firstName + ' ' + user?.lastName) || 'Firstname Lastname '}
+            </Text>
+            {/* TODO: Populate with user loyalty level */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
               <RewardsIcon color={colors.tertiary.diamond} size={24} />
               <Text>Diamond member</Text>
@@ -100,7 +102,7 @@ const AccountSettingsScreen = (props: Props) => {
         <View style={styles.buttonContainer}>
           <Button
             text="Add another car"
-            onPress={() => props.navigation.navigate('add-car')}
+            onPress={() => mainNavigation.navigate('stacks-car', { screen: 'car-add' })}
             style={styles.button}
             rightIcon={
               <MaterialIcons
