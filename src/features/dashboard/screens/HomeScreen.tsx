@@ -1,10 +1,10 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { FC, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { useSubscriptions } from '@queries/Subscriptions';
-import { useEvents, useEventsNumber } from '@queries/Event';
+import { useEvents } from '@queries/Event';
 import { Button } from '@shared/Button';
 import { useLocations } from '@queries/Locations';
 import { Location } from '@models/Location';
@@ -25,9 +25,9 @@ export const HomeScreen: FC<Props> = () => {
   const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, 4);
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
-  const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });
   const [modalLocation, setModalLocation] = useState<Location | null>(null);
   const navigationAccount = useNavigation<NavigationProp<TabsParamList>>();
+  const [selectedCar, setSelectedCar] = useState(subscriptions?.[0]?.car);
 
   function navigateToHistory() {
     navigation.navigate('history');
@@ -43,9 +43,7 @@ export const HomeScreen: FC<Props> = () => {
         <ScreenHeader />
         <ScrollView contentContainerStyle={viewStyles.scrollContainer}>
           {/* Active subscription  */}
-          <Text style={textStyles.heading} onPress={navigateToRewards}>
-            Active subscription
-          </Text>
+          <Text style={textStyles.heading}>Active subscription</Text>
           <View style={viewStyles.subscription}>
             {subscriptions[0] && (
               <Text
@@ -60,15 +58,20 @@ export const HomeScreen: FC<Props> = () => {
                 {subscriptions[0].car.plateNumber} - {subscriptions[0].level.name}
               </Text>
             )}
-            {/* {user.cars.length > 1 && (
-            <MaterialIcons
-              name="keyboard-arrow-down"
-              style={{ fontSize: 24, lineHeight: 24, color: colors.grey[60] }}
-            />
-          )} */}
+            {subscriptions.length > 1 && (
+              <MaterialIcons
+                name="keyboard-arrow-down"
+                style={{ fontSize: 24, lineHeight: 24, color: colors.grey[60] }}
+              />
+            )}
           </View>
           {/* Current progress */}
-          <RewardsProgress heading={'Current Rewards Progress'} />
+          <Text style={textStyles.heading}>Current Rewards Progress</Text>
+          <TouchableOpacity onPress={navigateToRewards}>
+            <View>
+              <RewardsProgress />
+            </View>
+          </TouchableOpacity>
           {/* Recent washes */}
           <View style={[viewStyles.horizontal, viewStyles.justify]}>
             <Text style={textStyles.heading}>Recent washes</Text>

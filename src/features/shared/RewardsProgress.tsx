@@ -7,10 +7,6 @@ import { useEventsNumber } from '@queries/Event';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 
-interface RewardsProgressProps {
-  heading: string;
-}
-
 interface LoyaltyLevel {
   name: string;
   color: string;
@@ -60,7 +56,7 @@ const getLoyaltyLevels = (eventsNumber: number | undefined) => {
   return { currentLoyaltyLevel, nextLoyaltyLevel };
 };
 
-const RewardsProgress: React.FC<RewardsProgressProps> = ({ heading }) => {
+const RewardsProgress: React.FC = () => {
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });
 
@@ -75,7 +71,6 @@ const RewardsProgress: React.FC<RewardsProgressProps> = ({ heading }) => {
 
   return (
     <View>
-      <Text style={textStyles.heading}>{heading}</Text>
       <View style={viewStyles.progress}>
         <View style={[viewStyles.horizontal, viewStyles.justify]}>
           <View style={viewStyles.horizontal}>
@@ -83,7 +78,7 @@ const RewardsProgress: React.FC<RewardsProgressProps> = ({ heading }) => {
             <Text style={textStyles.loyaltyLevel}>{currentLoyaltyLevel.name}</Text>
           </View>
           <Text style={textStyles.loyaltyStatus}>
-            {eventsNumber}/{nextLoyaltyLevel?.goal} washes for next level
+            {eventsNumber}/{nextLoyaltyLevel?.goal} washes
           </Text>
         </View>
         {eventsNumber !== 0 && nextLoyaltyLevel && (
