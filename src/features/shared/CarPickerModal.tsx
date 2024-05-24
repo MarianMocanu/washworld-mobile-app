@@ -6,6 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
 import { Subscription } from '@models/Subscription';
+import { Car } from '@models/Car';
 
 interface InfoModalProps {
   /**
@@ -20,6 +21,7 @@ interface InfoModalProps {
   text?: string;
   buttonText?: string;
   subscriptionData: Subscription[] | undefined;
+  carsData: Car[] | undefined;
   setVisible: (value: boolean) => void;
 }
 
@@ -29,6 +31,7 @@ export const CarPickerModal: React.FC<InfoModalProps> = ({
   heading,
   buttonText,
   subscriptionData,
+  carsData,
   setVisible,
 }) => {
   const mainNavigation = useNavigation<NavigationProp<MainStackParamsList>>();
@@ -36,7 +39,7 @@ export const CarPickerModal: React.FC<InfoModalProps> = ({
   function navigateToSubscription(carId: number) {
     setVisible(false);
     mainNavigation.navigate('stacks-subscription', {
-      screen: 'subscription-add',
+      screen: 'subscription-handle',
       params: { carId: carId },
     });
   }
@@ -46,12 +49,8 @@ export const CarPickerModal: React.FC<InfoModalProps> = ({
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalHeading}>{heading}</Text>
-          {subscriptionData?.map((subscription, index: number) => (
-            <Button
-              key={index}
-              onPress={() => navigateToSubscription(subscription.car.id)}
-              style={styles.carButton}
-            >
+          {carsData?.map((car, index: number) => (
+            <Button key={index} onPress={() => navigateToSubscription(car.id)} style={styles.carButton}>
               <MaterialIcons
                 name="directions-car"
                 size={24}
@@ -59,13 +58,26 @@ export const CarPickerModal: React.FC<InfoModalProps> = ({
                 style={{ lineHeight: 24 }}
               />
               <View>
-                <Text style={[styles.modalText]}>
-                  {subscription.car.plateNumber + ' - ' + subscription.car.name}
-                </Text>
+                <Text style={[styles.modalText]}>{car.plateNumber + ' - ' + car.name}</Text>
                 <Text style={[styles.modalText, styles.carSubscription]}>
-                  {subscription.level.name || 'no subscription'}
+                  {(() => {
+                    const activeSubscription = subscriptionData?.find(
+                      subscriptionData => subscriptionData.car.id === car.id,
+                    );
+                    return activeSubscription ? (
+                      <Text>{activeSubscription.level.name}</Text>
+                    ) : (
+                      <Text>No active subscription</Text>
+                    );
+                  })()}
                 </Text>
               </View>
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24, marginLeft: 'auto' }}
+              />
             </Button>
           ))}
           <Button primary={true} onPress={handlePress} text={buttonText} style={styles.button} />
@@ -90,7 +102,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     gap: 24,
     borderRadius: 4,
-    width: 300,
+    width: '90%',
   },
   modalHeading: {
     fontFamily: 'gilroy-bold',

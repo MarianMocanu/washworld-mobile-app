@@ -21,18 +21,18 @@ const AccountSettingsScreen = (props: Props) => {
   const mainNavigation = useNavigation<NavigationProp<MainStackParamsList>>();
 
   const { user } = useSelector((state: RootState) => state.auth);
-  const { data } = useCars(user?.id, { enabled: !!user });
+  const { data: cars } = useCars(user?.id, { enabled: !!user });
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleChangeSubscription = () => {
-    if (data && data?.length > 1) {
+    if (cars && cars?.length > 1) {
       setIsModalVisible(true);
-    } else if (data?.length === 1) {
+    } else if (cars?.length === 1) {
       mainNavigation.navigate('stacks-subscription', {
         screen: 'subscription-handle',
-        params: { carId: data[0].id },
+        params: { carId: cars[0].id },
       });
     } else {
       console.log('No car registered, navigate to add car?');
@@ -46,9 +46,11 @@ const AccountSettingsScreen = (props: Props) => {
         heading={'Please select a car'}
         buttonText={'Cancel'}
         subscriptionData={subscriptions}
+        carsData={cars}
         handlePress={() => setIsModalVisible(false)}
         setVisible={setIsModalVisible}
       />
+      {/* User info section */}
       {/* Populate userInfo with user data */}
       <View style={styles.userInfo}>
         <View style={styles.iconNamePlan}>
@@ -58,18 +60,61 @@ const AccountSettingsScreen = (props: Props) => {
 
           <View style={styles.namePlan}>
             <Text style={styles.fullName}>Jesper Poulsen</Text>
-            <Text>Premium Plus</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+              <RewardsIcon color={colors.tertiary.diamond} size={24} />
+              <Text>Diamond member</Text>
+            </View>
           </View>
-        </View>
-
-        <View style={styles.carInfo}>
-          <MaterialIcons name="directions-car" size={24} color={colors.grey[60]} style={{ lineHeight: 24 }} />
-          <Text>DB 12 345</Text>
-          <Text>Polestar 1</Text>
-          <RewardsIcon color={colors.tertiary.diamond} size={24} />
         </View>
       </View>
 
+      {/* Car/s section */}
+      <View style={[styles.section, styles.carSection]}>
+        <Text style={styles.sectionHeading}>Your Cars</Text>
+        <View style={styles.carContainer}>
+          {cars?.map((car, index: number) => (
+            <View key={index} style={styles.car}>
+              <MaterialIcons
+                name="directions-car"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+              <View>
+                <Text style={[styles.carText]}>{car.plateNumber + ' - ' + car.name}</Text>
+
+                {(() => {
+                  const activeSubscription = subscriptions?.find(
+                    subscription => subscription.car.id === car.id,
+                  );
+                  return activeSubscription ? (
+                    <Text>{activeSubscription.level.name}</Text>
+                  ) : (
+                    <Text>No active subscription</Text>
+                  );
+                })()}
+              </View>
+            </View>
+          ))}
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            text="Add another car"
+            onPress={() => props.navigation.navigate('add-car')}
+            style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
+          />
+        </View>
+      </View>
+
+      {/* Subscription */}
       <View style={styles.section}>
         <Text style={styles.sectionHeading}>Subscription</Text>
         <View style={styles.buttonContainer}>
@@ -77,80 +122,160 @@ const AccountSettingsScreen = (props: Props) => {
             text="Change subscription"
             onPress={() => handleChangeSubscription()}
             style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
           />
           <Button
             text="Loyalty rewards"
             onPress={() => props.navigation.navigate('rewards')}
             style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
+          />
+        </View>
+      </View>
+
+      {/* Preferences */}
+      <View style={styles.section}>
+        <Text style={styles.sectionHeading}>Preferences</Text>
+        <View style={styles.buttonContainer}>
+          <Button
+            text="Preferred location"
+            onPress={() => props.navigation.navigate('location')}
+            style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
           />
           <Button
-            text="Add another car"
-            onPress={() => props.navigation.navigate('add-car')}
+            text="Preferred services"
+            onPress={() => props.navigation.navigate('services')}
             style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
+          />
+          <View style={styles.button}>
+            <Text>Notifications</Text>
+            <Switch value={true} onValueChange={value => console.log('Notifications', value)} />
+          </View>
+          <View style={styles.button}>
+            <Text>Language</Text>
+            <Text>CustomDropdownComponent?</Text>
+            {/* <CustomLanguageDropdownComponent/> */}
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionHeading}>Help & Support</Text>
+        <View style={styles.buttonContainer}>
+          <Button
+            text="FAQs"
+            onPress={() => props.navigation.navigate('faq')}
+            style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
+          />
+          <Button
+            text="Customer support"
+            onPress={() => props.navigation.navigate('support')}
+            style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
+          />
+          <Button
+            text="Submit feedback"
+            onPress={() => props.navigation.navigate('feedback')}
+            style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
           />
         </View>
+      </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionHeading}>Preferences</Text>
-          <View style={styles.buttonContainer}>
-            <Button
-              text="Preferred location"
-              onPress={() => props.navigation.navigate('location')}
-              style={styles.button}
-            />
-            <Button
-              text="Preferred services"
-              onPress={() => props.navigation.navigate('services')}
-              style={styles.button}
-            />
-            <View style={styles.button}>
-              <Text>Notifications</Text>
-              <Switch value={true} onValueChange={value => console.log('Notifications', value)} />
-            </View>
-            <View style={styles.button}>
-              <Text>Language</Text>
-              <Text>CustomDropdownComponent?</Text>
-              {/* <CustomLanguageDropdownComponent/> */}
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionHeading}>Help & Support</Text>
-          <View style={styles.buttonContainer}>
-            <Button text="FAQs" onPress={() => props.navigation.navigate('faq')} style={styles.button} />
-            <Button
-              text="Customer support"
-              onPress={() => props.navigation.navigate('support')}
-              style={styles.button}
-            />
-            <Button
-              text="Submit feedback"
-              onPress={() => props.navigation.navigate('feedback')}
-              style={styles.button}
-            />
-          </View>
-        </View>
-
-        <View style={[styles.section, styles.lastSection]}>
-          <Text style={styles.sectionHeading}>Account</Text>
-          <View style={styles.buttonContainer}>
-            <Button
-              text="Edit account details"
-              onPress={() => props.navigation.navigate('details')}
-              style={styles.button}
-            />
-            <Button
-              text="Change password"
-              onPress={() => props.navigation.navigate('change-password')}
-              style={styles.button}
-            />
-            <Button
-              text="Log out"
-              onPress={() => props.navigation.navigate('log-out')}
-              style={styles.button}
-            />
-          </View>
+      <View style={[styles.section, styles.lastSection]}>
+        <Text style={styles.sectionHeading}>Account</Text>
+        <View style={styles.buttonContainer}>
+          <Button
+            text="Edit account details"
+            onPress={() => props.navigation.navigate('details')}
+            style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
+          />
+          <Button
+            text="Change password"
+            onPress={() => props.navigation.navigate('change-password')}
+            style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
+          />
+          <Button
+            text="Log out"
+            onPress={() => props.navigation.navigate('log-out')}
+            style={styles.button}
+            rightIcon={
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color={colors.grey[60]}
+                style={{ lineHeight: 24 }}
+              />
+            }
+          />
         </View>
       </View>
     </ScrollView>
@@ -169,6 +294,7 @@ const styles = StyleSheet.create({
   section: {
     alignSelf: 'stretch',
   },
+  carSection: {},
   userInfo: {
     alignSelf: 'stretch',
     backgroundColor: colors.white.cream,
@@ -209,6 +335,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 12,
+  },
+  car: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 16,
+    width: '100%',
+    backgroundColor: colors.white.cream,
+    // height: 48,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+  },
+  carContainer: {
+    backgroundColor: colors.white.cream,
+    padding: 12,
+    gap: 12,
+  },
+  carText: {
+    fontFamily: 'gilroy-medium',
+    fontSize: 16,
+    lineHeight: 18,
+  },
+  carSubscription: {
+    ...globalTextStyles.inactive,
+    fontSize: 12,
   },
   sectionHeading: {
     ...globalTextStyles.heading,
