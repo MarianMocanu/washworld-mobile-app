@@ -25,8 +25,6 @@ export const ScanPlateScreen: FC = () => {
     enabled: !!serviceId && !!locationId,
   });
 
-  console.log({ availableTerminalData });
-
   function handleOnScanPress() {
     setScanning(true);
   }

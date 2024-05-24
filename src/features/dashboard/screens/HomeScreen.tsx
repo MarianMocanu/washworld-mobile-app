@@ -19,9 +19,10 @@ import RewardsProgress from '@shared/RewardsProgress';
 type Props = {};
 
 export const HomeScreen: FC<Props> = () => {
-  const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
-  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, undefined);
+  const navigation2 = useNavigation<NavigationProp<any>>();
+  const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
+  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, 4);
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
   const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });
@@ -47,7 +48,15 @@ export const HomeScreen: FC<Props> = () => {
           </Text>
           <View style={viewStyles.subscription}>
             {subscriptions[0] && (
-              <Text style={textStyles.subscription}>
+              <Text
+                style={textStyles.subscription}
+                onPress={() =>
+                  navigation2.navigate('stacks-subscription', {
+                    screen: 'subscription-handle',
+                    params: { carId: subscriptions[0].car.id },
+                  })
+                }
+              >
                 {subscriptions[0].car.plateNumber} - {subscriptions[0].level.name}
               </Text>
             )}
@@ -77,8 +86,8 @@ export const HomeScreen: FC<Props> = () => {
               }
             />
           </View>
-          {events.slice(-4).map((event, index) => (
-            <View key={index} style={viewStyles.wash}>
+          {events.map((event, index) => (
+            <View key={index.toString()} style={viewStyles.wash}>
               <Text style={textStyles.plateNumber}>{event.car.plateNumber}</Text>
               <Button
                 style={{ flex: 1, paddingLeft: 24 }}

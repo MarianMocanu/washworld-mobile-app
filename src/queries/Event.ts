@@ -12,6 +12,7 @@ import axios, { AxiosError } from 'src/app/axios';
 export const EVENT_QUERY_KEYS = {
   EVENTS: 'events',
   EVENT_COUNT_FOR_USER: 'eventCountForUser',
+  RECENT_EVENTS: 'recent-events',
 };
 
 export const EVENT_MUTATION_KEYS = {
@@ -21,16 +22,13 @@ export const EVENT_MUTATION_KEYS = {
 export const useEvents = (
   userId: number | undefined,
   options: Pick<QueryObserverOptions, 'enabled'>,
-  limit: number | undefined,
+  limit?: number,
 ): UseQueryResult<Event[], Error> => {
   return useQuery({
-    queryKey: [EVENT_QUERY_KEYS.EVENTS],
+    queryKey: [limit ? EVENT_QUERY_KEYS.RECENT_EVENTS : EVENT_QUERY_KEYS.EVENTS, userId],
     queryFn: async function fetchEvents() {
       let url = `/events/user/${userId}`;
-      if (limit) {
-        url += `?limit=${limit}`;
-      }
-      const response = await axios.get(url);
+      const response = await axios.get(url, { params: { limit } });
       return response.data as Event[];
     },
     enabled: options.enabled ?? true,
@@ -57,10 +55,10 @@ type CreateEventPayload = {
   terminalId?: number;
 };
 
-export const useCreateEvent = (): UseMutationResult<Event, AxiosError, CreateEventPayload> => {
+export const useCreateEvent = (userId: number): UseMutationResult<Event, AxiosError, CreateEventPayload> => {
   const queryClient = useQueryClient();
   return useMutation<Event, AxiosError, CreateEventPayload>({
-    mutationKey: [EVENT_MUTATION_KEYS.CREATE_EVENT],
+    mutationKey: [EVENT_MUTATION_KEYS.CREATE_EVENT, userId],
     mutationFn: async function createEvent(payload: CreateEventPayload) {
       const response = await axios.post<Event>(`/events`, payload);
       return response.data as Event;
@@ -68,8 +66,10 @@ export const useCreateEvent = (): UseMutationResult<Event, AxiosError, CreateEve
     onError: error => {
       console.error('Error creating event', error);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries([EVENT_QUERY_KEYS.EVENTS, EVENT_QUERY_KEYS.EVENT_COUNT_FOR_USER]);
+    onSuccess: () => {
+      queryClient.invalidateQueries([EVENT_QUERY_KEYS.EVENTS, userId]);
+      queryClient.invalidateQueries([EVENT_QUERY_KEYS.RECENT_EVENTS, userId]);
+      queryClient.invalidateQueries([EVENT_QUERY_KEYS.EVENT_COUNT_FOR_USER]);
     },
   });
 };

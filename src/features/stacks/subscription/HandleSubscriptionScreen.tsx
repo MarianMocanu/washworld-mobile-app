@@ -2,7 +2,7 @@ import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Button } from '@shared/Button';
 import { ScreenHeader } from '@shared/ScreenHeader';
-import { FC, useState } from 'react';
+import { FC, useEffect, useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TabsParamList } from 'src/navigation/TabNavigator';
@@ -10,24 +10,47 @@ import RadioButton from '@shared/RadioButton';
 import { useLevels } from '@queries/Levels';
 import { Level } from '@models/Level';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { PaymentStackParamList } from 'src/navigation/PaymentNavigator';
 import { SubscriptionStackParamList } from 'src/navigation/SubscriptionNavigator';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/app/store';
+import { useSubscriptions } from '@queries/Subscriptions';
+import { Subscription } from '@models/Subscription';
 
 export const AddSubscriptionScreen: FC = () => {
   const tabNavigation = useNavigation<NavigationProp<TabsParamList, 'dashboard'>>();
   const mainNavigation = useNavigation<NavigationProp<MainStackParamsList>>();
-  const route = useRoute<RouteProp<SubscriptionStackParamList, 'subscription-add'>>();
+  const route = useRoute<RouteProp<SubscriptionStackParamList, 'subscription-handle'>>();
+  const auth = useSelector((state: RootState) => state.auth);
   const { data, isLoading, error } = useLevels();
+  const {
+    data: subscriptionData,
+    isLoading: subscriptionIsLoading,
+    error: subscriptionError,
+    refetch: refetchSubscription,
+  } = useSubscriptions(auth.user ? auth.user?.id : 0);
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
+  const [activeSubscription, setActiveSubscription] = useState<Subscription | null>(null);
+
+  useEffect(() => {
+    refetchSubscription();
+  }, [auth.user]);
+
+  useLayoutEffect(() => {
+    if (subscriptionData && route.params.carId) {
+      const activeSubscription = subscriptionData.find(sub => sub.car.id === route.params.carId);
+      setActiveSubscription(activeSubscription ? activeSubscription : null);
+    }
+  }, [subscriptionData]);
+
   return (
     <View style={styles.container}>
       <ScreenHeader backButtonShown onBackPress={tabNavigation.goBack} />
       <View style={styles.screenContent}>
-        <Text style={text.title}>Add subscription</Text>
-        <Text style={[text.regular, { alignSelf: 'center' }]}>Pick a subscription level.</Text>
+        <Text style={text.title}> {activeSubscription ? 'Change subscription' : 'Add subscription'}</Text>
+        <Text style={[text.regular, { alignSelf: 'center' }]}>Choose a subscription level.</Text>
 
-        {isLoading && <ActivityIndicator />}
-        {!isLoading && data && (
+        {(isLoading || subscriptionIsLoading) && <ActivityIndicator />}
+        {!isLoading && !subscriptionIsLoading && data && (
           <View>
             {data.map((level: Level) => (
               <RadioButton
@@ -37,7 +60,7 @@ export const AddSubscriptionScreen: FC = () => {
                 value={level.id}
                 selected={selectedValue === level.id}
                 onSelect={setSelectedValue}
-                disabled={false}
+                disabled={level.id === activeSubscription?.level.id}
               />
             ))}
           </View>
@@ -51,7 +74,12 @@ export const AddSubscriptionScreen: FC = () => {
             selectedValue &&
               mainNavigation.navigate('stacks-payment', {
                 screen: 'payment-add',
-                params: { levelId: selectedValue, carId: route.params.carId },
+                params: {
+                  levelId: selectedValue,
+                  carId: route.params.carId,
+                  successRoute: activeSubscription ? 'account' : 'dashboard',
+                  previousSubscription: activeSubscription ? activeSubscription : undefined,
+                },
               });
           }}
           disabled={!selectedValue || !route.params.carId}
