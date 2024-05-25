@@ -11,6 +11,7 @@ import axios, { AxiosError } from 'src/app/axios';
 
 export const EVENT_QUERY_KEYS = {
   EVENTS: 'events',
+  EVENT_COUNT_FOR_USER: 'eventCountForUser',
   RECENT_EVENTS: 'recent-events',
 };
 
@@ -29,6 +30,20 @@ export const useEvents = (
       let url = `/events/user/${userId}`;
       const response = await axios.get(url, { params: { limit } });
       return response.data as Event[];
+    },
+    enabled: options.enabled ?? true,
+  });
+};
+
+export const useEventsNumber = (
+  userId: number | undefined,
+  options: Pick<QueryObserverOptions, 'enabled'>,
+): UseQueryResult<number, Error> => {
+  return useQuery({
+    queryKey: [EVENT_QUERY_KEYS.EVENT_COUNT_FOR_USER],
+    queryFn: async function fetchEventsNumber() {
+      const response = await axios.get(`/events/user/${userId}/count`);
+      return response.data as number;
     },
     enabled: options.enabled ?? true,
   });
@@ -54,6 +69,7 @@ export const useCreateEvent = (userId: number): UseMutationResult<Event, AxiosEr
     onSuccess: () => {
       queryClient.invalidateQueries([EVENT_QUERY_KEYS.EVENTS, userId]);
       queryClient.invalidateQueries([EVENT_QUERY_KEYS.RECENT_EVENTS, userId]);
+      queryClient.invalidateQueries([EVENT_QUERY_KEYS.EVENT_COUNT_FOR_USER]);
     },
   });
 };
