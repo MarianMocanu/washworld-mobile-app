@@ -1,4 +1,5 @@
 import { User } from './User';
+import { Subscription } from './Subscription';
 // import { Event } from './Event';
 
 export class Car {
@@ -7,6 +8,7 @@ export class Car {
   name: string;
   user: User;
   // events?: Event[];
+  subscriptions?: Subscription[];
   createdAt: string;
   updatedAt: string;
 
@@ -16,6 +18,7 @@ export class Car {
     name: string,
     user: User,
     // events: Event[],
+    subscriptions: Subscription[],
     createdAt: string,
     updatedAt: string,
   ) {
@@ -24,6 +27,7 @@ export class Car {
     this.name = name;
     this.user = user;
     // this.events = events;
+    this.subscriptions = subscriptions;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -35,6 +39,9 @@ export class Car {
       json.name,
       User.fromJson(json.user),
       // json.events ? json.events.map((event: any) => Event.fromJson(event)) : undefined,
+      json.subscriptions
+        ? json.subscriptions.map((subscription: any) => Subscription.fromJson(subscription))
+        : undefined,
       json.createdAt,
       json.updatedAt,
     );
@@ -47,6 +54,9 @@ export class Car {
       name: this.name,
       user: this.user.toJson(),
       // events: this.events ? this.events.map((event) => event.toJson()) : undefined,
+      subscriptions: this.subscriptions
+        ? this.subscriptions.map(subscription => subscription.toJson())
+        : undefined,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };

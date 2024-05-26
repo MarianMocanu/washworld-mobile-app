@@ -9,12 +9,13 @@ import { RewardsIcon } from '@shared/RewardsIcon';
 import { ProgressBar } from '@shared/ProgressBar';
 import { InfoModal } from '../../shared/InfoModal';
 import { Collapsible } from '../components/collapsible';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'rewards'>;
 
 const LoyaltyRewardsScreen = (props: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const navigation = useNavigation<NavigationProp<AccountStackParamList, 'rewards'>>();
   const handleInfoModal = () => {
     // setEntryIdToDelete(entryId);
     setIsModalVisible(true);
@@ -22,7 +23,7 @@ const LoyaltyRewardsScreen = (props: Props) => {
 
   return (
     <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
-      <ScreenHeader backButtonShown onBackPress={() => props.navigation.goBack()} />
+      <ScreenHeader backButtonShown onBackPress={() => navigation.navigate('index')} />
       {/* Header */}
       <View style={[styles.horizontal, styles.justify]}>
         <Text style={styles.heading}>Loyalty Rewards </Text>
@@ -201,4 +202,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoyaltyRewardsScreen;
-
