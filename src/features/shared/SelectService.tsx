@@ -88,7 +88,12 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
   }
 
   function handleOnPressUpgradeSubscription() {
-    navigation.navigate('tabs', { screen: 'account', params: { screen: 'subscription' } });
+    if (carsData && carsData.length) {
+      navigation.navigate('stacks-subscription', {
+        screen: 'subscription-handle',
+        params: { carId: carsData[0].id },
+      });
+    }
   }
 
   useEffect(() => {

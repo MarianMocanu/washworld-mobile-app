@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AccountSettingsScreen from './screens/AccountSettingsScreen';
-import ChangeSubscriptionScreen from './screens/ChangeSubscriptionScreen';
 import LoyaltyRewardsScreen from './screens/LoyaltyRewardsScreen';
 import AddAnotherCarScreen from './screens/AddAnotherCarScreen';
 import PreferredLocationScreen from './screens/PreferredLocationScreen';
@@ -34,7 +33,6 @@ export const AccountNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" component={AccountSettingsScreen} options={{ title: 'Account Settings' }} />
-      <Stack.Screen name="subscription" component={ChangeSubscriptionScreen} />
       <Stack.Screen name="rewards" component={LoyaltyRewardsScreen} />
       <Stack.Screen name="add-car" component={AddAnotherCarScreen} />
       <Stack.Screen name="location" component={PreferredLocationScreen} />

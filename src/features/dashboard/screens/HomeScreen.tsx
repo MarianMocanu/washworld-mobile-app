@@ -3,7 +3,6 @@ import { FC, useState, useEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
-import { useSubscriptions } from '@queries/Subscriptions';
 import { useEvents } from '@queries/Event';
 import { useCars } from '@queries/Car';
 import { Button } from '@shared/Button';
@@ -16,7 +15,7 @@ import { ScreenHeader } from '@shared/ScreenHeader';
 import { LocationsList } from '@shared/LocationsList';
 import { TabsParamList } from 'src/navigation/TabNavigator';
 import RewardsProgress from '@shared/RewardsProgress';
-import { SubscriptionPickerModal } from '../components/SubscriptionPickerModal';
+import { CarPickerModal } from '../components/CarPickerModal';
 import { useDispatch } from 'react-redux';
 import { setActiveCarId } from '../../account/slices/activeCarSlice';
 import { Car } from '@models/Car';
@@ -28,7 +27,6 @@ export const HomeScreen: FC<Props> = () => {
   const navigation2 = useNavigation<NavigationProp<any>>();
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, 4);
-  const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
   const { data: cars } = useCars(user?.id, { enabled: !!user?.id });
   const [modalLocation, setModalLocation] = useState<Location | null>(null);
@@ -55,36 +53,50 @@ export const HomeScreen: FC<Props> = () => {
     navigationAccount.navigate('account', { screen: 'rewards' });
   }
 
+  let totalSubscriptions = 0;
+  if (cars) {
+    cars.forEach(car => {
+      if (car.subscriptions) {
+        totalSubscriptions += car.subscriptions.length;
+      }
+    });
+  }
   useEffect(() => {
-    if (subscriptions && subscriptions.length > 0) {
-      dispatch(setActiveCarId(subscriptions[0].car.id)); // update activeCar in the store
+    if (cars) {
+      dispatch(setActiveCarId(cars[0].id)); // update activeCar in the store
     }
-  }, [subscriptions]);
+  }, [cars]);
 
-  if (subscriptions && events && locations) {
+  if (cars && events && locations) {
     return (
       <View style={viewStyles.mainContainer}>
         <ScreenHeader />
         <ScrollView contentContainerStyle={viewStyles.scrollContainer}>
-          <SubscriptionPickerModal
+          <CarPickerModal
             visible={isModalVisible}
             heading={'Please select a car'}
             setVisible={setIsModalVisible}
             handlePress={() => setIsModalVisible(false)}
             buttonText={'Cancel'}
-            subscriptionData={subscriptions}
+            carData={cars}
             setSelectedCarId={carId => dispatch(setActiveCarId(carId))}
+            activeCarId={activeCarId}
           />
           {/* Active subscription  */}
-          {activeCar ? (
+          {activeCar.id ? (
             <>
               <Text style={textStyles.heading}>Active subscription</Text>
               <Button onPress={() => setIsModalVisible(true)}>
                 <View style={viewStyles.subscription}>
-                  <Text style={textStyles.subscription}>
-                    {activeCar.plateNumber} - {activeCar.name}
-                  </Text>
-                  {subscriptions.length > 1 && (
+                  <View style={viewStyles.subscriptionTextContainer}>
+                    <Text style={textStyles.subscription}>
+                      {activeCar.plateNumber} - {activeCar.name}
+                    </Text>
+                    <Text style={textStyles.subscriptionLevel}>
+                      {activeCar.subscriptions?.[0]?.level?.name} subscription
+                    </Text>
+                  </View>
+                  {totalSubscriptions > 1 && (
                     <MaterialIcons
                       name="keyboard-arrow-down"
                       style={{ fontSize: 24, lineHeight: 24, color: colors.grey[60] }}
@@ -195,6 +207,9 @@ const viewStyles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 4,
   },
+  subscriptionTextContainer: {
+    flexDirection: 'column',
+  },
   progress: {
     padding: 16,
     backgroundColor: colors.white.cream,
@@ -246,6 +261,12 @@ const textStyles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 18,
     color: colors.grey[80],
+  },
+  subscriptionLevel: {
+    fontFamily: 'gilroy-medium',
+    fontSize: 14,
+    lineHeight: 18,
+    color: colors.grey[60],
   },
   address: {
     fontFamily: 'gilroy-medium',
