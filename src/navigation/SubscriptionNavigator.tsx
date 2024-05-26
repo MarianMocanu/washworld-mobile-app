@@ -1,6 +1,6 @@
 import { colors } from '@globals/globalStyles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AddSubscriptionScreen } from 'src/features/stacks/subscription/HandleSubscriptionScreen';
+import { HandleSubscriptionScreen } from 'src/features/stacks/subscription/HandleSubscriptionScreen';
 
 export type SubscriptionStackParamList = {
   'subscription-handle': { carId: number };
@@ -17,7 +17,7 @@ export default function SubscriptionNavigator() {
         animation: 'fade_from_bottom',
       }}
     >
-      <Stack.Screen name="subscription-handle" component={AddSubscriptionScreen} />
+      <Stack.Screen name="subscription-handle" component={HandleSubscriptionScreen} />
     </Stack.Navigator>
   );
 }

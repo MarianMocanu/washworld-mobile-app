@@ -14,6 +14,7 @@ import { useLevels } from '@queries/Levels';
 import { Level } from '@models/Level';
 import Input from '@shared/Input';
 import { InputField } from '@models/InputField';
+import { MainStackParamsList } from 'src/navigation/MainNavigator';
 
 type PriceToDisplay = {
   subtotal: number;
@@ -22,8 +23,9 @@ type PriceToDisplay = {
 };
 
 export const AddPaymentScreen: FC = () => {
-  const navigation = useNavigation<NavigationProp<any>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamsList>>();
   const route = useRoute<RouteProp<PaymentStackParamList, 'payment-add'>>();
+  const eventData = useSelector((state: RootState) => state.event);
   const { levelId, carId } = route.params;
 
   const { data: levelData, isLoading: areLevelsLoading } = useLevels();
@@ -89,7 +91,10 @@ export const AddPaymentScreen: FC = () => {
         text1: 'Subscription created.',
       });
       setTimeout(() => {
-        navigation.navigate(route.params.successRoute);
+        navigation.navigate('stacks-payment', {
+          screen: 'payment-success',
+          params: { successRoute: route.params.successRoute },
+        });
       }, 3000);
     }
     if (subsciptionUpdateIsSuccess) {
@@ -98,8 +103,17 @@ export const AddPaymentScreen: FC = () => {
         text1: 'Subscription updated.',
       });
       setTimeout(() => {
-        navigation.navigate(route.params.successRoute);
+        navigation.navigate('stacks-payment', {
+          screen: 'payment-success',
+          params: { successRoute: route.params.successRoute },
+        });
       }, 3000);
+    }
+    if (eventData) {
+      navigation.navigate('stacks-payment', {
+        screen: 'payment-success',
+        params: { successRoute: 'start' },
+      });
     }
   }, [isSuccess, subsciptionUpdateIsSuccess]);
 
