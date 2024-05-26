@@ -85,7 +85,7 @@ export const HomeScreen: FC<Props> = () => {
           {/* Active subscription  */}
           {activeCar.id ? (
             <>
-              <Text style={textStyles.heading}>Active subscription</Text>
+              <Text style={textStyles.heading}>Active Car</Text>
               <Button onPress={() => setIsModalVisible(true)}>
                 <View style={viewStyles.subscription}>
                   <View style={viewStyles.subscriptionTextContainer}>
@@ -93,7 +93,9 @@ export const HomeScreen: FC<Props> = () => {
                       {activeCar.plateNumber} - {activeCar.name}
                     </Text>
                     <Text style={textStyles.subscriptionLevel}>
-                      {activeCar.subscriptions?.[0]?.level?.name} subscription
+                      {activeCar.subscriptions?.[0]?.level?.name
+                        ? `${activeCar.subscriptions[0].level.name} subscription`
+                        : 'No Subscription'}
                     </Text>
                   </View>
                   {totalSubscriptions > 1 && (
