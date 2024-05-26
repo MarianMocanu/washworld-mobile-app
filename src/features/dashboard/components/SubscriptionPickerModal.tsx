@@ -11,7 +11,7 @@ interface SubscriptionPickerModalProps {
   buttonText?: string;
   subscriptionData: Subscription[] | undefined;
   setVisible: (value: boolean) => void;
-  setSelectedCar: (car: Subscription['car']) => void;
+  setSelectedCarId: (carId: number) => void;
 }
 
 export const SubscriptionPickerModal: React.FC<SubscriptionPickerModalProps> = ({
@@ -21,7 +21,7 @@ export const SubscriptionPickerModal: React.FC<SubscriptionPickerModalProps> = (
   buttonText,
   subscriptionData,
   setVisible,
-  setSelectedCar,
+  setSelectedCarId,
 }) => {
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
@@ -33,7 +33,7 @@ export const SubscriptionPickerModal: React.FC<SubscriptionPickerModalProps> = (
               key={index}
               style={styles.carButton}
               onPress={() => {
-                setSelectedCar(subscription.car);
+                setSelectedCarId(subscription.car.id);
                 setVisible(false);
               }}
             >
@@ -108,4 +108,3 @@ const styles = StyleSheet.create({
     width: 70,
   },
 });
-
