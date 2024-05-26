@@ -15,6 +15,7 @@ import { Level } from '@models/Level';
 import Input from '@shared/Input';
 import { InputField } from '@models/InputField';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
+import { useService } from '@queries/Services';
 
 type PriceToDisplay = {
   subtotal: number;
@@ -32,19 +33,22 @@ export const AddPaymentScreen: FC = () => {
   const [selectedLevel, setSelectedLevel] = useState<Level>();
   const [previousLevel, setPreviousLevel] = useState<Level | undefined>();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
   const [priceToDisplay, setPriceToDisplay] = useState<PriceToDisplay>();
 
-  const { mutate, isSuccess, isLoading, isError, data } = useAddSubscription(
+  const { mutate, isSuccess, isLoading, isError } = useAddSubscription(
     levelId ? levelId : 0,
     carId ? carId : 0,
+  );
+
+  const { data: serviceData, isLoading: isLoadingService } = useService(
+    eventData.serviceId ? eventData.serviceId : 0,
   );
 
   const {
     mutate: subscriptionUpdateMutate,
     isSuccess: subsciptionUpdateIsSuccess,
     isLoading: subscriptionUpdateIsLoading,
-    isError: subscriptionUpdateIsError,
-    data: subscriptionUpdateData,
   } = useUpdateSubscription(
     route.params.previousSubscription ? route.params.previousSubscription.id : 0,
     levelId ? levelId : 0,
@@ -86,33 +90,21 @@ export const AddPaymentScreen: FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      Toast.show({
-        type: 'success',
-        text1: 'Subscription created.',
-      });
-      setTimeout(() => {
-        navigation.navigate('stacks-payment', {
-          screen: 'payment-success',
-          params: { successRoute: route.params.successRoute },
-        });
-      }, 3000);
-    }
-    if (subsciptionUpdateIsSuccess) {
-      Toast.show({
-        type: 'success',
-        text1: 'Subscription updated.',
-      });
-      setTimeout(() => {
-        navigation.navigate('stacks-payment', {
-          screen: 'payment-success',
-          params: { successRoute: route.params.successRoute },
-        });
-      }, 3000);
-    }
-    if (eventData) {
       navigation.navigate('stacks-payment', {
         screen: 'payment-success',
-        params: { successRoute: 'start' },
+        params: { successRoute: route.params.successRoute },
+      });
+    }
+    if (subsciptionUpdateIsSuccess) {
+      navigation.navigate('stacks-payment', {
+        screen: 'payment-success',
+        params: { successRoute: route.params.successRoute },
+      });
+    }
+    if (eventData.serviceId && isFinished) {
+      navigation.navigate('stacks-payment', {
+        screen: 'payment-success',
+        params: { successRoute: 'scan-plate' },
       });
     }
   }, [isSuccess, subsciptionUpdateIsSuccess]);
@@ -139,8 +131,14 @@ export const AddPaymentScreen: FC = () => {
         tax: selectedLevel?.price * 0.25,
         total: selectedLevel?.price,
       });
+    } else if (serviceData) {
+      setPriceToDisplay({
+        subtotal: serviceData.price * 0.75,
+        tax: serviceData.price * 0.25,
+        total: serviceData.price,
+      });
     }
-  }, [route.params.previousSubscription, selectedLevel, levelData]);
+  }, [route.params.previousSubscription, selectedLevel, levelData, serviceData]);
 
   const handler = {
     mutation: () => {
@@ -148,6 +146,13 @@ export const AddPaymentScreen: FC = () => {
       setTimeout(() => {
         setIsProcessing(false);
         mutate();
+      }, 2000);
+    },
+    loading: () => {
+      setIsProcessing(true);
+      setTimeout(() => {
+        setIsProcessing(false);
+        setIsFinished(true);
       }, 2000);
     },
     update: () => {
@@ -313,7 +318,15 @@ export const AddPaymentScreen: FC = () => {
             primary
             style={styles.button}
             onPress={() => {
-              previousLevel ? handler.update() : handler.mutation();
+              if (eventData.serviceId) {
+                handler.loading();
+              } else {
+                if (previousLevel) {
+                  handler.update();
+                } else {
+                  handler.mutation();
+                }
+              }
             }}
             disabled={
               cardNumber.valid && cardExpiry.valid && cardCVC.valid && cardHolder.valid ? false : true
