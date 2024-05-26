@@ -7,6 +7,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Status } from './Status';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from 'src/app/store';
+import { setLocationId } from '../stacks/event/screens/eventSlice';
 
 type LocationsListProps = {
   locations: Location[];
@@ -16,13 +19,12 @@ type LocationsListProps = {
 
 export const LocationsList: FC<LocationsListProps> = ({ locations, modalLocation, setModalLocation }) => {
   const navigation = useNavigation<NavigationProp<MainStackParamsList, 'tabs'>>();
+  const dispatch = useDispatch<AppDispatch>();
 
   function handleOnSelectLocation() {
     if (modalLocation) {
-      navigation.navigate('stacks-event', {
-        screen: 'select-service',
-        params: { locationId: modalLocation.id },
-      });
+      dispatch(setLocationId(modalLocation.id));
+      navigation.navigate('stacks-event', { screen: 'select-service' });
       setModalLocation(null);
     }
   }

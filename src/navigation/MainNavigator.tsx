@@ -13,7 +13,7 @@ import { setActiveCarId } from 'src/features/account/slices/activeCarSlice';
 
 type EventStack = {
   screen: keyof EventStackParamList;
-  params: EventStackParamList[keyof EventStackParamList];
+  params?: EventStackParamList[keyof EventStackParamList];
 };
 
 type SubscriptionStack = {

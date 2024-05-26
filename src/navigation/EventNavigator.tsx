@@ -7,7 +7,7 @@ import { WashFinishedScreen } from 'src/features/stacks/event/screens/WashFinish
 import { WashProgressScreen } from 'src/features/stacks/event/screens/WashProgressScreen';
 
 export type EventStackParamList = {
-  'select-service': { locationId: number };
+  'select-service': undefined;
   'scan-plate': undefined;
   instructions: undefined;
   'wash-progress': undefined;

@@ -61,7 +61,6 @@ export const useBookTerminal = (
   return useMutation<Terminal, AxiosError, UpdateTerminalPayload>({
     mutationKey: [TERMINAL_MUTATION_KEYS.MARK_TERMINAL_AS_BUSY, terminalId],
     mutationFn: async function updateTerminal({ terminalId, status }) {
-      console.log({ terminalId, status });
       const response = await axios.patch<Terminal>(`/terminals/${terminalId}`, { status });
       return response.data as Terminal;
     },
