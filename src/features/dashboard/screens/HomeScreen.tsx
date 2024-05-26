@@ -1,9 +1,8 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
-import { useSubscriptions } from '@queries/Subscriptions';
 import { useEvents } from '@queries/Event';
 import { useCars } from '@queries/Car';
 import { Button } from '@shared/Button';
@@ -16,7 +15,10 @@ import { ScreenHeader } from '@shared/ScreenHeader';
 import { LocationsList } from '@shared/LocationsList';
 import { TabsParamList } from 'src/navigation/TabNavigator';
 import RewardsProgress from '@shared/RewardsProgress';
-import { SubscriptionPickerModal } from '../components/SubscriptionPickerModal';
+import { CarPickerModal } from '../components/CarPickerModal';
+import { useDispatch } from 'react-redux';
+import { setActiveCarId } from '../../account/slices/activeCarSlice';
+import { Car } from '@models/Car';
 
 type Props = {};
 
@@ -25,13 +27,23 @@ export const HomeScreen: FC<Props> = () => {
   const navigation2 = useNavigation<NavigationProp<any>>();
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, 4);
-  const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
   const { data: locations } = useLocations();
-  const { data: car } = useCars(user?.id, { enabled: !!user?.id });
+  const { data: cars } = useCars(user?.id, { enabled: !!user?.id });
   const [modalLocation, setModalLocation] = useState<Location | null>(null);
   const navigationAccount = useNavigation<NavigationProp<TabsParamList>>();
-  const [selectedCar, setSelectedCar] = useState(subscriptions?.[0]?.car);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const dispatch = useDispatch();
+  const activeCarId = useSelector((state: RootState) => state.activeCar.carId);
+  const activeCar = useMemo(() => {
+    if (!cars) {
+      return {} as Car;
+    }
+    const foundCar = cars.find(car => car.id === activeCarId);
+    if (!foundCar) {
+      return {} as Car;
+    }
+    return foundCar;
+  }, [activeCarId, cars]);
 
   function navigateToHistory() {
     navigation.navigate('history');
@@ -41,59 +53,59 @@ export const HomeScreen: FC<Props> = () => {
     navigationAccount.navigate('account', { screen: 'rewards' });
   }
 
-  const handleCarChange = () => {
-    if (subscriptions && subscriptions.length > 1) {
-      setIsModalVisible(true);
-    } else if (subscriptions?.length === 1) {
-      setSelectedCar(subscriptions[0].car);
-    } else {
-      console.log('No car registered, navigate to add car?');
-    }
-  };
-
+  let totalSubscriptions = 0;
+  if (cars) {
+    cars.forEach(car => {
+      if (car.subscriptions) {
+        totalSubscriptions += car.subscriptions.length;
+      }
+    });
+  }
   useEffect(() => {
-    if (subscriptions && subscriptions.length > 0) {
-      setSelectedCar(subscriptions[0].car);
+    if (cars) {
+      dispatch(setActiveCarId(cars[0].id)); // update activeCar in the store
     }
-  }, [subscriptions]);
-  if (subscriptions && events && locations) {
+  }, [cars]);
+
+  if (cars && events && locations) {
     return (
       <View style={viewStyles.mainContainer}>
         <ScreenHeader />
         <ScrollView contentContainerStyle={viewStyles.scrollContainer}>
-          <SubscriptionPickerModal
+          <CarPickerModal
             visible={isModalVisible}
             heading={'Please select a car'}
             setVisible={setIsModalVisible}
             handlePress={() => setIsModalVisible(false)}
             buttonText={'Cancel'}
-            subscriptionData={subscriptions}
-            setSelectedCar={setSelectedCar}
+            carData={cars}
+            setSelectedCarId={carId => dispatch(setActiveCarId(carId))}
+            activeCarId={activeCarId}
           />
           {/* Active subscription  */}
-          {selectedCar ? (
+          {activeCar.id ? (
             <>
-              <Text style={textStyles.heading}>Active subscription</Text>
-              <View style={viewStyles.subscription}>
-                <Text
-                  style={textStyles.subscription}
-                  onPress={() =>
-                    navigation2.navigate('stacks-subscription', {
-                      screen: 'subscription-handle',
-                      params: { carId: selectedCar.id },
-                    })
-                  }
-                >
-                  {selectedCar.plateNumber} - {selectedCar.name}
-                </Text>
-                {subscriptions.length > 1 && (
-                  <MaterialIcons
-                    name="keyboard-arrow-down"
-                    onPress={handleCarChange}
-                    style={{ fontSize: 24, lineHeight: 24, color: colors.grey[60] }}
-                  />
-                )}
-              </View>
+              <Text style={textStyles.heading}>Active Car</Text>
+              <Button onPress={() => setIsModalVisible(true)}>
+                <View style={viewStyles.subscription}>
+                  <View style={viewStyles.subscriptionTextContainer}>
+                    <Text style={textStyles.subscription}>
+                      {activeCar.plateNumber} - {activeCar.name}
+                    </Text>
+                    <Text style={textStyles.subscriptionLevel}>
+                      {activeCar.subscriptions?.[0]?.level?.name
+                        ? `${activeCar.subscriptions[0].level.name} subscription`
+                        : 'No Subscription'}
+                    </Text>
+                  </View>
+                  {totalSubscriptions > 1 && (
+                    <MaterialIcons
+                      name="keyboard-arrow-down"
+                      style={{ fontSize: 24, lineHeight: 24, color: colors.grey[60] }}
+                    />
+                  )}
+                </View>
+              </Button>
             </>
           ) : (
             <>
@@ -103,10 +115,10 @@ export const HomeScreen: FC<Props> = () => {
                 text="Subscribe"
                 primary={true}
                 onPress={() =>
-                  car &&
+                  cars &&
                   navigation2.navigate('stacks-subscription', {
                     screen: 'subscription-handle',
-                    params: { carId: car[0].id },
+                    params: { carId: cars[0].id },
                   })
                 }
               />
@@ -197,6 +209,9 @@ const viewStyles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 4,
   },
+  subscriptionTextContainer: {
+    flexDirection: 'column',
+  },
   progress: {
     padding: 16,
     backgroundColor: colors.white.cream,
@@ -248,6 +263,12 @@ const textStyles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 18,
     color: colors.grey[80],
+  },
+  subscriptionLevel: {
+    fontFamily: 'gilroy-medium',
+    fontSize: 14,
+    lineHeight: 18,
+    color: colors.grey[60],
   },
   address: {
     fontFamily: 'gilroy-medium',

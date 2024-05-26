@@ -42,7 +42,7 @@ type Props = {
   onSelectPress: (id: number) => void;
 };
 
-export const SelectService: FC<Props> = ({ title, services, onSelectPress, containerStyle }) => {
+export const ServicePicker: FC<Props> = ({ title, services, onSelectPress, containerStyle }) => {
   const navigation = useNavigation<NavigationProp<MainStackParamsList, 'stacks-car'>>();
   const flatListRef = useRef<FlatList>(null);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
@@ -60,7 +60,7 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
   const hasSubscription = useMemo(() => !!subscriptionsData, [subscriptionsData]);
 
   const isServiceIncludedInSubscription = useMemo(() => {
-    if (subscriptionsData && currentFocusedService?.levels) {
+    if (subscriptionsData && subscriptionsData.length > 0 && currentFocusedService?.levels) {
       return currentFocusedService.levels[0].id <= subscriptionsData[0].level.id;
     }
     return true;
@@ -88,7 +88,12 @@ export const SelectService: FC<Props> = ({ title, services, onSelectPress, conta
   }
 
   function handleOnPressUpgradeSubscription() {
-    navigation.navigate('tabs', { screen: 'account', params: { screen: 'subscription' } });
+    if (carsData && carsData.length) {
+      navigation.navigate('stacks-subscription', {
+        screen: 'subscription-handle',
+        params: { carId: carsData[0].id },
+      });
+    }
   }
 
   useEffect(() => {

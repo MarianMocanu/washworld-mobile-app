@@ -4,6 +4,7 @@ import axios from 'src/app/axios';
 
 export const SUBSCRIPTION_KEYS = {
   USER_SUBSCRIPTIONS: 'subscription-for-user',
+  CAR_SUBSCRIPTIONS: 'subscription-for-car',
 };
 
 export const MUTATION_KEYS = {
@@ -19,6 +20,20 @@ export const useSubscriptions = (
     queryKey: [SUBSCRIPTION_KEYS.USER_SUBSCRIPTIONS, userId],
     queryFn: async function fetchSubscriptionForUser() {
       const response = await axios.get<Subscription[]>(`/subscriptions/user/${userId}`);
+      return response.data as Subscription[];
+    },
+    enabled: options?.enabled ?? true,
+  });
+};
+
+export const useCarSubscriptions = (
+  carId: number | undefined,
+  options?: Pick<QueryObserverOptions, 'enabled'>,
+): UseQueryResult<Subscription[], Error> => {
+  return useQuery({
+    queryKey: [SUBSCRIPTION_KEYS.CAR_SUBSCRIPTIONS, carId],
+    queryFn: async function fetchSubscriptionForCar() {
+      const response = await axios.get<Subscription[]>(`/subscriptions/car/${carId}`);
       return response.data as Subscription[];
     },
     enabled: options?.enabled ?? true,
@@ -55,7 +70,10 @@ export const useUpdateSubscription = (subscriptionId?: number, levelId?: number)
       console.error('Error updating subscription', error);
     },
     onSettled: () => {
-      queryClient.invalidateQueries([SUBSCRIPTION_KEYS.SUBSCRIPTION_USER]);
+      queryClient.invalidateQueries([
+        SUBSCRIPTION_KEYS.USER_SUBSCRIPTIONS,
+        SUBSCRIPTION_KEYS.CAR_SUBSCRIPTIONS,
+      ]);
     },
   });
 };

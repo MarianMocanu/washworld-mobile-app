@@ -1,52 +1,60 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { Button } from '@shared/Button';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Subscription } from '@models/Subscription';
+import { Car } from '@models/Car';
 
-interface SubscriptionPickerModalProps {
+interface CarPickerModalProps {
   visible: boolean;
   handlePress: () => void;
   heading: string;
   buttonText?: string;
-  subscriptionData: Subscription[] | undefined;
+  carData: Car[] | undefined;
   setVisible: (value: boolean) => void;
-  setSelectedCar: (car: Subscription['car']) => void;
+  setSelectedCarId: (carId: number) => void;
+  activeCarId: number | undefined;
 }
 
-export const SubscriptionPickerModal: React.FC<SubscriptionPickerModalProps> = ({
+export const CarPickerModal: React.FC<CarPickerModalProps> = ({
   visible,
   handlePress,
   heading,
   buttonText,
-  subscriptionData,
+  carData,
   setVisible,
-  setSelectedCar,
+  setSelectedCarId,
+  activeCarId,
 }) => {
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
       <TouchableOpacity style={styles.modalContainer} onPress={() => setVisible(false)}>
         <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
           <Text style={styles.modalHeading}>{heading}</Text>
-          {subscriptionData?.map((subscription, index: number) => (
+          {carData?.map((car, index: number) => (
             <Button
               key={index}
               style={styles.carButton}
-              onPress={() => {
-                setSelectedCar(subscription.car);
-                setVisible(false);
-              }}
+              onPress={
+                car.id !== activeCarId
+                  ? () => {
+                      setSelectedCarId(car.id);
+                      setVisible(false);
+                    }
+                  : undefined
+              }
             >
               <MaterialIcons
                 name="directions-car"
                 size={24}
-                color={colors.grey[60]}
+                color={car.id === activeCarId ? '#34B566' : colors.grey[60]}
                 style={{ lineHeight: 24 }}
               />
               <View>
-                <Text>{subscription.car.plateNumber + ' - ' + subscription.car.name}</Text>
+                <Text ellipsizeMode="tail" numberOfLines={1} style={styles.modalText}>
+                  {car.plateNumber + ' - ' + car.name}
+                </Text>
                 <Text style={[styles.modalText, styles.carSubscription]}>
-                  {subscription.level.name || 'no subscription'}
+                  {car.subscriptions?.[0]?.level?.name || 'No subscription'}
                 </Text>
               </View>
             </Button>
@@ -73,7 +81,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     gap: 24,
     borderRadius: 4,
-    width: 300,
+    width: Dimensions.get('window').width * 0.9,
   },
   modalHeading: {
     fontFamily: 'gilroy-bold',
@@ -107,5 +115,8 @@ const styles = StyleSheet.create({
   license: {
     width: 70,
   },
+  activeCar: {
+    backgroundColor: colors.primary.base,
+    opacity: 0.9,
+  },
 });
-

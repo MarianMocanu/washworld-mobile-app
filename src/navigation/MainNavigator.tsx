@@ -9,10 +9,11 @@ import { useEffect } from 'react';
 import { useCars } from 'src/queries/Car';
 import SubscriptionNavigator, { SubscriptionStackParamList } from './SubscriptionNavigator';
 import PaymentNavigator, { PaymentStackParamList } from './PaymentNavigator';
+import { setActiveCarId } from 'src/features/account/slices/activeCarSlice';
 
 type EventStack = {
   screen: keyof EventStackParamList;
-  params: EventStackParamList[keyof EventStackParamList];
+  params?: EventStackParamList[keyof EventStackParamList];
 };
 
 type SubscriptionStack = {
@@ -43,7 +44,7 @@ const Stack = createNativeStackNavigator<MainStackParamsList>();
 export default function MainNavigator() {
   const navigation = useNavigation<NavigationProp<MainStackParamsList>>();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { data, isLoading } = useCars(user?.id, { enabled: !!user });
+  const { data: cars, isLoading } = useCars(user?.id, { enabled: !!user });
 
   const navigateToCarAdd = () => {
     if (!user) return;
@@ -51,13 +52,15 @@ export default function MainNavigator() {
   };
 
   useEffect(() => {
-    if (!isLoading && data) {
-      if (data.length === 0) {
+    if (!isLoading && cars) {
+      if (cars.length === 0) {
         console.log('no cars found');
         navigateToCarAdd();
+      } else {
+        setActiveCarId(cars[0].id);
       }
     }
-  }, [isLoading, data]);
+  }, [isLoading, cars]);
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false, animation: 'none' }}>
