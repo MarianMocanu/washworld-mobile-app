@@ -6,17 +6,16 @@ import { View } from 'react-native';
 import { useTerminals } from '@queries/Terminals';
 import { Terminal } from '@models/Terminal';
 import { EventStackParamList } from 'src/navigation/EventNavigator';
-import { SelectService } from '../../../shared/SelectService';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 'src/app/store';
+import { ServicePicker } from '../../../shared/ServicePicker';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from 'src/app/store';
 import { setLocationId, setServiceId } from './eventSlice';
 
 export const SelectServiceScreen: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<NavigationProp<EventStackParamList, 'select-service'>>();
-  const route = useRoute<RouteProp<EventStackParamList, 'select-service'>>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { locationId } = useSelector((state: RootState) => state.event);
 
-  const { locationId } = route.params;
   const { data: terminalsData } = useTerminals(locationId, { enabled: !!locationId });
 
   const [automatedServices, setAutomatedServices] = useState<Service[]>([]);
@@ -56,7 +55,7 @@ export const SelectServiceScreen: FC = () => {
   return (
     <View style={{ flex: 1 }}>
       <ScreenHeader backButtonShown onBackPress={navigation.goBack} />
-      <SelectService
+      <ServicePicker
         title="Select service"
         services={automatedServices}
         onSelectPress={setSelectedServiceId}
