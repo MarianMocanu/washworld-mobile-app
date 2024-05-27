@@ -23,7 +23,7 @@ type SubscriptionStack = {
 
 type PaymentStack = {
   screen: keyof PaymentStackParamList;
-  params?: PaymentStackParamList[keyof PaymentStackParamList];
+  params: PaymentStackParamList[keyof PaymentStackParamList];
 };
 
 type Tabs = {

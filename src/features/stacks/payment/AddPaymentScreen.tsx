@@ -2,7 +2,7 @@ import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Button } from '@shared/Button';
 import { ScreenHeader } from '@shared/ScreenHeader';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { RootState } from 'src/app/store';
@@ -14,7 +14,6 @@ import { useLevels } from '@queries/Levels';
 import { Level } from '@models/Level';
 import Input from '@shared/Input';
 import { InputField } from '@models/InputField';
-import { MainStackParamsList } from 'src/navigation/MainNavigator';
 import { useService } from '@queries/Services';
 
 type PriceToDisplay = {
@@ -24,35 +23,47 @@ type PriceToDisplay = {
 };
 
 export const AddPaymentScreen: FC = () => {
-  const navigation = useNavigation<NavigationProp<MainStackParamsList>>();
+  const navigation = useNavigation<NavigationProp<PaymentStackParamList, 'payment-add'>>();
   const route = useRoute<RouteProp<PaymentStackParamList, 'payment-add'>>();
-  const eventData = useSelector((state: RootState) => state.event);
-  const { levelId, carId } = route.params;
+  const { levelId, carId, previousSubscription, successRoute } = route.params;
 
-  const { data: levelData, isLoading: areLevelsLoading } = useLevels();
-  const [selectedLevel, setSelectedLevel] = useState<Level>();
-  const [previousLevel, setPreviousLevel] = useState<Level | undefined>();
+  const eventData = useSelector((state: RootState) => state.event);
+
+  const { data: levelsData, isLoading: areLevelsLoading } = useLevels();
+  const { data: serviceData } = useService(eventData.serviceId ? eventData.serviceId : 0, {
+    enabled: !!eventData.serviceId,
+  });
+
+  const selectedLevel: Level | undefined = useMemo(() => {
+    if (!levelId || !levelsData) {
+      return undefined;
+    }
+    return levelsData.find((level: Level) => level.id === levelId);
+  }, [levelsData, levelId]);
+
+  const previousLevel: Level | undefined = useMemo(() => {
+    if (!levelsData || !previousSubscription) {
+      return undefined;
+    }
+    return levelsData.find((level: Level) => level.id === previousSubscription.level.id);
+  }, [levelsData, previousSubscription]);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [priceToDisplay, setPriceToDisplay] = useState<PriceToDisplay>();
 
-  const { mutate, isSuccess, isLoading, isError } = useAddSubscription(
-    levelId ? levelId : 0,
-    carId ? carId : 0,
-  );
-
-  const { data: serviceData, isLoading: isLoadingService } = useService(
-    eventData.serviceId ? eventData.serviceId : 0,
-  );
+  const {
+    mutate: createSubscription,
+    isSuccess: isCreateSubscriptionSuccess,
+    isLoading,
+    isError,
+  } = useAddSubscription(levelId ? levelId : 0, carId ? carId : 0);
 
   const {
-    mutate: subscriptionUpdateMutate,
-    isSuccess: subsciptionUpdateIsSuccess,
-    isLoading: subscriptionUpdateIsLoading,
-  } = useUpdateSubscription(
-    route.params.previousSubscription ? route.params.previousSubscription.id : 0,
-    levelId ? levelId : 0,
-  );
+    mutate: updateSubscription,
+    isSuccess: isUpdateSubscriptionSuccess,
+    isLoading: isUpdateSubscriptionLoading,
+  } = useUpdateSubscription(previousSubscription ? previousSubscription.id : 0, levelId ? levelId : 0);
 
   const [cardNumber, setCardNumber] = useState<InputField>({
     value: '',
@@ -89,37 +100,14 @@ export const AddPaymentScreen: FC = () => {
   }, [isError]);
 
   useEffect(() => {
-    if (isSuccess) {
-      navigation.navigate('stacks-payment', {
-        screen: 'payment-success',
-        params: { successRoute: route.params.successRoute },
-      });
+    if ((eventData.serviceId && isFinished) || isCreateSubscriptionSuccess || isUpdateSubscriptionSuccess) {
+      navigation.navigate('payment-success', { successRoute });
     }
-    if (subsciptionUpdateIsSuccess) {
-      navigation.navigate('stacks-payment', {
-        screen: 'payment-success',
-        params: { successRoute: route.params.successRoute },
-      });
-    }
-    if (eventData.serviceId && isFinished) {
-      navigation.navigate('stacks-payment', {
-        screen: 'payment-success',
-        params: { successRoute: 'scan-plate' },
-      });
-    }
-  }, [isSuccess, subsciptionUpdateIsSuccess]);
+  }, [isCreateSubscriptionSuccess, isUpdateSubscriptionSuccess, isFinished]);
 
   useEffect(() => {
-    setSelectedLevel(levelData.find((level: Level) => level.id === levelId));
-  }, [areLevelsLoading, levelData]);
-
-  useEffect(() => {
-    if (route.params.previousSubscription && selectedLevel) {
-      const previousLevel = levelData.find(
-        (level: Level) => level.id === route.params.previousSubscription?.level.id,
-      );
-      const totalPrice = selectedLevel?.price - previousLevel?.price;
-      setPreviousLevel(previousLevel);
+    if (previousSubscription && selectedLevel && previousLevel) {
+      const totalPrice = selectedLevel?.price - previousLevel.price;
       setPriceToDisplay({
         subtotal: totalPrice * 0.75,
         tax: totalPrice * 0.25,
@@ -138,14 +126,14 @@ export const AddPaymentScreen: FC = () => {
         total: serviceData.price,
       });
     }
-  }, [route.params.previousSubscription, selectedLevel, levelData, serviceData]);
+  }, [previousSubscription, selectedLevel, levelsData, serviceData]);
 
   const handler = {
     mutation: () => {
       setIsProcessing(true);
       setTimeout(() => {
         setIsProcessing(false);
-        mutate();
+        createSubscription();
       }, 2000);
     },
     loading: () => {
@@ -159,7 +147,7 @@ export const AddPaymentScreen: FC = () => {
       setIsProcessing(true);
       setTimeout(() => {
         setIsProcessing(false);
-        subscriptionUpdateMutate();
+        updateSubscription();
       }, 2000);
     },
     cardNumberChange: (text: string) => {
@@ -332,7 +320,7 @@ export const AddPaymentScreen: FC = () => {
               cardNumber.valid && cardExpiry.valid && cardCVC.valid && cardHolder.valid ? false : true
             }
           >
-            {isLoading || subscriptionUpdateIsLoading ? (
+            {isLoading || isUpdateSubscriptionLoading ? (
               <ActivityIndicator color={colors.white.base} />
             ) : (
               <>

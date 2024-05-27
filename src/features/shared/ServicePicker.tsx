@@ -13,18 +13,13 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Service } from '@models/Service';
-import { useSubscriptions } from '@queries/Subscriptions';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from 'src/app/store';
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import { setCarId } from '../stacks/event/screens/eventSlice';
-import { useCar, useCars } from '@queries/Car';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
 import { AllStepsList } from '../stacks/event/components/AllStepsList';
-import { Car } from '@models/Car';
 import { Subscription } from '@models/Subscription';
-import { Level } from '@models/Level';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/app/store';
 
 type Props = {
   /**
@@ -43,33 +38,32 @@ type Props = {
    * Function to handle the select button press
    */
   onSelectPress: (id: number) => void;
+  /**
+   * Active subscription data
+   */
+  activeSubscription: Subscription | undefined;
 };
 
-export const ServicePicker: FC<Props> = ({ title, services, onSelectPress, containerStyle }) => {
+export const ServicePicker: FC<Props> = ({
+  title,
+  services,
+  onSelectPress,
+  containerStyle,
+  activeSubscription,
+}) => {
   const navigation = useNavigation<NavigationProp<MainStackParamsList, 'stacks-event'>>();
-  const dispatch = useDispatch<AppDispatch>();
-
   const flatListRef = useRef<FlatList>(null);
-
   const { carId } = useSelector((state: RootState) => state.activeCar);
-  const { data: carData } = useCar(carId, { enabled: !!carId });
 
   const [focusedIndex, setFocusedIndex] = useState(0);
   const focusedService: Service = useMemo(() => services[focusedIndex], [services, focusedIndex]);
 
-  const activeSubscription: Subscription | undefined = useMemo(() => {
-    if (carData && carData.subscriptions) {
-      return carData.subscriptions.find(subscription => subscription.active);
-    }
-    return undefined;
-  }, [carData]);
-
   const isServiceIncludedInSubscription = useMemo(() => {
-    if (activeSubscription && carData && focusedService && focusedService.levels) {
+    if (activeSubscription && focusedService && focusedService.levels) {
       return activeSubscription.level.id >= focusedService.levels[0].id;
     }
     return true;
-  }, [activeSubscription, carData, services, focusedIndex]);
+  }, [activeSubscription, services, focusedIndex]);
 
   function scrollToNextItem() {
     const nextIndex = focusedIndex + 1;
@@ -93,20 +87,14 @@ export const ServicePicker: FC<Props> = ({ title, services, onSelectPress, conta
   }
 
   function handleOnUpgradePress() {
-    navigation.navigate('stacks-subscription', { screen: 'subscription-handle' });
-  }
-
-  function handleOnSelectPress() {
-    if (activeSubscription) {
-      onSelectPress(services[focusedIndex].id);
-    } else {
-      navigation.navigate('stacks-payment', { screen: 'payment-add' });
+    if (carId) {
+      navigation.navigate('stacks-subscription', { screen: 'subscription-handle', params: { carId } });
     }
   }
 
-  useEffect(() => {
-    dispatch(setCarId(carId));
-  }, [carId]);
+  function handleOnSelectPress() {
+    onSelectPress(services[focusedIndex].id);
+  }
 
   useEffect(() => {
     setFocusedIndex(0);
@@ -127,7 +115,6 @@ export const ServicePicker: FC<Props> = ({ title, services, onSelectPress, conta
           <MaterialIcons name="chevron-right" style={styles.arrowIcon} />
         </Button>
       </View>
-
       {services.length && focusedService && focusedService.levels ? (
         <View style={styles.horizontal}>
           <Text style={text.serviceLevel}>{focusedService.levels[0].name}</Text>
@@ -139,23 +126,25 @@ export const ServicePicker: FC<Props> = ({ title, services, onSelectPress, conta
           ) : null}
         </View>
       ) : null}
-      <FlatList
-        ref={flatListRef}
-        data={services}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }: { item: Service }) => <AllStepsList steps={item.steps} />}
-        pagingEnabled
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={updateCurrentItemIndex}
-      />
-      <Button
-        text={isServiceIncludedInSubscription ? 'Select service' : 'Upgrade subscription'}
-        primary={isServiceIncludedInSubscription ? true : false}
-        secondary={!isServiceIncludedInSubscription ? true : false}
-        style={{ marginHorizontal: 24 }}
-        onPress={isServiceIncludedInSubscription ? handleOnSelectPress : handleOnUpgradePress}
-      />
+      <View style={styles.list}>
+        <FlatList
+          ref={flatListRef}
+          data={services}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }: { item: Service }) => <AllStepsList steps={item.steps} />}
+          pagingEnabled
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={updateCurrentItemIndex}
+        />
+        <Button
+          text={isServiceIncludedInSubscription ? 'Select service' : 'Upgrade subscription'}
+          primary={isServiceIncludedInSubscription ? true : false}
+          secondary={!isServiceIncludedInSubscription ? true : false}
+          style={{ marginHorizontal: 24 }}
+          onPress={isServiceIncludedInSubscription ? handleOnSelectPress : handleOnUpgradePress}
+        />
+      </View>
     </View>
   );
 };
@@ -164,13 +153,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 24,
-    gap: 40,
+    gap: 24,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginHorizontal: 24,
+    paddingHorizontal: 24,
+  },
+  list: {
+    flex: 1,
+    backgroundColor: colors.white.cream,
+    borderRadius: 4,
+    padding: 16,
   },
   arrowIcon: {
     fontSize: 24,
@@ -189,6 +184,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.white.cream,
+    borderRadius: 4,
+    paddingVertical: 16,
   },
   upgradeButton: {
     position: 'absolute',

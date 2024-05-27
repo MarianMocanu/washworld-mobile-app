@@ -26,9 +26,9 @@ export const HomeScreen: FC<Props> = () => {
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
   const navigation2 = useNavigation<NavigationProp<any>>();
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
-  const { data: events } = useEvents(user?.id, { enabled: !!user?.id }, 4);
+  const { data: events } = useEvents(user!.id, { enabled: !!user?.id }, 4);
   const { data: locations } = useLocations();
-  const { data: cars } = useCars(user?.id, { enabled: !!user?.id });
+  const { data: cars } = useCars(user!.id, { enabled: !!user?.id });
   const [modalLocation, setModalLocation] = useState<Location | null>(null);
   const navigationAccount = useNavigation<NavigationProp<TabsParamList>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -39,7 +39,7 @@ export const HomeScreen: FC<Props> = () => {
       return {} as Car;
     }
     const foundCar = cars.find(car => car.id === activeCarId);
-    return foundCar as Car;
+    return (foundCar as Car) ?? ({} as Car);
   }, [activeCarId, cars]);
 
   function navigateToHistory() {
@@ -59,7 +59,7 @@ export const HomeScreen: FC<Props> = () => {
     });
   }
   useEffect(() => {
-    if (cars) {
+    if (cars && cars.length > 0) {
       dispatch(setActiveCarId(cars[0].id)); // update activeCar in the store
     }
   }, [cars]);
@@ -80,7 +80,7 @@ export const HomeScreen: FC<Props> = () => {
             activeCarId={activeCarId}
           />
           {/* Active subscription  */}
-          {activeCar.id ? (
+          {activeCar && activeCar.id ? (
             <>
               <Text style={textStyles.heading}>Active Car</Text>
               <Button onPress={() => setIsModalVisible(true)}>

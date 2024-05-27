@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { useSubscriptions } from '@queries/Subscriptions';
 import { Subscription } from '@models/Subscription';
+import { SuccessRoute } from 'src/navigation/PaymentNavigator';
 
 export const HandleSubscriptionScreen: FC = () => {
   const tabNavigation = useNavigation<NavigationProp<TabsParamList, 'dashboard'>>();
@@ -77,7 +78,7 @@ export const HandleSubscriptionScreen: FC = () => {
                 params: {
                   levelId: selectedValue,
                   carId: route.params.carId,
-                  successRoute: activeSubscription ? 'account' : 'dashboard',
+                  successRoute: activeSubscription ? SuccessRoute.Account : SuccessRoute.Dashboard,
                   previousSubscription: activeSubscription ? activeSubscription : undefined,
                 },
               });

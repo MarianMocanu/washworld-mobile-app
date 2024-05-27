@@ -2,20 +2,23 @@ import { colors } from '@globals/globalStyles';
 import { Subscription } from '@models/Subscription';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AddPaymentScreen } from 'src/features/stacks/payment/AddPaymentScreen';
-import { MainStackParamsList } from './MainNavigator';
-import { AccountStackParamList } from 'src/features/account/AccountNavigator';
 import { SuccessPaymentScreen } from 'src/features/stacks/payment/SuccessPaymentScreen';
-// import { AddSubscriptionScreen } from 'src/features/stacks/subscription/AddSubscriptionScreen';
+
+export enum SuccessRoute {
+  Service = 'service',
+  Account = 'account',
+  Dashboard = 'dashboard',
+}
 
 export type PaymentStackParamList = {
   'payment-add': {
     previousSubscription?: Subscription;
     levelId?: number;
     carId?: number;
-    successRoute: string;
+    successRoute: SuccessRoute;
   };
   'payment-success': {
-    successRoute: string;
+    successRoute: SuccessRoute;
   };
 };
 

@@ -56,7 +56,7 @@ export const WashProgressScreen: FC = () => {
       <View style={styles.screenContent}>
         <Text style={text.title}>Wash progress</Text>
         <CarWashing style={{ alignSelf: 'center' }} />
-        <ProgressBar duration={totalDuration} style={{ marginHorizontal: 24 }} />
+        <ProgressBar duration={totalDuration} style={{ marginHorizontal: 64 }} />
         <ServiceStepsList steps={steps} />
       </View>
       <EmergencyStopModal visible={visible} setVisible={setVisible} />
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   screenContent: {
-    flex: 1,
     margin: 24,
     gap: 60,
   },

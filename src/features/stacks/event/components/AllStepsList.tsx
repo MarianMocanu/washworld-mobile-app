@@ -33,7 +33,6 @@ export const AllStepsList: FC<Props> = ({ steps }) => {
           </View>
         )}
         scrollEnabled={false}
-        contentContainerStyle={styles.listContent}
         style={styles.list}
         showsVerticalScrollIndicator={false}
       />
@@ -45,10 +44,7 @@ export const AllStepsList: FC<Props> = ({ steps }) => {
 
 const styles = StyleSheet.create({
   list: {
-    width: Dimensions.get('screen').width - 48,
-  },
-  listContent: {
-    alignSelf: 'center',
+    width: Dimensions.get('screen').width - 80,
   },
   item: {
     flexDirection: 'row',
