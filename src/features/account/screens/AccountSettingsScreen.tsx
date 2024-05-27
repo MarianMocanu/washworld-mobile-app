@@ -3,6 +3,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RewardsIcon } from '@shared/RewardsIcon';
+import Toast from 'react-native-toast-message';
 import { Button } from '@shared/Button';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
@@ -24,8 +25,6 @@ const AccountSettingsScreen = (props: Props) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { data: cars } = useCars(user?.id, { enabled: !!user });
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
-
-  console.log(user);
 
   const [isEnabled, setIsEnabled] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -59,243 +58,267 @@ const AccountSettingsScreen = (props: Props) => {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
-      <CarPickerModal
-        visible={isModalVisible}
-        heading={'Please select a car'}
-        buttonText={'Cancel'}
-        subscriptionData={subscriptions}
-        carsData={cars}
-        handlePress={() => setIsModalVisible(false)}
-        setVisible={setIsModalVisible}
-      />
-      {/* User info section */}
-      <View style={styles.userInfo}>
-        <View style={styles.iconNamePlan}>
-          <View style={styles.userIcon}>
-            <Text style={styles.icon}>
-              {(user?.firstName && user?.firstName.charAt(0) + user?.lastName.charAt(0)) || 'AA'}
-            </Text>
-          </View>
-          <View style={styles.namePlan}>
-            <Text style={text.fullName}>
-              {(user?.firstName && user?.firstName + ' ' + user?.lastName) || 'Firstname Lastname '}
-            </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <RewardsIcon color={currentLoyaltyLevel.color} size={24} />
-              <Text>{currentLoyaltyLevel.name} member</Text>
-            </View>
-          </View>
-        </View>
+    <View style={{ flex: 1, backgroundColor: '#FFF' }}>
+      <View style={styles.toastView}>
+        <Toast />
       </View>
-
-      {/* Car/s section */}
-      <View style={styles.section}>
-        <Text style={text.heading}>Your Cars</Text>
-        <View style={styles.carContainer}>
-          {cars?.map((car, index: number) => (
-            <View key={index} style={styles.car}>
-              <MaterialIcons
-                name="directions-car"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
-              />
-              <View>
-                <Text style={text.car}>{car.plateNumber + ' - ' + car.name}</Text>
-
-                {(() => {
-                  const activeSubscription = subscriptions?.find(
-                    subscription => subscription.car.id === car.id,
-                  );
-                  return activeSubscription ? (
-                    <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
-                      {activeSubscription.level.name}
-                    </Text>
-                  ) : (
-                    <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
-                      No active subscription
-                    </Text>
-                  );
-                })()}
+      <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
+        <CarPickerModal
+          visible={isModalVisible}
+          heading={'Please select a car'}
+          buttonText={'Cancel'}
+          subscriptionData={subscriptions}
+          carsData={cars}
+          handlePress={() => setIsModalVisible(false)}
+          setVisible={setIsModalVisible}
+        />
+        {/* User info section */}
+        <View style={styles.userInfo}>
+          <View style={styles.iconNamePlan}>
+            <View style={styles.userIcon}>
+              <Text style={styles.icon}>
+                {(user?.firstName && user?.firstName.charAt(0) + user?.lastName.charAt(0)) || 'AA'}
+              </Text>
+            </View>
+            <View style={styles.namePlan}>
+              <Text style={text.fullName}>
+                {(user?.firstName && user?.firstName + ' ' + user?.lastName) || 'Firstname Lastname '}
+              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <RewardsIcon color={currentLoyaltyLevel.color} size={24} />
+                <Text>{currentLoyaltyLevel.name} member</Text>
               </View>
             </View>
-          ))}
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            text="Add another car"
-            onPress={() => mainNavigation.navigate('stacks-car', { screen: 'car-add' })}
-            style={styles.button}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
-              />
-            }
-          />
-        </View>
-      </View>
-
-      {/* Subscription */}
-      <View style={styles.section}>
-        <Text style={text.heading}>Subscription</Text>
-        <View style={styles.buttonContainer}>
-          <Button
-            text="Change subscription"
-            onPress={() => handleChangeSubscription()}
-            style={styles.button}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
-              />
-            }
-          />
-          <Button
-            text="Loyalty rewards"
-            onPress={() => props.navigation.navigate('rewards')}
-            style={styles.button}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
-              />
-            }
-          />
-        </View>
-      </View>
-
-      {/* Preferences */}
-      <View style={styles.section}>
-        <Text style={text.heading}>Preferences</Text>
-        <View style={styles.buttonContainer}>
-          <Button
-            text="Preferred location"
-            onPress={() => props.navigation.navigate('location')}
-            style={styles.button}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
-              />
-            }
-          />
-          <Button
-            text="Preferred services"
-            onPress={() => props.navigation.navigate('services')}
-            style={styles.button}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
-              />
-            }
-          />
-          <View style={styles.button}>
-            <Text>Notifications</Text>
-            <Switch onValueChange={toggleSwitch} value={isEnabled} />
-          </View>
-          <View>
-            <Text>Language</Text>
-            <Text>English</Text>
-            {/* <CustomLanguageDropdownComponent/> */}
           </View>
         </View>
-      </View>
 
-      <View style={styles.section}>
-        <Text style={text.heading}>Help & Support</Text>
-        <View style={styles.buttonContainer}>
-          <Button
-            text="FAQs"
-            onPress={() => props.navigation.navigate('faq')}
-            style={styles.button}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
-              />
-            }
-          />
-          <Button
-            text="Customer support"
-            style={styles.button}
-            onPress={() => props.navigation.navigate('support')}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
-              />
-            }
-          />
-          <Button
-            text="Submit feedback"
-            onPress={() => props.navigation.navigate('feedback')}
-            style={styles.button}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
-              />
-            }
-          />
-        </View>
-      </View>
+        {/* Car/s section */}
+        <View style={styles.section}>
+          <Text style={text.heading}>Your Cars</Text>
+          <View style={styles.carContainer}>
+            {cars?.map((car, index: number) => (
+              <View key={index} style={styles.car}>
+                <MaterialIcons
+                  name="directions-car"
+                  size={24}
+                  color={colors.grey[60]}
+                  style={{ lineHeight: 24 }}
+                />
+                <View>
+                  <Text style={text.car}>{car.plateNumber + ' - ' + car.name}</Text>
 
-      <View style={[styles.section, styles.lastSection]}>
-        <Text style={text.heading}>Account</Text>
-        <View style={styles.buttonContainer}>
-          <Button
-            text="Edit account details"
-            onPress={() => props.navigation.navigate('details')}
-            style={styles.button}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
-              />
-            }
-          />
-          <Button
-            text="Change password"
-            style={styles.button}
-            onPress={() => props.navigation.navigate('change-password')}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
-              />
-            }
-          />
-          <Button
-            text="Log out"
-            onPress={() => props.navigation.navigate('log-out')}
-            style={styles.button}
-            rightIcon={
-              <MaterialIcons
-                name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
-              />
-            }
-          />
+                  {(() => {
+                    const activeSubscription = subscriptions?.find(
+                      subscription => subscription.car.id === car.id,
+                    );
+                    return activeSubscription ? (
+                      <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
+                        {activeSubscription.level.name}
+                      </Text>
+                    ) : (
+                      <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
+                        No active subscription
+                      </Text>
+                    );
+                  })()}
+                </View>
+              </View>
+            ))}
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              text="Add another car"
+              onPress={() => mainNavigation.navigate('stacks-car', { screen: 'car-add' })}
+              style={styles.button}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
+                />
+              }
+            />
+          </View>
         </View>
-      </View>
-    </ScrollView>
+
+        {/* Subscription */}
+        <View style={styles.section}>
+          <Text style={text.heading}>Subscription</Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              text="Change subscription"
+              onPress={() => handleChangeSubscription()}
+              style={styles.button}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
+                />
+              }
+            />
+            <Button
+              text="Loyalty rewards"
+              onPress={() => props.navigation.navigate('rewards')}
+              style={styles.button}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  size={24}
+                  color={colors.grey[60]}
+                  style={{ lineHeight: 24 }}
+                />
+              }
+            />
+          </View>
+        </View>
+
+        {/* Preferences */}
+        <View style={styles.section}>
+          <Text style={text.heading}>Preferences</Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              text="Preferred location"
+              onPress={() => {
+                Toast.show({
+                  type: 'info',
+                  text1: 'Preferred location is not available at the moment.',
+                });
+              }}
+              style={styles.button}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
+                />
+              }
+            />
+            <Button
+              text="Preferred services"
+              onPress={() => {
+                Toast.show({
+                  type: 'info',
+                  text1: 'Preferred services is not available at the moment.',
+                });
+              }}
+              style={styles.button}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
+                />
+              }
+            />
+            <View style={styles.button}>
+              <Text>Notifications</Text>
+              <Switch onValueChange={toggleSwitch} value={isEnabled} />
+            </View>
+            <View style={styles.button}>
+              <Text>Language</Text>
+              <Text>English</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={text.heading}>Help & Support</Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              text="FAQs"
+              onPress={() => props.navigation.navigate('faq')}
+              style={styles.button}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  size={24}
+                  color={colors.grey[60]}
+                  style={{ lineHeight: 24 }}
+                />
+              }
+            />
+            <Button
+              text="Customer support"
+              style={styles.button}
+              onPress={() => {
+                Toast.show({
+                  type: 'info',
+                  text1: 'Customer support is not available at the moment.',
+                });
+              }}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  size={24}
+                  color={colors.grey[60]}
+                  style={{ lineHeight: 24 }}
+                />
+              }
+            />
+            <Button
+              text="Submit feedback"
+              onPress={() => {
+                Toast.show({
+                  type: 'info',
+                  text1: 'Submit feedback is not available at the moment.',
+                });
+              }}
+              style={styles.button}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  size={24}
+                  color={colors.grey[60]}
+                  style={{ lineHeight: 24 }}
+                />
+              }
+            />
+          </View>
+        </View>
+
+        <View style={[styles.section, styles.lastSection]}>
+          <Text style={text.heading}>Account</Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              text="Edit account details"
+              onPress={() => props.navigation.navigate('details')}
+              style={styles.button}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  size={24}
+                  color={colors.grey[60]}
+                  style={{ lineHeight: 24 }}
+                />
+              }
+            />
+            <Button
+              text="Change password"
+              style={styles.button}
+              onPress={() => props.navigation.navigate('change-password')}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  size={24}
+                  color={colors.grey[60]}
+                  style={{ lineHeight: 24 }}
+                />
+              }
+            />
+            <Button
+              text="Log out"
+              onPress={() => props.navigation.navigate('log-out')}
+              style={styles.button}
+              rightIcon={
+                <MaterialIcons
+                  name="chevron-right"
+                  size={24}
+                  color={colors.grey[60]}
+                  style={{ lineHeight: 24 }}
+                />
+              }
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -376,6 +399,12 @@ const styles = StyleSheet.create({
   },
   lastSection: {
     marginBottom: 24,
+  },
+  toastView: {
+    zIndex: 9999,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
