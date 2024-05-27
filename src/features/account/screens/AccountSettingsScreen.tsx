@@ -10,9 +10,11 @@ import { useCars } from '@queries/Car';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { CarPickerModal } from '@shared/CarPickerModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSubscriptions } from '@queries/Subscriptions';
 import { AccountStackParamList } from '../AccountNavigator';
+import { useEventsNumber } from '@queries/Event';
+import { getLoyaltyLevels, LoyaltyLevel } from '../../shared/loyaltyLevels';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'index'>;
 
@@ -25,7 +27,23 @@ const AccountSettingsScreen = (props: Props) => {
 
   console.log(user);
 
+  const [isEnabled, setIsEnabled] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });
+
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  const [currentLoyaltyLevel, setCurrentLoyaltyLevel] = useState<LoyaltyLevel>({
+    name: 'Bronze',
+    color: colors.tertiary.bronze,
+    goal: 0,
+    rewards: [],
+  });
+
+  useEffect(() => {
+    const { currentLoyaltyLevel } = getLoyaltyLevels(eventsNumber);
+    setCurrentLoyaltyLevel(currentLoyaltyLevel);
+  }, [eventsNumber]);
 
   function handleChangeSubscription() {
     if (cars && cars?.length > 1) {
@@ -63,10 +81,9 @@ const AccountSettingsScreen = (props: Props) => {
             <Text style={text.fullName}>
               {(user?.firstName && user?.firstName + ' ' + user?.lastName) || 'Firstname Lastname '}
             </Text>
-            {/* TODO: Populate with user loyalty level */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <RewardsIcon color={colors.tertiary.diamond} size={24} />
-              <Text style={text.car}>Diamond member</Text>
+              <RewardsIcon color={currentLoyaltyLevel.color} size={24} />
+              <Text>{currentLoyaltyLevel.name} member</Text>
             </View>
           </View>
         </View>
@@ -179,7 +196,7 @@ const AccountSettingsScreen = (props: Props) => {
           />
           <View style={styles.button}>
             <Text>Notifications</Text>
-            <Switch value={true} onValueChange={value => console.log('Notifications', value)} />
+            <Switch onValueChange={toggleSwitch} value={isEnabled} />
           </View>
           <View>
             <Text>Language</Text>

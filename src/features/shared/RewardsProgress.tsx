@@ -6,61 +6,18 @@ import { RewardsIcon } from './RewardsIcon';
 import { useEventsNumber } from '@queries/Event';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
-
-interface LoyaltyLevel {
-  name: string;
-  color: string;
-  goal: number;
-}
-
-const loyaltyLevels: LoyaltyLevel[] = [
-  {
-    name: 'Bronze',
-    color: colors.tertiary.bronze,
-    goal: 0,
-  },
-  {
-    name: 'Silver',
-    color: colors.tertiary.silver,
-    goal: 24,
-  },
-  {
-    name: 'Gold',
-    color: colors.tertiary.gold,
-    goal: 48,
-  },
-  {
-    name: 'Diamond',
-    color: colors.tertiary.diamond,
-    goal: 96,
-  },
-];
-
-const getLoyaltyLevels = (eventsNumber: number | undefined) => {
-  if (eventsNumber === undefined) {
-    eventsNumber = 0;
-  }
-
-  let currentLoyaltyLevel = loyaltyLevels[0];
-  let nextLoyaltyLevel = null;
-
-  for (let i = 0; i < loyaltyLevels.length; i++) {
-    if (eventsNumber >= loyaltyLevels[i].goal) {
-      currentLoyaltyLevel = loyaltyLevels[i];
-      nextLoyaltyLevel = loyaltyLevels[i + 1] || null;
-    } else {
-      break;
-    }
-  }
-
-  return { currentLoyaltyLevel, nextLoyaltyLevel };
-};
+import { getLoyaltyLevels, LoyaltyLevel } from './loyaltyLevels';
 
 const RewardsProgress: React.FC = () => {
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
   const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });
 
-  const [currentLoyaltyLevel, setCurrentLoyaltyLevel] = useState<LoyaltyLevel>(loyaltyLevels[0]);
+  const [currentLoyaltyLevel, setCurrentLoyaltyLevel] = useState<LoyaltyLevel>({
+    name: 'Bronze',
+    color: colors.tertiary.bronze,
+    goal: 0,
+    rewards: [],
+  });
   const [nextLoyaltyLevel, setNextLoyaltyLevel] = useState<LoyaltyLevel | null>(null);
 
   useEffect(() => {
@@ -78,7 +35,9 @@ const RewardsProgress: React.FC = () => {
             <Text style={textStyles.loyaltyLevel}>{currentLoyaltyLevel.name}</Text>
           </View>
           <Text style={textStyles.loyaltyStatus}>
-            {eventsNumber}/{nextLoyaltyLevel?.goal} washes
+            {nextLoyaltyLevel
+              ? `${eventsNumber}/${nextLoyaltyLevel.goal} washes`
+              : `Total washes: ${eventsNumber}`}
           </Text>
         </View>
         {eventsNumber !== 0 && nextLoyaltyLevel && (
@@ -125,4 +84,3 @@ const textStyles = StyleSheet.create({
     ...globalTextStyles.inactive,
   },
 });
-
