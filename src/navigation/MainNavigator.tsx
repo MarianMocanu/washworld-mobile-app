@@ -18,17 +18,17 @@ type EventStack = {
 
 type SubscriptionStack = {
   screen: keyof SubscriptionStackParamList;
-  params: SubscriptionStackParamList[keyof SubscriptionStackParamList];
+  params?: SubscriptionStackParamList[keyof SubscriptionStackParamList];
 };
 
 type PaymentStack = {
   screen: keyof PaymentStackParamList;
-  params: PaymentStackParamList[keyof PaymentStackParamList];
+  params?: PaymentStackParamList[keyof PaymentStackParamList];
 };
 
 type Tabs = {
   screen: keyof TabsParamList;
-  params: TabsParamList[keyof TabsParamList];
+  params?: TabsParamList[keyof TabsParamList];
 };
 
 export type MainStackParamsList = {

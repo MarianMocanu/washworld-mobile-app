@@ -28,6 +28,7 @@ export const WashProgressScreen: FC = () => {
   const totalDuration = useMemo(() => steps.reduce((acc, step) => acc + step.duration, 0), [steps]);
 
   useEffect(() => {
+    console.log(event);
     createEventMutation(event)
       .then(response => {
         console.log('Event created', JSON.stringify(response, null, 2));

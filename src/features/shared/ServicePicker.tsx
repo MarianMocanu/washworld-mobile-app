@@ -18,10 +18,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'src/app/store';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { setCarId } from '../stacks/event/screens/eventSlice';
-import { useCars } from '@queries/Car';
+import { useCar, useCars } from '@queries/Car';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
 import { AllStepsList } from '../stacks/event/components/AllStepsList';
+import { Car } from '@models/Car';
+import { Subscription } from '@models/Subscription';
+import { Level } from '@models/Level';
 
 type Props = {
   /**
@@ -43,91 +46,94 @@ type Props = {
 };
 
 export const ServicePicker: FC<Props> = ({ title, services, onSelectPress, containerStyle }) => {
-  const navigation = useNavigation<NavigationProp<MainStackParamsList, 'stacks-car'>>();
-  const flatListRef = useRef<FlatList>(null);
-  const [currentItemIndex, setCurrentItemIndex] = useState(0);
-  const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
+  const navigation = useNavigation<NavigationProp<MainStackParamsList, 'stacks-event'>>();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data: subscriptionsData } = useSubscriptions(user?.id, {
-    enabled: !!user?.id,
-  });
+  const flatListRef = useRef<FlatList>(null);
 
-  const { data: carsData } = useCars(user?.id, { enabled: !!user?.id });
+  const { carId } = useSelector((state: RootState) => state.activeCar);
+  const { data: carData } = useCar(carId, { enabled: !!carId });
 
-  const currentFocusedService = useMemo(() => services[currentItemIndex], [services, currentItemIndex]);
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const focusedService: Service = useMemo(() => services[focusedIndex], [services, focusedIndex]);
 
-  const hasSubscription = useMemo(() => !!subscriptionsData, [subscriptionsData]);
+  const activeSubscription: Subscription | undefined = useMemo(() => {
+    if (carData && carData.subscriptions) {
+      return carData.subscriptions.find(subscription => subscription.active);
+    }
+    return undefined;
+  }, [carData]);
 
   const isServiceIncludedInSubscription = useMemo(() => {
-    if (subscriptionsData && subscriptionsData.length > 0 && currentFocusedService?.levels) {
-      return currentFocusedService.levels[0].id <= subscriptionsData[0].level.id;
+    if (activeSubscription && carData && focusedService && focusedService.levels) {
+      return activeSubscription.level.id >= focusedService.levels[0].id;
     }
     return true;
-  }, [subscriptionsData, services, currentItemIndex]);
+  }, [activeSubscription, carData, services, focusedIndex]);
 
   function scrollToNextItem() {
-    const nextIndex = currentItemIndex + 1;
+    const nextIndex = focusedIndex + 1;
     if (nextIndex < services.length) {
       flatListRef.current?.scrollToIndex({ index: nextIndex });
-      setCurrentItemIndex(nextIndex);
+      setFocusedIndex(nextIndex);
     }
   }
 
   function scrollToPreviousItem() {
-    const previousIndex = currentItemIndex - 1;
+    const previousIndex = focusedIndex - 1;
     if (previousIndex >= 0) {
       flatListRef.current?.scrollToIndex({ index: previousIndex });
-      setCurrentItemIndex(previousIndex);
+      setFocusedIndex(previousIndex);
     }
   }
 
   function updateCurrentItemIndex(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const index = Math.round(event.nativeEvent.contentOffset.x / (Dimensions.get('window').width - 48));
-    setCurrentItemIndex(index);
+    setFocusedIndex(index);
   }
 
-  function handleOnPressUpgradeSubscription() {
-    if (carsData && carsData.length) {
-      navigation.navigate('stacks-subscription', {
-        screen: 'subscription-handle',
-        params: { carId: carsData[0].id },
-      });
+  function handleOnUpgradePress() {
+    navigation.navigate('stacks-subscription', { screen: 'subscription-handle' });
+  }
+
+  function handleOnSelectPress() {
+    if (activeSubscription) {
+      onSelectPress(services[focusedIndex].id);
+    } else {
+      navigation.navigate('stacks-payment', { screen: 'payment-add' });
     }
   }
 
   useEffect(() => {
-    if (carsData && carsData.length) {
-      dispatch(setCarId(carsData[0].id));
-    }
-  }, []);
+    dispatch(setCarId(carId));
+  }, [carId]);
 
   useEffect(() => {
-    setCurrentItemIndex(0);
+    setFocusedIndex(0);
   }, [services]);
 
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={styles.header}>
-        <Button style={styles.button} onPress={scrollToPreviousItem} disabled={currentItemIndex === 0}>
+        <Button style={styles.button} onPress={scrollToPreviousItem} disabled={focusedIndex === 0}>
           <MaterialIcons name="chevron-left" style={styles.arrowIcon} />
         </Button>
         <Text style={text.title}>{title}</Text>
         <Button
           style={styles.button}
           onPress={scrollToNextItem}
-          disabled={currentItemIndex === services.length - 1}
+          disabled={focusedIndex === services.length - 1}
         >
           <MaterialIcons name="chevron-right" style={styles.arrowIcon} />
         </Button>
       </View>
 
-      {services.length && currentFocusedService && currentFocusedService.levels ? (
+      {services.length && focusedService && focusedService.levels ? (
         <View style={styles.horizontal}>
-          <Text style={text.serviceLevel}>{currentFocusedService.levels[0].name}</Text>
-          {!hasSubscription ? (
+          <Text style={text.serviceLevel}>{focusedService.levels[0].name}</Text>
+          {!activeSubscription ? (
             <Text style={text.priceBig}>
-              {currentFocusedService.price}
+              {focusedService.price}
               <Text style={text.priceSmall}>kr.</Text>
             </Text>
           ) : null}
@@ -144,15 +150,11 @@ export const ServicePicker: FC<Props> = ({ title, services, onSelectPress, conta
         onMomentumScrollEnd={updateCurrentItemIndex}
       />
       <Button
-        text={isServiceIncludedInSubscription ? 'Select' : 'Upgrade subscription'}
+        text={isServiceIncludedInSubscription ? 'Select service' : 'Upgrade subscription'}
         primary={isServiceIncludedInSubscription ? true : false}
         secondary={!isServiceIncludedInSubscription ? true : false}
         style={{ marginHorizontal: 24 }}
-        onPress={
-          isServiceIncludedInSubscription
-            ? () => onSelectPress(services[currentItemIndex].id)
-            : handleOnPressUpgradeSubscription
-        }
+        onPress={isServiceIncludedInSubscription ? handleOnSelectPress : handleOnUpgradePress}
       />
     </View>
   );

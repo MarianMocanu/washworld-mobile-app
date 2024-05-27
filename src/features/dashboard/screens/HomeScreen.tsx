@@ -1,6 +1,6 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { FC, useState, useEffect, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { useEvents } from '@queries/Event';
@@ -34,15 +34,12 @@ export const HomeScreen: FC<Props> = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dispatch = useDispatch();
   const activeCarId = useSelector((state: RootState) => state.activeCar.carId);
-  const activeCar = useMemo(() => {
+  const activeCar: Car = useMemo(() => {
     if (!cars) {
       return {} as Car;
     }
     const foundCar = cars.find(car => car.id === activeCarId);
-    if (!foundCar) {
-      return {} as Car;
-    }
-    return foundCar;
+    return foundCar as Car;
   }, [activeCarId, cars]);
 
   function navigateToHistory() {
