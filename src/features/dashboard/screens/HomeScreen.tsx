@@ -69,6 +69,7 @@ export const HomeScreen: FC<Props> = () => {
       <View style={viewStyles.mainContainer}>
         <ScreenHeader />
         <ScrollView contentContainerStyle={viewStyles.scrollContainer}>
+          <Text style={textStyles.primaryHeading}>Dashboard</Text>
           <CarPickerModal
             visible={isModalVisible}
             heading={'Please select a car'}
@@ -198,8 +199,8 @@ const viewStyles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   subscription: {
-    height: 48,
     paddingHorizontal: 12,
+    paddingVertical: 8,
     backgroundColor: colors.white.cream,
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -233,11 +234,19 @@ const viewStyles = StyleSheet.create({
 });
 
 const textStyles = StyleSheet.create({
+  primaryHeading: {
+    ...globalTextStyles.heading,
+    alignSelf: 'center',
+    fontSize: 24,
+    height: 'auto',
+    marginTop: 8,
+    lineHeight: 30,
+  },
   heading: {
     ...globalTextStyles.heading,
     color: colors.black.base,
     paddingTop: 24,
-    paddingBottom: 16,
+    paddingBottom: 12,
   },
   loyaltyLevel: {
     fontFamily: 'gilroy-semibold',
@@ -253,7 +262,7 @@ const textStyles = StyleSheet.create({
     fontFamily: 'gilroy-medium',
     fontSize: 18,
     lineHeight: 22,
-    color: colors.grey[60],
+    color: colors.grey[80],
   },
   plateNumber: {
     fontFamily: 'gilroy-bold',
