@@ -1,6 +1,6 @@
 import { colors } from '@globals/globalStyles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { HandleSubscriptionScreen } from 'src/features/stacks/subscription/HandleSubscriptionScreen';
+import { HandleSubscriptionScreen } from 'src/features/stacks/subscription/screens/HandleSubscriptionScreen';
 
 export type SubscriptionStackParamList = {
   'subscription-handle': { carId: number };

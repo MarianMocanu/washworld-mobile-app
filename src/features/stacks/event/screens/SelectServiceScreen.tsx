@@ -1,12 +1,12 @@
 import { Service, ServiceType } from '@models/Service';
-import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useTerminals } from '@queries/Terminals';
 import { Terminal } from '@models/Terminal';
 import { EventStackParamList } from 'src/navigation/EventNavigator';
-import { ServicePicker } from '../../../shared/ServicePicker';
+import { ServicePicker } from '../components/ServicePicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'src/app/store';
 import { setCarId, setLocationId, setServiceId } from './eventSlice';

@@ -1,7 +1,6 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { Button } from '@shared/Button';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ReactNode } from 'react';
+import { Modal, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
@@ -53,9 +52,7 @@ export const CarPickerModal: React.FC<InfoModalProps> = ({
             <Button key={index} onPress={() => navigateToSubscription(car.id)} style={styles.carButton}>
               <MaterialIcons
                 name="directions-car"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
+                style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
               />
               <View>
                 <Text style={[styles.modalText]}>{car.plateNumber + ' - ' + car.name}</Text>
@@ -137,4 +134,3 @@ const styles = StyleSheet.create({
     width: 70,
   },
 });
-
