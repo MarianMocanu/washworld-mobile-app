@@ -190,7 +190,7 @@ const AccountSettingsScreen = (props: Props) => {
           </View>
           <View style={styles.button}>
             <Text>Language</Text>
-            <Text>CustomDropdownComponent?</Text>
+            <Text>English</Text>
             {/* <CustomLanguageDropdownComponent/> */}
           </View>
         </View>

@@ -14,7 +14,6 @@ export const activeCarSlice = createSlice({
   reducers: {
     setActiveCarId: (state: activeCarState, action: PayloadAction<number | undefined>) => {
       state.carId = action.payload;
-      console.log(action.payload, state.carId);
     },
   },
 });
@@ -22,4 +21,3 @@ export const activeCarSlice = createSlice({
 export const { setActiveCarId } = activeCarSlice.actions;
 
 export default activeCarSlice.reducer;
-
