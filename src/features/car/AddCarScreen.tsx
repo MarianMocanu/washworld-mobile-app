@@ -1,5 +1,5 @@
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Button } from '@shared/Button';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { FC, useEffect, useState } from 'react';
@@ -10,10 +10,8 @@ import { InputField } from '@models/InputField';
 import { useAddCar } from '@queries/Car';
 import { RootState } from 'src/app/store';
 import { useSelector } from 'react-redux';
-import { SubscriptionStackParamList } from 'src/navigation/SubscriptionNavigator';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
 import { User } from '@models/User';
-import { Car } from '@models/Car';
 
 export const AddCarScreen: FC = () => {
   const auth = useSelector((state: RootState) => state.auth);

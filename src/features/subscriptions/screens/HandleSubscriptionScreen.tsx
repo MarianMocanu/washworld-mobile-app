@@ -10,27 +10,31 @@ import RadioButton from '@shared/RadioButton';
 import { useLevels } from '@queries/Levels';
 import { Level } from '@models/Level';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { SubscriptionStackParamList } from 'src/navigation/SubscriptionNavigator';
+import { SubscriptionStackParamList } from 'src/features/subscriptions/SubscriptionNavigator';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { useSubscriptions } from '@queries/Subscriptions';
 import { Subscription } from '@models/Subscription';
-import { SuccessRoute } from 'src/navigation/PaymentNavigator';
+import { SuccessRoute } from 'src/features/payment/PaymentNavigator';
+import { LevelPicker } from '../components/LevelPicker';
 
 export const HandleSubscriptionScreen: FC = () => {
   const tabNavigation = useNavigation<NavigationProp<TabsParamList, 'dashboard'>>();
   const mainNavigation = useNavigation<NavigationProp<MainStackParamsList>>();
+
   const route = useRoute<RouteProp<SubscriptionStackParamList, 'subscription-handle'>>();
   const auth = useSelector((state: RootState) => state.auth);
-  const { data, isLoading, error } = useLevels();
+
+  const { data: levelsData, isLoading } = useLevels();
   const {
     data: subscriptionData,
     isLoading: subscriptionIsLoading,
-    error: subscriptionError,
     refetch: refetchSubscription,
   } = useSubscriptions(auth.user ? auth.user?.id : 0);
+
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
   const [activeSubscription, setActiveSubscription] = useState<Subscription | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     refetchSubscription();
@@ -46,14 +50,30 @@ export const HandleSubscriptionScreen: FC = () => {
   return (
     <View style={styles.container}>
       <ScreenHeader backButtonShown onBackPress={tabNavigation.goBack} />
+      {levelsData && (
+        <LevelPicker
+          levels={levelsData}
+          onSelect={setSelectedValue}
+          visible={visible}
+          setVisible={setVisible}
+        />
+      )}
       <View style={styles.screenContent}>
         <Text style={text.title}> {activeSubscription ? 'Change subscription' : 'Add subscription'}</Text>
-        <Text style={[text.regular, { alignSelf: 'center' }]}>Choose a subscription level.</Text>
+        <Text style={[text.regular, { alignSelf: 'center' }]}>
+          Choose one of the{' '}
+          <Text
+            style={{ color: colors.primary.base, textDecorationLine: 'underline' }}
+            onPress={() => setVisible(true)}
+          >
+            available plans
+          </Text>
+        </Text>
 
         {(isLoading || subscriptionIsLoading) && <ActivityIndicator />}
-        {!isLoading && !subscriptionIsLoading && data && (
+        {!isLoading && !subscriptionIsLoading && levelsData && (
           <View>
-            {data.map((level: Level) => (
+            {levelsData.map((level: Level) => (
               <RadioButton
                 key={level.id}
                 label={level.name}
@@ -66,12 +86,10 @@ export const HandleSubscriptionScreen: FC = () => {
             ))}
           </View>
         )}
-
         <Button
           primary
           style={styles.button}
           onPress={() => {
-            // console.log(selectedValue);
             selectedValue &&
               mainNavigation.navigate('stacks-payment', {
                 screen: 'payment-add',

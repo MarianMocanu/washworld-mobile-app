@@ -6,11 +6,11 @@ import { FC, useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, StyleSheet, Text, View } from 'react-native';
 import { CarInTerminal } from 'src/assets/SVGImages';
 import { MaterialIcons } from '@expo/vector-icons';
-import { EventStackParamList } from 'src/navigation/EventNavigator';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'src/app/store';
 import { useAvailableTerminal } from '@queries/Terminals';
-import { setTerminalId } from './eventSlice';
+import { EventStackParamList } from '../EventNavigator';
+import { setTerminalId } from '../eventSlice';
 
 export const ScanPlateScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<EventStackParamList, 'scan-plate'>>();

@@ -9,7 +9,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/app/store';
-import { setLocationId } from '../stacks/event/screens/eventSlice';
+import { setLocationId } from '../event/eventSlice';
 
 type LocationsListProps = {
   locations: Location[];

@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Text } from 'react-native';
+import { Text, Platform } from 'react-native';
 import { colors } from '@globals/globalStyles';
 import { DashboardNavigator } from 'src/features/dashboard/DashboardNavigator';
 import { StartWashNavigator } from 'src/features/startwash/StartWashNavigator';
-import { AccountNavigator, AccountStackParamList } from 'src/features/account/AccountNavigator';
+import { AccountNavigator, AccountStackParamList } from '../features/account/AccountNavigator';
 
 type AccountStack = {
   screen: keyof AccountStackParamList;
@@ -33,6 +33,7 @@ export default function TabNavigator() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarStyle: Platform.OS === 'android' && { paddingBottom: 4 },
         tabBarIcon: ({ focused, color, size }) => {
           switch (route.name) {
             case 'dashboard':

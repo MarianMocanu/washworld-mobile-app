@@ -5,13 +5,13 @@ import { FC, useEffect } from 'react';
 import { BackHandler, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'src/app/store';
-import { EventStackParamList } from 'src/navigation/EventNavigator';
 import { TabsParamList } from 'src/navigation/TabNavigator';
-import { resetEvent } from './eventSlice';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { CarWashed } from 'src/assets/SVGImages';
 import { useBookTerminal } from '@queries/Terminals';
 import { TerminalStatus } from '@models/Terminal';
+import { EventStackParamList } from '../EventNavigator';
+import { resetEvent } from '../eventSlice';
 
 export const WashFinishedScreen: FC = () => {
   const dispatch = useDispatch<AppDispatch>();

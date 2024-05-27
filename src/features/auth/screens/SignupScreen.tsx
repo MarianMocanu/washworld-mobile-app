@@ -1,16 +1,15 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Input from '@shared/Input';
 import { FC, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { AuthStackParamList } from 'src/navigation/AuthNavigator';
-import { signUp } from './authSlice';
+import { ActivityIndicator, ScrollView, StyleSheet, Text } from 'react-native';
+import { AuthStackParamList } from 'src/features/auth/AuthNavigator';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/app/store';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import Toast from 'react-native-toast-message';
 import { Button } from '@shared/Button';
 import { InputField } from '@models/InputField';
-import { User } from '@models/User';
+import { signUp } from '../authSlice';
 
 type Props = {};
 

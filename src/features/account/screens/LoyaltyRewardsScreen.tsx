@@ -1,15 +1,15 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
-import { AccountStackParamList } from '../AccountNavigator';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { MaterialIcons } from '@expo/vector-icons';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { ProgressBar } from '@shared/ProgressBar';
 import { InfoModal } from '../../shared/InfoModal';
-import { Collapsible } from '../components/collapsible';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { Collapsible } from '../components/Collapsible';
+import { AccountStackParamList } from '../AccountNavigator';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'rewards'>;
 
@@ -40,7 +40,6 @@ const LoyaltyRewardsScreen = (props: Props) => {
               <RewardsIcon color={colors.tertiary.gold} size={24} />
               <Text style={styles.loyaltyLevel}>Gold</Text>
             </View>
-
             <Text style={styles.inactive}>Achieved on 23/04/24</Text>
           </View>
           <View style={styles.rewardsList}>

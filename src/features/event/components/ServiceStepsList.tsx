@@ -1,10 +1,10 @@
 import { colors } from '@globals/globalStyles';
 import { Step } from '@models/Step';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { EventStackParamList } from 'src/navigation/EventNavigator';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { EventStackParamList } from '../EventNavigator';
 
 type Props = {
   steps: Step[];

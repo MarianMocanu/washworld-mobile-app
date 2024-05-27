@@ -16,7 +16,7 @@ import { Service } from '@models/Service';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { AllStepsList } from '../stacks/event/components/AllStepsList';
+import { AllStepsList } from './AllStepsList';
 import { Subscription } from '@models/Subscription';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
