@@ -17,47 +17,44 @@ import { TabsParamList } from 'src/navigation/TabNavigator';
 import RewardsProgress from '@shared/RewardsProgress';
 import { CarPickerModal } from '../components/CarPickerModal';
 import { useDispatch } from 'react-redux';
-import { setActiveCarId } from '../../account/slices/activeCarSlice';
+import { setActiveCarId } from '../../car/activeCarSlice';
 import { Car } from '@models/Car';
+import { MainStackParamsList } from 'src/navigation/MainNavigator';
 
 type Props = {};
 
 export const HomeScreen: FC<Props> = () => {
-  const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
-  const navigation2 = useNavigation<NavigationProp<any>>();
+  const mainNavigator = useNavigation<NavigationProp<MainStackParamsList, 'tabs'>>();
+  const tabNavigator = useNavigation<NavigationProp<TabsParamList, 'dashboard'>>();
+  const dashboardNavigator = useNavigation<NavigationProp<DashboardStackParamList, 'home'>>();
+
+  const dispatch = useDispatch();
+  const { carId } = useSelector((state: RootState) => state.activeCar);
   const { user } = useSelector((state: RootState): RootState['auth'] => state.auth);
+
   const { data: events } = useEvents(user!.id, { enabled: !!user?.id }, 4);
   const { data: locations } = useLocations();
   const { data: cars } = useCars(user!.id, { enabled: !!user?.id });
+
   const [modalLocation, setModalLocation] = useState<Location | null>(null);
-  const navigationAccount = useNavigation<NavigationProp<TabsParamList>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const dispatch = useDispatch();
-  const activeCarId = useSelector((state: RootState) => state.activeCar.carId);
+
   const activeCar: Car = useMemo(() => {
     if (!cars) {
       return {} as Car;
     }
-    const foundCar = cars.find(car => car.id === activeCarId);
+    const foundCar = cars.find(car => car.id === carId);
     return (foundCar as Car) ?? ({} as Car);
-  }, [activeCarId, cars]);
+  }, [carId, cars]);
 
   function navigateToHistory() {
-    navigation.navigate('history');
+    dashboardNavigator.navigate('history');
   }
 
   function navigateToRewards() {
-    navigationAccount.navigate('account', { screen: 'rewards' });
+    tabNavigator.navigate('account', { screen: 'rewards' });
   }
 
-  let totalSubscriptions = 0;
-  if (cars) {
-    cars.forEach(car => {
-      if (car.subscriptions) {
-        totalSubscriptions += car.subscriptions.length;
-      }
-    });
-  }
   useEffect(() => {
     if (cars && cars.length > 0) {
       dispatch(setActiveCarId(cars[0].id)); // update activeCar in the store
@@ -69,7 +66,6 @@ export const HomeScreen: FC<Props> = () => {
       <View style={viewStyles.mainContainer}>
         <ScreenHeader />
         <ScrollView contentContainerStyle={viewStyles.scrollContainer}>
-          <Text style={textStyles.primaryHeading}>Dashboard</Text>
           <CarPickerModal
             visible={isModalVisible}
             heading={'Please select a car'}
@@ -78,7 +74,7 @@ export const HomeScreen: FC<Props> = () => {
             buttonText={'Cancel'}
             carData={cars}
             setSelectedCarId={carId => dispatch(setActiveCarId(carId))}
-            activeCarId={activeCarId}
+            activeCarId={carId}
           />
           {/* Active subscription  */}
           {activeCar && activeCar.id ? (
@@ -96,7 +92,7 @@ export const HomeScreen: FC<Props> = () => {
                         : 'No Subscription'}
                     </Text>
                   </View>
-                  {totalSubscriptions > 1 && (
+                  {cars.length > 1 && (
                     <MaterialIcons
                       name="keyboard-arrow-down"
                       style={{ fontSize: 24, lineHeight: 24, color: colors.grey[60] }}
@@ -114,7 +110,7 @@ export const HomeScreen: FC<Props> = () => {
                 primary={true}
                 onPress={() =>
                   cars &&
-                  navigation2.navigate('stacks-subscription', {
+                  mainNavigator.navigate('stacks-subscription', {
                     screen: 'subscription-handle',
                     params: { carId: cars[0].id },
                   })

@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FC } from 'react';
-import { LogoSVG } from 'src/assets/SVGIcons';
 import { StartWashScreen } from './screens/StartWashScreen';
 
 export type StartWashStackParamList = {

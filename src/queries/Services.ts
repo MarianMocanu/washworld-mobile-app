@@ -4,6 +4,7 @@ import { QueryObserverOptions, UseQueryResult, useQuery } from 'react-query';
 
 export const SERVICES_KEYS = {
   SERVICE_BY_ID: 'service-by-id',
+  ALL_SERVICES: 'all-services',
 };
 
 export const useService = (
@@ -17,5 +18,15 @@ export const useService = (
       return response.data as Service;
     },
     enabled: options?.enabled ?? false,
+  });
+};
+
+export const useServices = (): UseQueryResult<Service[], AxiosError> => {
+  return useQuery<Service[], AxiosError>({
+    queryKey: [SERVICES_KEYS.ALL_SERVICES],
+    queryFn: async function fetchServices() {
+      const response = await axios.get('/services');
+      return response.data as Service[];
+    },
   });
 };

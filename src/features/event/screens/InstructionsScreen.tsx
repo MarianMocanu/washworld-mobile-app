@@ -5,7 +5,7 @@ import { ScreenHeader } from '@shared/ScreenHeader';
 import { FC } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { EventStackParamList } from 'src/navigation/EventNavigator';
+import { EventStackParamList } from '../EventNavigator';
 
 export const InstructionsScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<EventStackParamList, 'instructions'>>();

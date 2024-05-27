@@ -7,7 +7,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { RootState } from 'src/app/store';
 import { useSelector } from 'react-redux';
-import { PaymentStackParamList } from 'src/navigation/PaymentNavigator';
+import { PaymentStackParamList } from 'src/features/payment/PaymentNavigator';
 import { useAddSubscription, useUpdateSubscription } from '@queries/Subscriptions';
 import Toast from 'react-native-toast-message';
 import { useLevels } from '@queries/Levels';

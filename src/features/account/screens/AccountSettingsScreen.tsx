@@ -1,8 +1,7 @@
-import { View, Text, StyleSheet, ScrollView, Switch, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Switch } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AccountStackParamList } from '../AccountNavigator';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { Button } from '@shared/Button';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -13,6 +12,7 @@ import { RootState } from 'src/app/store';
 import { CarPickerModal } from '@shared/CarPickerModal';
 import { useEffect, useState } from 'react';
 import { useSubscriptions } from '@queries/Subscriptions';
+import { AccountStackParamList } from '../AccountNavigator';
 import { useEventsNumber } from '@queries/Event';
 import { getLoyaltyLevels, LoyaltyLevel } from '../../shared/loyaltyLevels';
 
@@ -24,6 +24,9 @@ const AccountSettingsScreen = (props: Props) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { data: cars } = useCars(user?.id, { enabled: !!user });
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
+
+  console.log(user);
+
   const [isEnabled, setIsEnabled] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });
@@ -70,12 +73,12 @@ const AccountSettingsScreen = (props: Props) => {
       <View style={styles.userInfo}>
         <View style={styles.iconNamePlan}>
           <View style={styles.userIcon}>
-            <Text style={styles.iconText}>
+            <Text style={styles.icon}>
               {(user?.firstName && user?.firstName.charAt(0) + user?.lastName.charAt(0)) || 'AA'}
             </Text>
           </View>
           <View style={styles.namePlan}>
-            <Text style={styles.fullName}>
+            <Text style={text.fullName}>
               {(user?.firstName && user?.firstName + ' ' + user?.lastName) || 'Firstname Lastname '}
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
@@ -87,8 +90,8 @@ const AccountSettingsScreen = (props: Props) => {
       </View>
 
       {/* Car/s section */}
-      <View style={[styles.section, styles.carSection]}>
-        <Text style={styles.sectionHeading}>Your Cars</Text>
+      <View style={styles.section}>
+        <Text style={text.heading}>Your Cars</Text>
         <View style={styles.carContainer}>
           {cars?.map((car, index: number) => (
             <View key={index} style={styles.car}>
@@ -99,18 +102,18 @@ const AccountSettingsScreen = (props: Props) => {
                 style={{ lineHeight: 24 }}
               />
               <View>
-                <Text style={[styles.carText]}>{car.plateNumber + ' - ' + car.name}</Text>
+                <Text style={text.car}>{car.plateNumber + ' - ' + car.name}</Text>
 
                 {(() => {
                   const activeSubscription = subscriptions?.find(
                     subscription => subscription.car.id === car.id,
                   );
                   return activeSubscription ? (
-                    <Text style={[styles.carText, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
+                    <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
                       {activeSubscription.level.name}
                     </Text>
                   ) : (
-                    <Text style={[styles.carText, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
+                    <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
                       No active subscription
                     </Text>
                   );
@@ -127,9 +130,7 @@ const AccountSettingsScreen = (props: Props) => {
             rightIcon={
               <MaterialIcons
                 name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
+                style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
               />
             }
           />
@@ -138,7 +139,7 @@ const AccountSettingsScreen = (props: Props) => {
 
       {/* Subscription */}
       <View style={styles.section}>
-        <Text style={styles.sectionHeading}>Subscription</Text>
+        <Text style={text.heading}>Subscription</Text>
         <View style={styles.buttonContainer}>
           <Button
             text="Change subscription"
@@ -147,9 +148,7 @@ const AccountSettingsScreen = (props: Props) => {
             rightIcon={
               <MaterialIcons
                 name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
+                style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
               />
             }
           />
@@ -171,7 +170,7 @@ const AccountSettingsScreen = (props: Props) => {
 
       {/* Preferences */}
       <View style={styles.section}>
-        <Text style={styles.sectionHeading}>Preferences</Text>
+        <Text style={text.heading}>Preferences</Text>
         <View style={styles.buttonContainer}>
           <Button
             text="Preferred location"
@@ -180,9 +179,7 @@ const AccountSettingsScreen = (props: Props) => {
             rightIcon={
               <MaterialIcons
                 name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
+                style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
               />
             }
           />
@@ -193,9 +190,7 @@ const AccountSettingsScreen = (props: Props) => {
             rightIcon={
               <MaterialIcons
                 name="chevron-right"
-                size={24}
-                color={colors.grey[60]}
-                style={{ lineHeight: 24 }}
+                style={{ lineHeight: 24, fontSize: 24, color: colors.grey[60] }}
               />
             }
           />
@@ -203,7 +198,7 @@ const AccountSettingsScreen = (props: Props) => {
             <Text>Notifications</Text>
             <Switch onValueChange={toggleSwitch} value={isEnabled} />
           </View>
-          <View style={styles.button}>
+          <View>
             <Text>Language</Text>
             <Text>English</Text>
             {/* <CustomLanguageDropdownComponent/> */}
@@ -212,7 +207,7 @@ const AccountSettingsScreen = (props: Props) => {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionHeading}>Help & Support</Text>
+        <Text style={text.heading}>Help & Support</Text>
         <View style={styles.buttonContainer}>
           <Button
             text="FAQs"
@@ -229,8 +224,8 @@ const AccountSettingsScreen = (props: Props) => {
           />
           <Button
             text="Customer support"
-            onPress={() => props.navigation.navigate('support')}
             style={styles.button}
+            onPress={() => props.navigation.navigate('support')}
             rightIcon={
               <MaterialIcons
                 name="chevron-right"
@@ -257,7 +252,7 @@ const AccountSettingsScreen = (props: Props) => {
       </View>
 
       <View style={[styles.section, styles.lastSection]}>
-        <Text style={styles.sectionHeading}>Account</Text>
+        <Text style={text.heading}>Account</Text>
         <View style={styles.buttonContainer}>
           <Button
             text="Edit account details"
@@ -274,8 +269,8 @@ const AccountSettingsScreen = (props: Props) => {
           />
           <Button
             text="Change password"
-            onPress={() => props.navigation.navigate('change-password')}
             style={styles.button}
+            onPress={() => props.navigation.navigate('change-password')}
             rightIcon={
               <MaterialIcons
                 name="chevron-right"
@@ -316,7 +311,6 @@ const styles = StyleSheet.create({
   section: {
     alignSelf: 'stretch',
   },
-  carSection: {},
   userInfo: {
     alignSelf: 'stretch',
     backgroundColor: colors.white.cream,
@@ -344,13 +338,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconText: {
+  icon: {
     color: colors.white.base,
     fontSize: 16,
-  },
-  fullName: {
-    ...globalTextStyles.heading,
-    fontSize: 20,
   },
   carInfo: {
     flexDirection: 'row',
@@ -365,7 +355,6 @@ const styles = StyleSheet.create({
     gap: 16,
     width: '100%',
     backgroundColor: colors.white.cream,
-    // height: 48,
     borderRadius: 4,
     paddingHorizontal: 10,
   },
@@ -374,26 +363,6 @@ const styles = StyleSheet.create({
     padding: 12,
     gap: 12,
   },
-  carText: {
-    fontFamily: 'gilroy-medium',
-    fontSize: 16,
-    lineHeight: 18,
-  },
-  carSubscription: {
-    ...globalTextStyles.inactive,
-    fontSize: 12,
-  },
-  sectionHeading: {
-    ...globalTextStyles.heading,
-    color: colors.black.base,
-    paddingTop: 24,
-    paddingBottom: 16,
-    backgroundColor: colors.white.base,
-  },
-  buttonContainer: {
-    backgroundColor: colors.white.cream,
-    borderRadius: 4,
-  },
   button: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -401,10 +370,37 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
   },
-  buttonText: {
-    color: colors.black.base,
+  buttonContainer: {
+    backgroundColor: colors.white.cream,
+    borderRadius: 4,
   },
   lastSection: {
     marginBottom: 24,
+  },
+});
+
+const text = StyleSheet.create({
+  fullName: {
+    ...globalTextStyles.heading,
+    fontSize: 20,
+  },
+  car: {
+    fontFamily: 'gilroy-medium',
+    fontSize: 16,
+    lineHeight: 18,
+  },
+  button: {
+    color: colors.black.base,
+  },
+  heading: {
+    ...globalTextStyles.heading,
+    color: colors.black.base,
+    paddingTop: 24,
+    paddingBottom: 16,
+    backgroundColor: colors.white.base,
+  },
+  subscription: {
+    ...globalTextStyles.inactive,
+    fontSize: 12,
   },
 });

@@ -1,8 +1,8 @@
 import { colors } from '@globals/globalStyles';
 import { Subscription } from '@models/Subscription';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AddPaymentScreen } from 'src/features/stacks/payment/AddPaymentScreen';
-import { SuccessPaymentScreen } from 'src/features/stacks/payment/SuccessPaymentScreen';
+import { AddPaymentScreen } from 'src/features/payment/AddPaymentScreen';
+import { SuccessPaymentScreen } from 'src/features/payment/SuccessPaymentScreen';
 
 export enum SuccessRoute {
   Service = 'service',

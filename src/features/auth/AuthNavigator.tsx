@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 import { LogoSVG } from 'src/assets/SVGIcons';
-import { LoginScreen } from 'src/features/auth/LoginScreen';
-import { SignupScreen } from 'src/features/auth/SignupScreen';
+import { LoginScreen } from './screens/LoginScreen';
+import { SignupScreen } from './screens/SignupScreen';
 
 export type AuthStackParamList = {
   login: {

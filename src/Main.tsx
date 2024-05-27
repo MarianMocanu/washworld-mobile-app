@@ -1,8 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { FC, useLayoutEffect } from 'react';
-import { ActivityIndicator, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import AuthStackNavigator from './navigation/AuthNavigator';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import AuthStackNavigator from './features/auth/AuthNavigator';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from './app/store';
 import MainNavigator from './navigation/MainNavigator';

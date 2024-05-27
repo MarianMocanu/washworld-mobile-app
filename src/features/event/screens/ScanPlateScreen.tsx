@@ -6,11 +6,11 @@ import { FC, useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, StyleSheet, Text, View } from 'react-native';
 import { CarInTerminal } from 'src/assets/SVGImages';
 import { MaterialIcons } from '@expo/vector-icons';
-import { EventStackParamList } from 'src/navigation/EventNavigator';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'src/app/store';
 import { useAvailableTerminal } from '@queries/Terminals';
-import { setTerminalId } from './eventSlice';
+import { EventStackParamList } from '../EventNavigator';
+import { setTerminalId } from '../eventSlice';
 
 export const ScanPlateScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<EventStackParamList, 'scan-plate'>>();
@@ -21,7 +21,11 @@ export const ScanPlateScreen: FC = () => {
   const [scannedSuccess, setScannedSuccess] = useState(false);
 
   const { serviceId } = useSelector((state: RootState) => state.event);
-  const { data: availableTerminalData } = useAvailableTerminal(locationId, serviceId, {
+  const {
+    data: availableTerminalData,
+    isLoading: isTerminalLoading,
+    error,
+  } = useAvailableTerminal(locationId, serviceId, {
     enabled: !!serviceId && !!locationId,
   });
 
@@ -56,7 +60,11 @@ export const ScanPlateScreen: FC = () => {
         <Text style={text.title}>Before you start</Text>
         <CarInTerminal style={{ alignSelf: 'center' }} />
         <View style={{ gap: 24, paddingVertical: 48 }}>
-          <Text style={text.title}>TERMINAL {String(availableTerminalData?.id).padStart(2, '0')}</Text>
+          {isTerminalLoading ? (
+            <ActivityIndicator size={'small'} color={colors.primary.base} />
+          ) : (
+            <Text style={text.title}>TERMINAL {String(availableTerminalData?.id).padStart(2, '0')}</Text>
+          )}
           <Text style={text.regular}>
             Align your car with the indicated terminal to have your plate scanned.
           </Text>

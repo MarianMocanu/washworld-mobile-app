@@ -1,19 +1,19 @@
 import { Service, ServiceType } from '@models/Service';
-import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useTerminals } from '@queries/Terminals';
 import { Terminal } from '@models/Terminal';
-import { EventStackParamList } from 'src/navigation/EventNavigator';
-import { ServicePicker } from '../../../shared/ServicePicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'src/app/store';
-import { setCarId, setLocationId, setServiceId } from './eventSlice';
 import { useCar } from '@queries/Car';
 import { Subscription } from '@models/Subscription';
-import { SuccessRoute } from 'src/navigation/PaymentNavigator';
+import { SuccessRoute } from 'src/features/payment/PaymentNavigator';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
+import { EventStackParamList } from '../EventNavigator';
+import { setCarId, setLocationId, setServiceId } from '../eventSlice';
+import { ServicePicker } from '../components/ServicePicker';
 
 export const SelectServiceScreen: FC = () => {
   const eventNavigator = useNavigation<NavigationProp<EventStackParamList, 'select-service'>>();

@@ -1,12 +1,10 @@
 import { Text, View } from 'react-native';
 import RadioButton from './RadioButton';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
-import { fetchLevels, useLevels } from '@queries/Levels';
+import { useLevels } from '@queries/Levels';
 
 export const SubscriptionsList = () => {
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
-  // const disabledOption = useSelector((state: RootState) => something.users.current.subscription
 
   const { data, isLoading, error } = useLevels();
 
@@ -25,10 +23,8 @@ export const SubscriptionsList = () => {
           selected={selectedValue === index}
           onSelect={setSelectedValue}
           disabled={false}
-          //   disabled={level.name === disabledOption}
         />
       ))}
     </View>
   );
 };
-

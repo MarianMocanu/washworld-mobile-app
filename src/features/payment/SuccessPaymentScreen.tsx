@@ -6,9 +6,9 @@ import { FC } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { PaymentStackParamList } from 'src/navigation/PaymentNavigator';
-import { EventStackParamList } from 'src/navigation/EventNavigator';
+import { PaymentStackParamList } from 'src/features/payment/PaymentNavigator';
 import { Image } from 'react-native';
+import { EventStackParamList } from '../event/EventNavigator';
 
 export const SuccessPaymentScreen: FC = () => {
   const mainNavigator = useNavigation<NavigationProp<MainStackParamsList>>();

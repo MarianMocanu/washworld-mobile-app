@@ -7,7 +7,6 @@ import { colors, globalTextStyles } from '@globals/globalStyles';
 import { MaterialIcons } from '@expo/vector-icons';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { InfoModal } from '../../shared/InfoModal';
-import { Collapsible } from '../components/collapsible';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import RewardsProgress from '@shared/RewardsProgress';
 import { loyaltyLevels, getLoyaltyLevels, LoyaltyLevel } from '../../shared/loyaltyLevels';
