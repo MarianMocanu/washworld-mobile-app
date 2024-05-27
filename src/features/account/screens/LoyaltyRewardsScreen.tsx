@@ -1,25 +1,38 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { AccountStackParamList } from '../AccountNavigator';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { MaterialIcons } from '@expo/vector-icons';
 import { RewardsIcon } from '@shared/RewardsIcon';
-import { ProgressBar } from '@shared/ProgressBar';
 import { InfoModal } from '../../shared/InfoModal';
 import { Collapsible } from '../components/collapsible';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import RewardsProgress from '@shared/RewardsProgress';
+import { loyaltyLevels, getLoyaltyLevels, LoyaltyLevel } from '../../shared/loyaltyLevels';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/app/store';
+import { useEventsNumber } from '@queries/Event';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'rewards'>;
 
 const LoyaltyRewardsScreen = (props: Props) => {
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });
+  const [currentLevel, setCurrentLevel] = useState<LoyaltyLevel | null>(null);
+  const [nextLevel, setNextLevel] = useState<LoyaltyLevel | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigation = useNavigation<NavigationProp<AccountStackParamList, 'rewards'>>();
   const handleInfoModal = () => {
     // setEntryIdToDelete(entryId);
     setIsModalVisible(true);
   };
+  useEffect(() => {
+    const { currentLoyaltyLevel, nextLoyaltyLevel } = getLoyaltyLevels(eventsNumber);
+    setCurrentLevel(currentLoyaltyLevel);
+    setNextLevel(nextLoyaltyLevel);
+  }, [eventsNumber]);
 
   return (
     <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
@@ -34,93 +47,48 @@ const LoyaltyRewardsScreen = (props: Props) => {
         </View>
         {/* Current Status */}
         <Text style={styles.heading2}>Current Status</Text>
-        <View style={styles.sectionContent}>
-          <View style={[styles.horizontal, styles.justify]}>
-            <View style={styles.horizontal}>
-              <RewardsIcon color={colors.tertiary.gold} size={24} />
-              <Text style={styles.loyaltyLevel}>Gold</Text>
-            </View>
+        {currentLevel && (
+          <View style={styles.sectionContent}>
+            <View style={[styles.horizontal, styles.justify]}>
+              <View style={styles.horizontal}>
+                <RewardsIcon color={currentLevel.color} size={24} />
+                <Text style={styles.loyaltyLevel}>{currentLevel.name}</Text>
+              </View>
 
-            <Text style={styles.inactive}>Achieved on 23/04/24</Text>
+              <Text style={styles.inactive}>{eventsNumber} total washes</Text>
+            </View>
+            <View style={styles.rewardsList}>
+              {currentLevel.rewards.map(reward => (
+                <Text style={styles.bodyFont} key={reward}>
+                  {reward}
+                </Text>
+              ))}
+            </View>
           </View>
-          <View style={styles.rewardsList}>
-            <Text style={styles.bodyFont}>5% discount for wash services</Text>
-            <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-            <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
-          </View>
-        </View>
+        )}
         {/* Progress to Next Level */}
         <Text style={styles.heading2}>Progress to Next Level</Text>
-        <View style={styles.sectionContent}>
-          <View style={[styles.horizontal, styles.justify]}>
-            <View style={styles.horizontal}>
-              <RewardsIcon color={colors.tertiary.diamond} size={24} />
-              <Text style={styles.loyaltyLevel}>Diamond</Text>
-            </View>
-            <Text style={styles.inactive}>72/96 washes</Text>
-          </View>
-          <ProgressBar progress={80} />
-        </View>
+        <RewardsProgress />
         {/* Reward Levels */}
         <Text style={styles.heading2}>Reward Levels</Text>
-        <View style={styles.rewardLevels}>
-          <View style={styles.sectionContent}>
+        {loyaltyLevels.map(level => (
+          <View style={styles.sectionContent} key={level.name}>
             <Collapsible
-              title={'Base'}
-              subTitle={'Initial rewards level'}
-              rewardsIconColor={colors.tertiary.bronze}
+              title={level.name}
+              subTitle={level.goal === 0 ? 'Initial rewards level' : `Obtained after ${level.goal} washes`}
+              rewardsIconColor={level.color}
               rewardsIconSize={40}
             >
               <View style={styles.rewardsList}>
-                <Text style={styles.bodyFont}>5% discount for wash services</Text>
-                <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-                <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
+                {level.rewards.map(reward => (
+                  <Text style={styles.bodyFont} key={reward}>
+                    {reward}
+                  </Text>
+                ))}
               </View>
             </Collapsible>
           </View>
-          <View style={styles.sectionContent}>
-            <Collapsible
-              title={'Silver'}
-              subTitle={'Obtained after 24 washes'}
-              rewardsIconColor={colors.tertiary.silver}
-              rewardsIconSize={40}
-            >
-              <View style={styles.rewardsList}>
-                <Text style={styles.bodyFont}>5% discount for wash services</Text>
-                <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-                <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
-              </View>
-            </Collapsible>
-          </View>
-          <View style={styles.sectionContent}>
-            <Collapsible
-              title={'Gold'}
-              subTitle={'Obtained after 48 washes'}
-              rewardsIconColor={colors.tertiary.gold}
-              rewardsIconSize={40}
-            >
-              <View style={styles.rewardsList}>
-                <Text style={styles.bodyFont}>5% discount for wash services</Text>
-                <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-                <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
-              </View>
-            </Collapsible>
-          </View>
-          <View style={styles.sectionContent}>
-            <Collapsible
-              title={'Diamond'}
-              subTitle={'Obtained after 96 washes'}
-              rewardsIconColor={colors.tertiary.diamond}
-              rewardsIconSize={40}
-            >
-              <View style={styles.rewardsList}>
-                <Text style={styles.bodyFont}>5% discount for wash services</Text>
-                <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-                <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
-              </View>
-            </Collapsible>
-          </View>
-        </View>
+        ))}
         <InfoModal
           visible={isModalVisible}
           heading={'Loyalty rewards'}
@@ -142,6 +110,7 @@ const styles = StyleSheet.create({
   },
   contentWrapper: {
     paddingHorizontal: 24,
+    paddingBottom: 10,
   },
   justify: {
     justifyContent: 'space-between',
