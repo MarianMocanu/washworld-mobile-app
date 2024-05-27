@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
-import eventReducer from '../features/stacks/event/screens/eventSlice';
-import activeCarReducer from '../features/account/slices/activeCarSlice';
+import eventReducer from '../features/event/eventSlice';
+import activeCarReducer from '../features/car/activeCarSlice';
 
 export const store = configureStore({
   reducer: {

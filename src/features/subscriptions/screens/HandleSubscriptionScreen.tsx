@@ -10,12 +10,12 @@ import RadioButton from '@shared/RadioButton';
 import { useLevels } from '@queries/Levels';
 import { Level } from '@models/Level';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { SubscriptionStackParamList } from 'src/navigation/SubscriptionNavigator';
+import { SubscriptionStackParamList } from 'src/features/subscriptions/SubscriptionNavigator';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { useSubscriptions } from '@queries/Subscriptions';
 import { Subscription } from '@models/Subscription';
-import { SuccessRoute } from 'src/navigation/PaymentNavigator';
+import { SuccessRoute } from 'src/features/payment/PaymentNavigator';
 import { LevelPicker } from '../components/LevelPicker';
 
 export const HandleSubscriptionScreen: FC = () => {

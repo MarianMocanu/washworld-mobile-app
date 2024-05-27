@@ -1,10 +1,10 @@
 import { colors } from '@globals/globalStyles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { InstructionsScreen } from 'src/features/stacks/event/screens/InstructionsScreen';
-import { ScanPlateScreen } from 'src/features/stacks/event/screens/ScanPlateScreen';
-import { SelectServiceScreen } from 'src/features/stacks/event/screens/SelectServiceScreen';
-import { WashFinishedScreen } from 'src/features/stacks/event/screens/WashFinishedScreen';
-import { WashProgressScreen } from 'src/features/stacks/event/screens/WashProgressScreen';
+import { SelectServiceScreen } from './screens/SelectServiceScreen';
+import { ScanPlateScreen } from './screens/ScanPlateScreen';
+import { InstructionsScreen } from './screens/InstructionsScreen';
+import { WashProgressScreen } from './screens/WashProgressScreen';
+import { WashFinishedScreen } from './screens/WashFinishedScreen';
 
 export type EventStackParamList = {
   'select-service': undefined;

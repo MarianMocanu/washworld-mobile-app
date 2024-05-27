@@ -1,10 +1,6 @@
 import { colors } from '@globals/globalStyles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AddCarScreen } from 'src/features/stacks/car/AddCarScreen';
-import { InstructionsScreen } from 'src/features/stacks/event/screens/InstructionsScreen';
-import { ScanPlateScreen } from 'src/features/stacks/event/screens/ScanPlateScreen';
-import { SelectServiceScreen } from 'src/features/stacks/event/screens/SelectServiceScreen';
-import { WashProgressScreen } from 'src/features/stacks/event/screens/WashProgressScreen';
+import { AddCarScreen } from 'src/features/car/AddCarScreen';
 import { User } from '@models/User';
 
 export type CarStackParamList = {
@@ -19,7 +15,7 @@ export default function CarNavigator() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.white.base },
-        animation: 'fade_from_bottom',
+        animation: 'none',
       }}
     >
       <Stack.Screen name="car-add" component={AddCarScreen} />

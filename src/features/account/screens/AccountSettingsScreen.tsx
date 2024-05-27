@@ -1,8 +1,7 @@
-import { View, Text, StyleSheet, ScrollView, Switch, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Switch } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AccountStackParamList } from '../AccountNavigator';
 import { RewardsIcon } from '@shared/RewardsIcon';
 import { Button } from '@shared/Button';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -13,6 +12,7 @@ import { RootState } from 'src/app/store';
 import { CarPickerModal } from '@shared/CarPickerModal';
 import { useState } from 'react';
 import { useSubscriptions } from '@queries/Subscriptions';
+import { AccountStackParamList } from '../AccountNavigator';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'index'>;
 

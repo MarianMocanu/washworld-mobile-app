@@ -4,7 +4,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Button } from '@shared/Button';
 import { colors } from '@globals/globalStyles';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { EventStackParamList } from 'src/navigation/EventNavigator';
+import { EventStackParamList } from '../EventNavigator';
 
 type Props = {
   visible: boolean;

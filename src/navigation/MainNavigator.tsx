@@ -1,15 +1,17 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator, { TabsParamList } from './TabNavigator';
-import EventNavigator, { EventStackParamList } from './EventNavigator';
-import CarNavigator from './CarNavigator';
+import EventNavigator, { EventStackParamList } from '../features/event/EventNavigator';
+import CarNavigator from '../features/car/CarNavigator';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { useCars } from 'src/queries/Car';
-import SubscriptionNavigator, { SubscriptionStackParamList } from './SubscriptionNavigator';
-import PaymentNavigator, { PaymentStackParamList } from './PaymentNavigator';
-import { setActiveCarId } from 'src/features/account/slices/activeCarSlice';
+import SubscriptionNavigator, {
+  SubscriptionStackParamList,
+} from '../features/subscriptions/SubscriptionNavigator';
+import PaymentNavigator, { PaymentStackParamList } from '../features/payment/PaymentNavigator';
+import { setActiveCarId } from 'src/features/car/activeCarSlice';
 
 type EventStack = {
   screen: keyof EventStackParamList;

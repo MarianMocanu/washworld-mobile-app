@@ -17,7 +17,7 @@ import { TabsParamList } from 'src/navigation/TabNavigator';
 import RewardsProgress from '@shared/RewardsProgress';
 import { CarPickerModal } from '../components/CarPickerModal';
 import { useDispatch } from 'react-redux';
-import { setActiveCarId } from '../../account/slices/activeCarSlice';
+import { setActiveCarId } from '../../car/activeCarSlice';
 import { Car } from '@models/Car';
 
 type Props = {};
@@ -69,7 +69,6 @@ export const HomeScreen: FC<Props> = () => {
       <View style={viewStyles.mainContainer}>
         <ScreenHeader />
         <ScrollView contentContainerStyle={viewStyles.scrollContainer}>
-          <Text style={textStyles.primaryHeading}>Dashboard</Text>
           <CarPickerModal
             visible={isModalVisible}
             heading={'Please select a car'}

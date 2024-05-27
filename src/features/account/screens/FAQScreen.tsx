@@ -1,16 +1,15 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { AccountStackParamList } from '../AccountNavigator';
+import { View, Text, StyleSheet } from 'react-native';
 import { signOut } from 'src/features/auth/authSlice';
 import { AppDispatch } from 'src/app/store';
 import { useDispatch } from 'react-redux';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { colors, globalTextStyles } from '@globals/globalStyles';
-import { Button } from '@shared/Button';
 import { FlatList } from 'react-native';
 import { CollapsibleShared } from '@shared/CollapsibleShared';
+import { AccountStackParamList } from '../AccountNavigator';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'faq'>;
 
