@@ -1,6 +1,7 @@
 import { Subscription } from '@models/Subscription';
 import { QueryObserverOptions, UseQueryResult, useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'src/app/axios';
+import { CAR_QUERY_KEYS } from './Car';
 
 export const SUBSCRIPTION_KEYS = {
   USER_SUBSCRIPTIONS: 'subscription-for-user',
@@ -52,6 +53,7 @@ export const useAddSubscription = (levelId?: number, carId?: number) => {
     },
     onSettled: () => {
       queryClient.invalidateQueries([SUBSCRIPTION_KEYS.USER_SUBSCRIPTIONS]);
+      queryClient.invalidateQueries([CAR_QUERY_KEYS.USER_CARS]);
     },
   });
 };
@@ -70,10 +72,9 @@ export const useUpdateSubscription = (subscriptionId?: number, levelId?: number)
       console.error('Error updating subscription', error);
     },
     onSettled: () => {
-      queryClient.invalidateQueries([
-        SUBSCRIPTION_KEYS.USER_SUBSCRIPTIONS,
-        SUBSCRIPTION_KEYS.CAR_SUBSCRIPTIONS,
-      ]);
+      queryClient.invalidateQueries([SUBSCRIPTION_KEYS.USER_SUBSCRIPTIONS]);
+      queryClient.invalidateQueries([SUBSCRIPTION_KEYS.CAR_SUBSCRIPTIONS]);
+      queryClient.invalidateQueries([CAR_QUERY_KEYS.USER_CARS]);
     },
   });
 };

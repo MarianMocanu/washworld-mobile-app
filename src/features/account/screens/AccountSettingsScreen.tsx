@@ -26,7 +26,7 @@ const AccountSettingsScreen = (props: Props) => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const handleChangeSubscription = () => {
+  function handleChangeSubscription() {
     if (cars && cars?.length > 1) {
       setIsModalVisible(true);
     } else if (cars?.length === 1) {
@@ -37,7 +37,8 @@ const AccountSettingsScreen = (props: Props) => {
     } else {
       console.log('No car registered, navigate to add car?');
     }
-  };
+  }
+
   return (
     <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
       <CarPickerModal
@@ -90,9 +91,13 @@ const AccountSettingsScreen = (props: Props) => {
                     subscription => subscription.car.id === car.id,
                   );
                   return activeSubscription ? (
-                    <Text>{activeSubscription.level.name}</Text>
+                    <Text style={[styles.carText, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
+                      {activeSubscription.level.name}
+                    </Text>
                   ) : (
-                    <Text>No active subscription</Text>
+                    <Text style={[styles.carText, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
+                      No active subscription
+                    </Text>
                   );
                 })()}
               </View>

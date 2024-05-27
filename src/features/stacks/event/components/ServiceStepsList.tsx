@@ -1,4 +1,4 @@
-import { colors, globalTextStyles } from '@globals/globalStyles';
+import { colors } from '@globals/globalStyles';
 import { Step } from '@models/Step';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
@@ -62,7 +62,9 @@ export const ServiceStepsList: FC<Props> = ({ steps }) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 16,
-    paddingLeft: Dimensions.get('window').width / 2 - 120,
+    alignSelf: 'center',
+    backgroundColor: colors.white.cream,
+    padding: 16,
   },
   step: {
     flexDirection: 'row',

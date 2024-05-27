@@ -2,45 +2,43 @@ import { colors, globalTextStyles } from '@globals/globalStyles';
 import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Button } from '@shared/Button';
 import { ScreenHeader } from '@shared/ScreenHeader';
-import { FC, useEffect, useLayoutEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from 'react-native';
+import { FC } from 'react';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { TabsParamList } from 'src/navigation/TabNavigator';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/app/store';
-import { PaymentStackParamList } from 'src/navigation/PaymentNavigator';
-import { Main } from 'src/Main';
+import { PaymentStackParamList, SuccessRoute } from 'src/navigation/PaymentNavigator';
 import { EventStackParamList } from 'src/navigation/EventNavigator';
 import { Image } from 'react-native';
-import { CheckCircle } from 'src/assets/SVGIcons';
 
 export const SuccessPaymentScreen: FC = () => {
-  const tabNavigation = useNavigation<NavigationProp<TabsParamList, 'dashboard'>>();
-  const mainNavigation = useNavigation<NavigationProp<MainStackParamsList>>();
+  const mainNavigator = useNavigation<NavigationProp<MainStackParamsList>>();
   const eventNavigator = useNavigation<NavigationProp<EventStackParamList>>();
   const route = useRoute<RouteProp<PaymentStackParamList, 'payment-success'>>();
 
-  const [activeNavigator, setActiveNavigator] = useState<NavigationProp<any>>();
   const { successRoute } = route.params;
-
-  useLayoutEffect(() => {
-    if (successRoute === 'subscription') {
-      setActiveNavigator(mainNavigation);
-    } else if (successRoute === 'start') {
-      setActiveNavigator(eventNavigator);
-    } else {
-      setActiveNavigator(tabNavigation);
-    }
-  }, []);
-
   const newDate = () => {
     return new Date().toLocaleDateString();
   };
 
+  function handleOnPress() {
+    switch (successRoute) {
+      case SuccessRoute.Account:
+        mainNavigator.navigate('tabs', { screen: 'account' });
+        break;
+      case SuccessRoute.Dashboard:
+        mainNavigator.navigate('tabs', { screen: 'dashboard' });
+        break;
+      case SuccessRoute.Service:
+        eventNavigator.navigate('scan-plate');
+        break;
+      default:
+        break;
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <ScreenHeader backButtonShown onBackPress={tabNavigation.goBack} />
+      <ScreenHeader backButtonShown onBackPress={mainNavigator.goBack} />
       <View style={styles.screenContent}>
         <View>
           <Image source={require('./receipt_background.png')} style={styles.background} />
@@ -69,13 +67,7 @@ export const SuccessPaymentScreen: FC = () => {
             </Text>
           </View>
         </View>
-        <Button
-          primary
-          style={styles.button}
-          onPress={() => {
-            activeNavigator?.navigate(successRoute);
-          }}
-        >
+        <Button primary style={styles.button} onPress={handleOnPress}>
           <Text style={text.button}>Finish</Text>
           <MaterialIcons name="arrow-forward" style={styles.icon} />
         </Button>

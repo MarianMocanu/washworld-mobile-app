@@ -6,12 +6,12 @@ import {
   useQuery,
   useQueryClient,
 } from 'react-query';
-import axios from 'src/app/axios';
-import { User } from '@models/User';
+import axios, { AxiosError } from 'src/app/axios';
 import { Car } from '@models/Car';
 
-export const QUERY_KEYS = {
+export const CAR_QUERY_KEYS = {
   USER_CARS: 'user-cars',
+  CAR_BY_ID: 'car-by-id',
 };
 
 export const MUTATION_KEYS = {
@@ -25,10 +25,24 @@ export const useCars = (
   options: Pick<QueryObserverOptions, 'enabled'>,
 ): UseQueryResult<Car[], Error> => {
   return useQuery({
-    queryKey: [QUERY_KEYS.USER_CARS],
+    queryKey: [CAR_QUERY_KEYS.USER_CARS],
     queryFn: async function fetchUserCars() {
       const data = (await axios.get(`/cars/user/${userId}`)).data;
       return data as Car[];
+    },
+    enabled: options.enabled ?? true,
+  });
+};
+
+export const useCar = (
+  carId: number | undefined,
+  options: Pick<QueryObserverOptions, 'enabled'>,
+): UseQueryResult<Car, AxiosError> => {
+  return useQuery({
+    queryKey: [CAR_QUERY_KEYS.CAR_BY_ID, carId],
+    queryFn: async function fetchCar() {
+      const data = (await axios.get<Car>(`/cars/${carId}`)).data;
+      return data as Car;
     },
     enabled: options.enabled ?? true,
   });
@@ -45,7 +59,7 @@ export const useAddCar = (car: Partial<Car>, id?: number): UseMutationResult<Car
       return response.data as Car;
     },
     onSuccess() {
-      queryClient.invalidateQueries([QUERY_KEYS.USER_CARS]);
+      queryClient.invalidateQueries([CAR_QUERY_KEYS.USER_CARS]);
     },
   });
 };
