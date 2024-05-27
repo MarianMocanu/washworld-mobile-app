@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { AccountStackParamList } from '../AccountNavigator';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { colors, globalTextStyles } from '@globals/globalStyles';
@@ -13,6 +13,7 @@ import { loyaltyLevels, getLoyaltyLevels, LoyaltyLevel } from '../../shared/loya
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { useEventsNumber } from '@queries/Event';
+import { Collapsible } from '../components/Collapsible';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'rewards'>;
 
