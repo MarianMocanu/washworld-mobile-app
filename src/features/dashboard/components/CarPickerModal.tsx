@@ -33,7 +33,7 @@ export const CarPickerModal: React.FC<CarPickerModalProps> = ({
           {carData?.map((car, index: number) => (
             <Button
               key={index}
-              style={styles.carButton}
+              style={[styles.carButton, car.id === activeCarId ? styles.activeCar : {}]}
               onPress={
                 car.id !== activeCarId
                   ? () => {
@@ -46,14 +46,24 @@ export const CarPickerModal: React.FC<CarPickerModalProps> = ({
               <MaterialIcons
                 name="directions-car"
                 size={24}
-                color={car.id === activeCarId ? '#34B566' : colors.grey[60]}
+                color={car.id === activeCarId ? colors.white.base : colors.grey[60]}
                 style={{ lineHeight: 24 }}
               />
               <View>
-                <Text ellipsizeMode="tail" numberOfLines={1} style={styles.modalText}>
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  style={[styles.modalText, car.id === activeCarId ? styles.activeCar : {}]}
+                >
                   {car.plateNumber + ' - ' + car.name}
                 </Text>
-                <Text style={[styles.modalText, styles.carSubscription]}>
+                <Text
+                  style={[
+                    styles.modalText,
+                    styles.carSubscription,
+                    car.id === activeCarId ? styles.activeCar : {},
+                  ]}
+                >
                   {car.subscriptions?.[0]?.level?.name || 'No subscription'}
                 </Text>
               </View>
@@ -97,9 +107,10 @@ const styles = StyleSheet.create({
     gap: 20,
     width: '100%',
     backgroundColor: colors.white.cream,
-    height: 48,
+    height: 'auto',
     borderRadius: 4,
     paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   modalText: {
     fontFamily: 'gilroy-medium',
@@ -117,6 +128,7 @@ const styles = StyleSheet.create({
   },
   activeCar: {
     backgroundColor: colors.primary.base,
-    opacity: 0.9,
+    opacity: 1,
+    color: colors.white.base,
   },
 });
