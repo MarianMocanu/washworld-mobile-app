@@ -6,7 +6,7 @@ import { FC } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { MainStackParamsList } from 'src/navigation/MainNavigator';
-import { PaymentStackParamList, SuccessRoute } from 'src/navigation/PaymentNavigator';
+import { PaymentStackParamList } from 'src/navigation/PaymentNavigator';
 import { EventStackParamList } from 'src/navigation/EventNavigator';
 import { Image } from 'react-native';
 
@@ -22,13 +22,13 @@ export const SuccessPaymentScreen: FC = () => {
 
   function handleOnPress() {
     switch (successRoute) {
-      case SuccessRoute.Account:
+      case 'account':
         mainNavigator.navigate('tabs', { screen: 'account' });
         break;
-      case SuccessRoute.Dashboard:
+      case 'dashboard':
         mainNavigator.navigate('tabs', { screen: 'dashboard' });
         break;
-      case SuccessRoute.Service:
+      case 'service':
         eventNavigator.navigate('scan-plate');
         break;
       default:
