@@ -24,113 +24,111 @@ const LoyaltyRewardsScreen = (props: Props) => {
   return (
     <ScrollView style={{ backgroundColor: '#FFF' }} contentContainerStyle={styles.container}>
       <ScreenHeader backButtonShown onBackPress={() => navigation.navigate('index')} />
-      <View style={styles.contentWrapper}>
-        {/* Header */}
-        <View style={[styles.horizontal, styles.justify]}>
-          <Text style={styles.heading}>Loyalty Rewards </Text>
-          <TouchableOpacity style={styles.modalButton} onPress={() => handleInfoModal()}>
-            <MaterialIcons name={'question-mark'} style={{ fontSize: 24, lineHeight: 24, color: '#FFF' }} />
-          </TouchableOpacity>
-        </View>
-        {/* Current Status */}
-        <Text style={styles.heading2}>Current Status</Text>
-        <View style={styles.sectionContent}>
-          <View style={[styles.horizontal, styles.justify]}>
-            <View style={styles.horizontal}>
-              <RewardsIcon color={colors.tertiary.gold} size={24} />
-              <Text style={styles.loyaltyLevel}>Gold</Text>
-            </View>
-
-            <Text style={styles.inactive}>Achieved on 23/04/24</Text>
-          </View>
-          <View style={styles.rewardsList}>
-            <Text style={styles.bodyFont}>5% discount for wash services</Text>
-            <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-            <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
-          </View>
-        </View>
-        {/* Progress to Next Level */}
-        <Text style={styles.heading2}>Progress to Next Level</Text>
-        <View style={styles.sectionContent}>
-          <View style={[styles.horizontal, styles.justify]}>
-            <View style={styles.horizontal}>
-              <RewardsIcon color={colors.tertiary.diamond} size={24} />
-              <Text style={styles.loyaltyLevel}>Diamond</Text>
-            </View>
-            <Text style={styles.inactive}>72/96 washes</Text>
-          </View>
-          <ProgressBar progress={80} />
-        </View>
-        {/* Reward Levels */}
-        <Text style={styles.heading2}>Reward Levels</Text>
-        <View style={styles.rewardLevels}>
-          <View style={styles.sectionContent}>
-            <Collapsible
-              title={'Base'}
-              subTitle={'Initial rewards level'}
-              rewardsIconColor={colors.tertiary.bronze}
-              rewardsIconSize={40}
-            >
-              <View style={styles.rewardsList}>
-                <Text style={styles.bodyFont}>5% discount for wash services</Text>
-                <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-                <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
-              </View>
-            </Collapsible>
-          </View>
-          <View style={styles.sectionContent}>
-            <Collapsible
-              title={'Silver'}
-              subTitle={'Obtained after 24 washes'}
-              rewardsIconColor={colors.tertiary.silver}
-              rewardsIconSize={40}
-            >
-              <View style={styles.rewardsList}>
-                <Text style={styles.bodyFont}>5% discount for wash services</Text>
-                <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-                <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
-              </View>
-            </Collapsible>
-          </View>
-          <View style={styles.sectionContent}>
-            <Collapsible
-              title={'Gold'}
-              subTitle={'Obtained after 48 washes'}
-              rewardsIconColor={colors.tertiary.gold}
-              rewardsIconSize={40}
-            >
-              <View style={styles.rewardsList}>
-                <Text style={styles.bodyFont}>5% discount for wash services</Text>
-                <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-                <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
-              </View>
-            </Collapsible>
-          </View>
-          <View style={styles.sectionContent}>
-            <Collapsible
-              title={'Diamond'}
-              subTitle={'Obtained after 96 washes'}
-              rewardsIconColor={colors.tertiary.diamond}
-              rewardsIconSize={40}
-            >
-              <View style={styles.rewardsList}>
-                <Text style={styles.bodyFont}>5% discount for wash services</Text>
-                <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
-                <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
-              </View>
-            </Collapsible>
-          </View>
-        </View>
-        <InfoModal
-          visible={isModalVisible}
-          heading={'Loyalty rewards'}
-          text={
-            'Loyalty rewards only apply to the highest earned level. The rewards are not additive with previous levels.'
-          }
-          buttonText={'Close'}
-          handlePress={() => setIsModalVisible(false)}
-        />
+      {/* Header */}
+      <View style={[styles.horizontal, styles.justify]}>
+        <Text style={styles.heading}>Loyalty Rewards </Text>
+        <TouchableOpacity style={styles.modalButton} onPress={() => handleInfoModal()}>
+          <MaterialIcons name={'question-mark'} style={{ fontSize: 24, lineHeight: 24, color: '#FFF' }} />
+        </TouchableOpacity>
       </View>
+      {/* Current Status */}
+      <Text style={styles.heading2}>Current Status</Text>
+      <View style={styles.sectionContent}>
+        <View style={[styles.horizontal, styles.justify]}>
+          <View style={styles.horizontal}>
+            <RewardsIcon color={colors.tertiary.gold} size={24} />
+            <Text style={styles.loyaltyLevel}>Gold</Text>
+          </View>
+
+          <Text style={styles.inactive}>Achieved on 23/04/24</Text>
+        </View>
+        <View style={styles.rewardsList}>
+          <Text style={styles.bodyFont}>5% discount for wash services</Text>
+          <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
+          <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
+        </View>
+      </View>
+      {/* Progress to Next Level */}
+      <Text style={styles.heading2}>Progress to Next Level</Text>
+      <View style={styles.sectionContent}>
+        <View style={[styles.horizontal, styles.justify]}>
+          <View style={styles.horizontal}>
+            <RewardsIcon color={colors.tertiary.diamond} size={24} />
+            <Text style={styles.loyaltyLevel}>Diamond</Text>
+          </View>
+          <Text style={styles.inactive}>72/96 washes</Text>
+        </View>
+        <ProgressBar progress={80} />
+      </View>
+      {/* Reward Levels */}
+      <Text style={styles.heading2}>Reward Levels</Text>
+      <View style={styles.rewardLevels}>
+        <View style={styles.sectionContent}>
+          <Collapsible
+            title={'Base'}
+            subTitle={'Initial rewards level'}
+            rewardsIconColor={colors.tertiary.bronze}
+            rewardsIconSize={40}
+          >
+            <View style={styles.rewardsList}>
+              <Text style={styles.bodyFont}>5% discount for wash services</Text>
+              <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
+              <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
+            </View>
+          </Collapsible>
+        </View>
+        <View style={styles.sectionContent}>
+          <Collapsible
+            title={'Silver'}
+            subTitle={'Obtained after 24 washes'}
+            rewardsIconColor={colors.tertiary.silver}
+            rewardsIconSize={40}
+          >
+            <View style={styles.rewardsList}>
+              <Text style={styles.bodyFont}>5% discount for wash services</Text>
+              <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
+              <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
+            </View>
+          </Collapsible>
+        </View>
+        <View style={styles.sectionContent}>
+          <Collapsible
+            title={'Gold'}
+            subTitle={'Obtained after 48 washes'}
+            rewardsIconColor={colors.tertiary.gold}
+            rewardsIconSize={40}
+          >
+            <View style={styles.rewardsList}>
+              <Text style={styles.bodyFont}>5% discount for wash services</Text>
+              <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
+              <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
+            </View>
+          </Collapsible>
+        </View>
+        <View style={styles.sectionContent}>
+          <Collapsible
+            title={'Diamond'}
+            subTitle={'Obtained after 96 washes'}
+            rewardsIconColor={colors.tertiary.diamond}
+            rewardsIconSize={40}
+          >
+            <View style={styles.rewardsList}>
+              <Text style={styles.bodyFont}>5% discount for wash services</Text>
+              <Text style={styles.bodyFont}>10% discount for new car subscriptions</Text>
+              <Text style={styles.bodyFont}>2 vouchers to gift friends a free wash</Text>
+            </View>
+          </Collapsible>
+        </View>
+      </View>
+      <InfoModal
+        visible={isModalVisible}
+        heading={'Loyalty rewards'}
+        text={
+          'Loyalty rewards only apply to the highest earned level. The rewards are not additive with previous levels.'
+        }
+        buttonText={'Close'}
+        handlePress={() => setIsModalVisible(false)}
+      />
     </ScrollView>
   );
 };
@@ -150,8 +148,6 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: colors.white.base,
-  },
-  contentWrapper: {
     paddingHorizontal: 20,
   },
   sectionContent: {
