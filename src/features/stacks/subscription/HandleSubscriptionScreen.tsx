@@ -16,7 +16,7 @@ import { RootState } from 'src/app/store';
 import { useSubscriptions } from '@queries/Subscriptions';
 import { Subscription } from '@models/Subscription';
 
-export const AddSubscriptionScreen: FC = () => {
+export const HandleSubscriptionScreen: FC = () => {
   const tabNavigation = useNavigation<NavigationProp<TabsParamList, 'dashboard'>>();
   const mainNavigation = useNavigation<NavigationProp<MainStackParamsList>>();
   const route = useRoute<RouteProp<SubscriptionStackParamList, 'subscription-handle'>>();
