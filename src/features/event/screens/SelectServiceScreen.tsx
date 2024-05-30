@@ -36,6 +36,8 @@ export const SelectServiceScreen: FC = () => {
     return undefined;
   }, [carData]);
 
+  console.debug('terminals', JSON.stringify(terminalsData, null, 2));
+
   function getDistinctAutomatedServices(terminals: Terminal[]): Service[] {
     const allServices: Service[] = terminals.reduce((acc, terminal) => {
       if (terminal.services) {

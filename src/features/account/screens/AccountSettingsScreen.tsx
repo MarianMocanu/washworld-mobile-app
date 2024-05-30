@@ -25,8 +25,6 @@ const AccountSettingsScreen = (props: Props) => {
   const { data: cars } = useCars(user?.id, { enabled: !!user });
   const { data: subscriptions } = useSubscriptions(user?.id, { enabled: !!user?.id });
 
-  console.log(user);
-
   const [isEnabled, setIsEnabled] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });

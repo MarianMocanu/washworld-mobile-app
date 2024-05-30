@@ -26,6 +26,9 @@ export const HandleSubscriptionScreen: FC = () => {
   const auth = useSelector((state: RootState) => state.auth);
 
   const { data: levelsData, isLoading } = useLevels();
+
+  console.debug('levels data', JSON.stringify(levelsData, null, 4));
+
   const {
     data: subscriptionData,
     isLoading: subscriptionIsLoading,

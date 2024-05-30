@@ -55,7 +55,7 @@ export const useAddCar = (car: Partial<Car>, id?: number): UseMutationResult<Car
   return useMutation({
     mutationKey: [MUTATION_KEYS.ADD_CAR],
     mutationFn: async function addCar() {
-      const response = await axios.post<Car>(`/cars/`, { ...car, userId: id });
+      const response = await axios.post<Car>(`/cars`, { ...car, userId: id });
       return response.data as Car;
     },
     onSuccess() {
