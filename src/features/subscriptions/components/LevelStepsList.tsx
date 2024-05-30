@@ -20,18 +20,24 @@ export const LevelStepsList: FC<Props> = ({ steps }) => {
       <FlatList
         data={allStepsData}
         keyExtractor={item => `step_${item.id}`}
-        renderItem={({ item, index }) => (
-          <View style={styles.item}>
-            <MaterialIcons
-              name="check"
-              style={styles.icon}
-              color={steps[index] && steps[index].id === item.id ? colors.primary.base : colors.grey[30]}
-            />
-            <Text style={steps[index] && steps[index].id === item.id ? text.stepActive : text.stepInactive}>
-              {item.name}
-            </Text>
-          </View>
-        )}
+        renderItem={({ item, index }) => {
+          console.log(
+            steps[index] && steps[index].id === item.id,
+            steps[index] ? { stepdId: steps[index].id, itemId: item.id } : 'no step',
+          );
+          return (
+            <View style={styles.item}>
+              <MaterialIcons
+                name="check"
+                style={styles.icon}
+                color={steps[index] && steps[index].id === item.id ? colors.primary.base : colors.grey[30]}
+              />
+              <Text style={steps[index] && steps[index].id === item.id ? text.stepActive : text.stepInactive}>
+                {item.name}
+              </Text>
+            </View>
+          );
+        }}
         scrollEnabled={false}
         style={styles.list}
         showsVerticalScrollIndicator={false}

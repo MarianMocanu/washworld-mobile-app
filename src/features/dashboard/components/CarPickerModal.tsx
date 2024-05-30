@@ -53,7 +53,7 @@ export const CarPickerModal: React.FC<CarPickerModalProps> = ({
                 <Text
                   ellipsizeMode="tail"
                   numberOfLines={1}
-                  style={[styles.modalText, car.id === activeCarId ? styles.activeCar : {}]}
+                  style={[styles.modalText, car.id === activeCarId ? styles.activeCarText : {}]}
                 >
                   {car.plateNumber + ' - ' + car.name}
                 </Text>
@@ -61,7 +61,7 @@ export const CarPickerModal: React.FC<CarPickerModalProps> = ({
                   style={[
                     styles.modalText,
                     styles.carSubscription,
-                    car.id === activeCarId ? styles.activeCar : {},
+                    car.id === activeCarId ? styles.activeCarText : {},
                   ]}
                 >
                   {car.subscriptions?.[0]?.level?.name || 'No subscription'}
@@ -129,6 +129,9 @@ const styles = StyleSheet.create({
   activeCar: {
     backgroundColor: colors.primary.base,
     opacity: 1,
+    color: colors.white.base,
+  },
+  activeCarText: {
     color: colors.white.base,
   },
 });

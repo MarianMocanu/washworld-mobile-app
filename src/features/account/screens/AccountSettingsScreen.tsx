@@ -95,39 +95,41 @@ const AccountSettingsScreen = (props: Props) => {
         {/* Car/s section */}
         <View style={styles.section}>
           <Text style={text.heading}>Your Cars</Text>
-          <View style={styles.carContainer}>
-            {cars?.map((car, index: number) => (
-              <View key={index} style={styles.car}>
-                <MaterialIcons
-                  name="directions-car"
-                  size={24}
-                  color={colors.grey[60]}
-                  style={{ lineHeight: 24 }}
-                />
-                <View>
-                  <Text style={text.car}>{car.plateNumber + ' - ' + car.name}</Text>
+          {cars && cars?.length > 0 && (
+            <View style={styles.carContainer}>
+              {cars?.map((car, index: number) => (
+                <View key={index} style={styles.car}>
+                  <MaterialIcons
+                    name="directions-car"
+                    size={24}
+                    color={colors.grey[60]}
+                    style={{ lineHeight: 24 }}
+                  />
+                  <View>
+                    <Text style={text.car}>{car.plateNumber + ' - ' + car.name}</Text>
 
-                  {(() => {
-                    const activeSubscription = subscriptions?.find(
-                      subscription => subscription.car.id === car.id,
-                    );
-                    return activeSubscription ? (
-                      <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
-                        {activeSubscription.level.name}
-                      </Text>
-                    ) : (
-                      <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
-                        No active subscription
-                      </Text>
-                    );
-                  })()}
+                    {(() => {
+                      const activeSubscription = subscriptions?.find(
+                        subscription => subscription.car.id === car.id,
+                      );
+                      return activeSubscription ? (
+                        <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
+                          {activeSubscription.level.name}
+                        </Text>
+                      ) : (
+                        <Text style={[text.car, { fontSize: 14, fontFamily: 'gilroy-regular' }]}>
+                          No active subscription
+                        </Text>
+                      );
+                    })()}
+                  </View>
                 </View>
-              </View>
-            ))}
-          </View>
+              ))}
+            </View>
+          )}
           <View style={styles.buttonContainer}>
             <Button
-              text="Add another car"
+              text={cars && cars?.length > 0 ? 'Add another car' : 'Add a car'}
               onPress={() => mainNavigation.navigate('stacks-car', { screen: 'car-add' })}
               style={styles.button}
               rightIcon={
@@ -240,7 +242,7 @@ const AccountSettingsScreen = (props: Props) => {
               onPress={() => {
                 Toast.show({
                   type: 'info',
-                  text1: 'Customer support is not available at the moment.',
+                  text1: 'Feature not available at the moment.',
                 });
               }}
               rightIcon={
@@ -257,7 +259,7 @@ const AccountSettingsScreen = (props: Props) => {
               onPress={() => {
                 Toast.show({
                   type: 'info',
-                  text1: 'Submit feedback is not available at the moment.',
+                  text1: 'Feature not available at the moment.',
                 });
               }}
               style={styles.button}
@@ -278,7 +280,12 @@ const AccountSettingsScreen = (props: Props) => {
           <View style={styles.buttonContainer}>
             <Button
               text="Edit account details"
-              onPress={() => props.navigation.navigate('details')}
+              onPress={() => {
+                Toast.show({
+                  type: 'info',
+                  text1: 'Feature not available at the moment.',
+                });
+              }}
               style={styles.button}
               rightIcon={
                 <MaterialIcons
@@ -292,7 +299,12 @@ const AccountSettingsScreen = (props: Props) => {
             <Button
               text="Change password"
               style={styles.button}
-              onPress={() => props.navigation.navigate('change-password')}
+              onPress={() => {
+                Toast.show({
+                  type: 'info',
+                  text1: 'Feature not available at the moment.',
+                });
+              }}
               rightIcon={
                 <MaterialIcons
                   name="chevron-right"
