@@ -27,7 +27,7 @@ export const HandleSubscriptionScreen: FC = () => {
 
   const { data: levelsData, isLoading } = useLevels();
 
-  console.debug('levels data', JSON.stringify(levelsData, null, 4));
+  // console.debug('levels data', JSON.stringify(levelsData, null, 4));
 
   const {
     data: subscriptionData,

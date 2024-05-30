@@ -5,6 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { DashboardStackParamList } from '../DashboardNavigator';
+import { useLevels } from '@queries/Levels';
 
 type WashDetailsScreenRouteProp = RouteProp<DashboardStackParamList, 'wash-details'>;
 
@@ -16,6 +17,7 @@ export const WashDetailsScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'history'>>();
   const route = useRoute<RouteProp<DashboardStackParamList, 'wash-details'>>();
   const { event } = route.params;
+  const { data, isLoading } = useLevels();
 
   return (
     <View style={styles.mainContainer}>
