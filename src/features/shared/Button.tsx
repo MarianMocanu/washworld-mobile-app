@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   disabled: {
-    opacity: 0.3,
+    opacity: 0.5,
   },
   tertiary: {
     height: 48,

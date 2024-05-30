@@ -13,12 +13,12 @@ type Props = {
 };
 
 export const LevelStepsList: FC<Props> = ({ steps }) => {
-  const { data: stepsData, isFetched } = useSteps();
+  const { data: allStepsData, isFetched } = useSteps();
 
   if (isFetched && steps) {
     return (
       <FlatList
-        data={stepsData}
+        data={allStepsData}
         keyExtractor={item => `step_${item.id}`}
         renderItem={({ item, index }) => (
           <View style={styles.item}>
