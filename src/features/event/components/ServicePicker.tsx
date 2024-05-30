@@ -58,6 +58,8 @@ export const ServicePicker: FC<Props> = ({
   const [focusedIndex, setFocusedIndex] = useState(0);
   const focusedService: Service = useMemo(() => services[focusedIndex], [services, focusedIndex]);
 
+  // console.debug('focused service', JSON.stringify(focusedService, null, 2));
+
   const isServiceIncludedInSubscription = useMemo(() => {
     if (activeSubscription && focusedService && focusedService.levels) {
       return activeSubscription.level.id >= focusedService.levels[0].id;
