@@ -13,7 +13,7 @@ import { loyaltyLevels, getLoyaltyLevels, LoyaltyLevel } from '../../shared/loya
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { useEventsNumber } from '@queries/Event';
-import { Collapsible } from '../components/Collapsible';
+import { Collapsible } from '../components/collapsible';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'rewards'>;
 
