@@ -1,11 +1,14 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { ScreenHeader } from '@shared/ScreenHeader';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { DashboardStackParamList } from '../DashboardNavigator';
 import { useLevels } from '@queries/Levels';
+import { useServices } from '@queries/Services';
+import { useCar } from '@queries/Car';
+import { Level } from '@models/Level';
 
 type WashDetailsScreenRouteProp = RouteProp<DashboardStackParamList, 'wash-details'>;
 
@@ -17,7 +20,25 @@ export const WashDetailsScreen: FC = () => {
   const navigation = useNavigation<NavigationProp<DashboardStackParamList, 'history'>>();
   const route = useRoute<RouteProp<DashboardStackParamList, 'wash-details'>>();
   const { event } = route.params;
-  const { data, isLoading } = useLevels();
+  const { data: levels, isLoading: areLevelsLoading } = useLevels();
+  const { data: car, isLoading: isCarLoading } = useCar(event.car.id, { enabled: !!event.car.id });
+  const [serviceName, setServiceName] = useState('');
+
+  useEffect(() => {
+    if (levels && !areLevelsLoading) {
+      let serviceName = '';
+      levels
+        .sort((a: Level, b: Level) => a.price - b.price)
+        .map((level: Level) => {
+          if (level.services.find(service => service.id === event.service.id)) {
+            if (serviceName.length === 0) {
+              serviceName = level.name;
+            }
+          }
+        });
+      setServiceName(serviceName);
+    }
+  }, [levels, event.service.id, areLevelsLoading]);
 
   return (
     <View style={styles.mainContainer}>
@@ -46,11 +67,23 @@ export const WashDetailsScreen: FC = () => {
         </View>
         <View style={styles.row}>
           <Text style={textStyles.label}>Program</Text>
-          <Text style={textStyles.value}>Premium Plus</Text>
+          {areLevelsLoading ? (
+            <ActivityIndicator size="small" color={colors.black.base} />
+          ) : (
+            <Text style={textStyles.value}>{serviceName}</Text>
+          )}
         </View>
         <View style={styles.row}>
           <Text style={textStyles.label}>Price</Text>
-          <Text style={textStyles.value}>Subscription</Text>
+          {isCarLoading ? (
+            <ActivityIndicator size="small" color={colors.black.base} />
+          ) : (
+            <Text style={textStyles.value}>
+              {car?.subscriptions && car.subscriptions[0] && car?.subscriptions[0].active
+                ? 'Subscription'
+                : `${event.service.price} kr.`}
+            </Text>
+          )}
         </View>
       </View>
       <View style={styles.container}>
