@@ -240,7 +240,7 @@ const AccountSettingsScreen = (props: Props) => {
               onPress={() => {
                 Toast.show({
                   type: 'info',
-                  text1: 'Customer support is not available at the moment.',
+                  text1: 'Feature not available at the moment.',
                 });
               }}
               rightIcon={
@@ -257,7 +257,7 @@ const AccountSettingsScreen = (props: Props) => {
               onPress={() => {
                 Toast.show({
                   type: 'info',
-                  text1: 'Submit feedback is not available at the moment.',
+                  text1: 'Feature not available at the moment.',
                 });
               }}
               style={styles.button}
@@ -278,7 +278,12 @@ const AccountSettingsScreen = (props: Props) => {
           <View style={styles.buttonContainer}>
             <Button
               text="Edit account details"
-              onPress={() => props.navigation.navigate('details')}
+              onPress={() => {
+                Toast.show({
+                  type: 'info',
+                  text1: 'Feature not available at the moment.',
+                });
+              }}
               style={styles.button}
               rightIcon={
                 <MaterialIcons
@@ -292,7 +297,12 @@ const AccountSettingsScreen = (props: Props) => {
             <Button
               text="Change password"
               style={styles.button}
-              onPress={() => props.navigation.navigate('change-password')}
+              onPress={() => {
+                Toast.show({
+                  type: 'info',
+                  text1: 'Feature not available at the moment.',
+                });
+              }}
               rightIcon={
                 <MaterialIcons
                   name="chevron-right"
