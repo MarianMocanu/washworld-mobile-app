@@ -13,7 +13,7 @@ import { loyaltyLevels, getLoyaltyLevels, LoyaltyLevel } from '../../shared/loya
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/app/store';
 import { useEventsNumber } from '@queries/Event';
-import { Collapsible } from '../components/collapsible';
+import { Collapsible } from '../components/Collapsible';
 
 type Props = NativeStackScreenProps<AccountStackParamList, 'rewards'>;
 
@@ -21,7 +21,6 @@ const LoyaltyRewardsScreen = (props: Props) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { data: eventsNumber } = useEventsNumber(user?.id, { enabled: !!user?.id });
   const [currentLevel, setCurrentLevel] = useState<LoyaltyLevel | null>(null);
-  const [nextLevel, setNextLevel] = useState<LoyaltyLevel | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigation = useNavigation<NavigationProp<AccountStackParamList, 'rewards'>>();
   const handleInfoModal = () => {
@@ -31,7 +30,6 @@ const LoyaltyRewardsScreen = (props: Props) => {
   useEffect(() => {
     const { currentLoyaltyLevel, nextLoyaltyLevel } = getLoyaltyLevels(eventsNumber);
     setCurrentLevel(currentLoyaltyLevel);
-    setNextLevel(nextLoyaltyLevel);
   }, [eventsNumber]);
 
   return (
