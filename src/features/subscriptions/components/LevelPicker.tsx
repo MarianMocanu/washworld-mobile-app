@@ -15,6 +15,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Level } from '@models/Level';
 import { colors, globalTextStyles } from '@globals/globalStyles';
 import { LevelStepsList } from './LevelStepsList';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = {
   /**
@@ -37,6 +38,7 @@ type Props = {
 
 export const LevelPicker: FC<Props> = ({ visible, setVisible, onSelect, levels }) => {
   const flatListRef = useRef<FlatList>(null);
+  const insets = useSafeAreaInsets();
 
   const [focusedIndex, setFocusedIndex] = useState(0);
   const focusedLevel: Level = useMemo(() => levels[focusedIndex], [levels, focusedIndex]);
@@ -69,7 +71,7 @@ export const LevelPicker: FC<Props> = ({ visible, setVisible, onSelect, levels }
 
   return (
     <Modal visible={visible}>
-      <ScreenHeader backButtonShown onBackPress={() => setVisible(false)} />
+      <ScreenHeader backButtonShown onBackPress={() => setVisible(false)} style={{ marginTop: insets.top }} />
       <View style={styles.container}>
         <View style={styles.header}>
           <Button style={styles.button} onPress={scrollToPreviousItem} disabled={focusedIndex === 0}>

@@ -1,6 +1,6 @@
 import { colors } from '@globals/globalStyles';
 import { FC, ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { LogoSVG } from 'src/assets/SVGIcons';
 import { Button } from './Button';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -23,6 +23,14 @@ type Props = {
    */
   onFilterPress?: () => void;
 
+  /**
+   * Custom style for the header
+   */
+  style?: StyleProp<ViewStyle>;
+
+  /**
+   * Custom icon to be displayed in place of the filter icon
+   */
   overrideFilterIcon?: ReactNode;
 };
 
@@ -32,9 +40,10 @@ export const ScreenHeader: FC<Props> = ({
   backButtonShown,
   filterButtonShown,
   overrideFilterIcon,
+  style,
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <View style={styles.buttonContainer}>
         {backButtonShown && (
           <Button
