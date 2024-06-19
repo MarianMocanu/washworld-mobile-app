@@ -87,4 +87,4 @@ This project is licensed under the MIT License.
 - This project was made possible thanks to the wonderful community and resources available for React Native development.
 - Special thanks to contributors who have helped improve and maintain this project.
 
-Feel free to reach out with any questions, feedback, or suggestions. Happy tracking your finances! 📊💰
+Feel free to reach out with any questions, feedback, or suggestions. Happy washes!
